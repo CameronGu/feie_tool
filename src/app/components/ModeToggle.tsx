@@ -2,12 +2,10 @@ import type { Mode } from '../hooks/useCalculator';
 
 interface ModeToggleProps {
   mode: Mode;
-  planningMode: boolean;
   onModeChange(mode: Mode): void;
-  onPlanningToggle(): void;
 }
 
-export function ModeToggle({ mode, planningMode, onModeChange, onPlanningToggle }: ModeToggleProps) {
+export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   return (
     <div className="card">
       <h2>Input Mode</h2>
@@ -32,13 +30,6 @@ export function ModeToggle({ mode, planningMode, onModeChange, onPlanningToggle 
           />
           US travel periods
         </label>
-      </div>
-
-      <div className="toggle-row">
-        <label>
-          <input type="checkbox" checked={planningMode} onChange={onPlanningToggle} /> Planning mode
-        </label>
-        <p className="help-text">Show remaining days and optimal start dates for upcoming travel.</p>
       </div>
     </div>
   );

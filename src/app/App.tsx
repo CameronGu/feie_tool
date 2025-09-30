@@ -19,9 +19,7 @@ export function App() {
         <div className="panel">
           <ModeToggle
             mode={calculator.state.mode}
-            planningMode={calculator.state.planningMode}
             onModeChange={calculator.setMode}
-            onPlanningToggle={calculator.togglePlanningMode}
           />
 
           <TaxYearSelector
@@ -46,6 +44,7 @@ export function App() {
             onRemove={calculator.removePeriod}
             onChange={calculator.updatePeriod}
             onCommitRange={(start, end) => calculator.commitInterval({ start_date: start, end_date: end })}
+            onClearAll={calculator.clearPeriods}
           />
 
           {calculator.errors.general && (

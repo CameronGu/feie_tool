@@ -14,6 +14,7 @@ interface PeriodsEditorProps {
   onRemove(id: string): void;
   onChange(id: string, field: 'start_date' | 'end_date', value: string): void;
   onCommitRange(start: string, end: string): void;
+  onClearAll(): void;
 }
 
 const LABELS: Record<Mode, string> = {
@@ -33,7 +34,8 @@ export function PeriodsEditor({
   onAdd,
   onRemove,
   onChange,
-  onCommitRange
+  onCommitRange,
+  onClearAll
 }: PeriodsEditorProps) {
   return (
     <div className="card">
@@ -41,6 +43,12 @@ export function PeriodsEditor({
         <h2>{LABELS[mode]}</h2>
         <button type="button" onClick={onAdd} className="secondary">
           + Add interval
+        </button>
+      </div>
+
+      <div className="actions-row">
+        <button type="button" className="ghost" onClick={onClearAll}>
+          Clear all intervals
         </button>
       </div>
 
@@ -58,6 +66,12 @@ export function PeriodsEditor({
           ? 'Intervals added here represent days spent in the U.S. from one year before through one year after the selected tax year. Use the calendar or edit the fields below to fine-tune each stay.'
           : 'Add your time abroad across the eligible window (one year before through one year after the selected tax year). We will invert these intervals into U.S. presence automatically.'}
       </p>
+
+      <div className="manual-actions">
+        <button type="button" className="secondary" onClick={onAdd}>
+          + Add another interval
+        </button>
+      </div>
 
       {periods.map((row, index) => {
         const rowError = errors[`period_${index}`];

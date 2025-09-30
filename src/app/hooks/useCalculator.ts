@@ -37,6 +37,7 @@ export interface UseCalculatorResult {
   removePeriod(id: string): void;
   updatePeriod(id: string, field: 'start_date' | 'end_date', value: string): void;
   commitInterval(interval: Interval): void;
+  clearPeriods(): void;
   result: CalculatorOutput | null;
   errors: ValidationErrors;
   activePeriods: PeriodFormRow[];
@@ -340,6 +341,16 @@ export function useCalculator(): UseCalculatorResult {
         return {
           ...prev,
           [key]: nextRows
+        };
+      });
+    },
+    clearPeriods() {
+      setState(prev => {
+        const key = prev.mode === 'US_PERIODS' ? 'usPeriods' : 'foreignPeriods';
+        const next = [createRow()];
+        return {
+          ...prev,
+          [key]: next
         };
       });
     },

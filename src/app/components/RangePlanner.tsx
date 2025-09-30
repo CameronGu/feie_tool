@@ -179,25 +179,17 @@ export function RangePlanner({
   const [expandedYears, setExpandedYears] = useState<Set<number>>(() => new Set([taxYear]));
 
   useEffect(() => {
-    setExpandedYears(prev => {
-      if (prev.has(taxYear)) {
-        return prev;
-      }
-      const next = new Set(prev);
-      next.add(taxYear);
-      return next;
-    });
+    setExpandedYears(new Set([taxYear]));
   }, [taxYear]);
 
   const toggleYear = (year: number) => {
     setExpandedYears(prev => {
-      const next = new Set(prev);
-      if (next.has(year)) {
-        next.delete(year);
-      } else {
-        next.add(year);
+      const isOpen = prev.has(year);
+      if (isOpen) {
+        const next = new Set<number>();
+        return next;
       }
-      return next;
+      return new Set([year]);
     });
   };
 
