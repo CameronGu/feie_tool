@@ -14,3 +14,9 @@ coverage/
 # Logs
 logs/
 *.log
+
+#Codex
+.codex/
+
+#Cursor
+.cursor/
