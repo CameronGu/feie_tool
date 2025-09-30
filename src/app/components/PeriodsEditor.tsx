@@ -1,12 +1,19 @@
 import type { Mode, PeriodFormRow, ValidationErrors } from '../hooks/useCalculator';
+import { RangePlanner } from './RangePlanner';
 
 interface PeriodsEditorProps {
   mode: Mode;
+  taxYear: number;
+  taxYearStart: string;
+  taxYearEnd: string;
+  coverageStart: string;
+  coverageEnd: string;
   periods: PeriodFormRow[];
   errors: ValidationErrors;
   onAdd(): void;
   onRemove(id: string): void;
   onChange(id: string, field: 'start_date' | 'end_date', value: string): void;
+  onCommitRange(start: string, end: string): void;
 }
 
 const LABELS: Record<Mode, string> = {
@@ -14,7 +21,20 @@ const LABELS: Record<Mode, string> = {
   US_PERIODS: 'US presence intervals'
 };
 
-export function PeriodsEditor({ mode, periods, errors, onAdd, onRemove, onChange }: PeriodsEditorProps) {
+export function PeriodsEditor({
+  mode,
+  taxYear,
+  taxYearStart,
+  taxYearEnd,
+  coverageStart,
+  coverageEnd,
+  periods,
+  errors,
+  onAdd,
+  onRemove,
+  onChange,
+  onCommitRange
+}: PeriodsEditorProps) {
   return (
     <div className="card">
       <div className="sheet-header">
@@ -24,6 +44,21 @@ export function PeriodsEditor({ mode, periods, errors, onAdd, onRemove, onChange
         </button>
       </div>
 
+      <RangePlanner
+        mode={mode}
+        taxYear={taxYear}
+        coverageStart={coverageStart}
+        coverageEnd={coverageEnd}
+        periods={periods}
+        onRangeSelected={(start, end) => onCommitRange(start, end)}
+      />
+
+      <p className="help-text">
+        {mode === 'US_PERIODS'
+          ? 'Intervals added here represent days spent in the U.S. from one year before through one year after the selected tax year. Use the calendar or edit the fields below to fine-tune each stay.'
+          : 'Add your time abroad across the eligible window (one year before through one year after the selected tax year). We will invert these intervals into U.S. presence automatically.'}
+      </p>
+
       {periods.map((row, index) => {
         const rowError = errors[`period_${index}`];
         return (
@@ -32,6 +67,8 @@ export function PeriodsEditor({ mode, periods, errors, onAdd, onRemove, onChange
               <label>Start</label>
               <input
                 type="date"
+                min={coverageStart}
+                max={coverageEnd}
                 value={row.start_date}
                 onChange={event => onChange(row.id, 'start_date', event.target.value)}
               />
@@ -40,6 +77,8 @@ export function PeriodsEditor({ mode, periods, errors, onAdd, onRemove, onChange
               <label>End</label>
               <input
                 type="date"
+                min={coverageStart}
+                max={coverageEnd}
                 value={row.end_date}
                 onChange={event => onChange(row.id, 'end_date', event.target.value)}
               />

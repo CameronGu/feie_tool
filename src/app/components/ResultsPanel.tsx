@@ -18,6 +18,8 @@ export function ResultsPanel({ result, planning }: ResultsPanelProps) {
 
   const status = result.qualified ? 'Qualified' : 'Not qualified yet';
   const tone = result.qualified ? 'status ok' : 'status warning';
+  const primaryWindow = result.best_windows?.[0];
+  const additionalCount = result.best_windows ? result.best_windows.length - 1 : 0;
 
   return (
     <aside className="panel results">
@@ -28,10 +30,30 @@ export function ResultsPanel({ result, planning }: ResultsPanelProps) {
         <strong>{result.total_tax_year_days ?? '—'}</strong>
       </div>
 
+      {primaryWindow && (
+        <div className="optimized-copy">
+          <h3>Optimized FEIE window</h3>
+          <p>
+            We evaluated every possible 12-month combination to lock in the window that shields the most of your {primaryWindow.overlap_days}{' '}
+            tax-year days. Stay abroad from <strong>{primaryWindow.window_start}</strong> through <strong>{primaryWindow.window_end}</strong> to
+            capture the maximum FEIE benefit.
+          </p>
+          {additionalCount > 0 && (
+            <p>
+              We also found {additionalCount} other {additionalCount === 1 ? 'window' : 'windows'} with the same coverage—check the timeline for
+              alternate date ranges that still qualify.
+            </p>
+          )}
+        </div>
+      )}
+
       {result.best_windows && result.best_windows.length > 0 ? (
         <Timeline windows={result.best_windows} />
       ) : (
-        <p>No qualifying windows identified yet. Adjust travel intervals or enable planning mode for guidance.</p>
+        <p>
+          We analyzed every 12-month window in this range, but none of them reached 330 foreign days. Adjust your travel plan or enable planning mode
+          to see how many additional days you need.
+        </p>
       )}
 
       {result.planning_info && (

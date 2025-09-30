@@ -12,7 +12,8 @@ export function Timeline({ windows }: TimelineProps) {
 
   return (
     <div className="timeline">
-      <h3>Qualifying Windows</h3>
+      <h3>Optimized windows</h3>
+      <p className="help-text">Each interval below ties for the strongest tax-year coverage that still delivers at least 330 foreign days.</p>
       {windows.map(window => {
         const span = diffDaysInclusive(window.window_start, window.window_end);
         const foreignPercent = span > 0 ? Math.min(100, (window.foreign_days / span) * 100) : 0;

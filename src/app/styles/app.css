@@ -75,14 +75,16 @@ header h1 {
   color: #1f2937;
 }
 
-input[type='date'] {
+input[type='date'],
+select {
   padding: 0.5rem 0.75rem;
   border-radius: 8px;
   border: 1px solid #cbd5f5;
   font-size: 0.95rem;
 }
 
-input[type='date']:focus {
+input[type='date']:focus,
+select:focus {
   outline: none;
   border-color: #6366f1;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
@@ -229,6 +231,236 @@ button:disabled {
 .planning ul {
   margin: 0.5rem 0 0;
   padding-left: 1.2rem;
+}
+
+.optimized-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(196, 181, 253, 0.4), rgba(129, 140, 248, 0.35));
+  color: #1f2937;
+}
+
+.optimized-copy h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.optimized-copy p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.optimized-copy strong {
+  color: #312e81;
+}
+
+.presence-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: rgba(224, 231, 255, 0.35);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.presence-card--foreign {
+  background: rgba(222, 255, 241, 0.35);
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.presence-calendar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+}
+
+.presence-month {
+  background: white;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.presence-month-title {
+  font-weight: 600;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.presence-weekday-row,
+.presence-week {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.15rem;
+}
+
+.presence-weekday-row span {
+  font-size: 0.7rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.presence-day {
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  font-size: 0.8rem;
+  color: #1f2937;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, color 0.2s ease;
+  padding: 0;
+}
+
+.presence-day:hover:not(.presence-day--disabled) {
+  background: rgba(99, 102, 241, 0.15);
+}
+
+.presence-day--muted {
+  color: #9ca3af;
+}
+
+.presence-day--disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.presence-card--us .presence-day--active {
+  background: rgba(59, 130, 246, 0.18);
+  color: #1d4ed8;
+}
+
+.presence-card--foreign .presence-day--active {
+  background: rgba(16, 185, 129, 0.22);
+  color: #047857;
+}
+
+.presence-card .presence-day--draft {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.presence-card--foreign .presence-day--draft {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.presence-card .presence-day--draft-start,
+.presence-card .presence-day--draft-end {
+  background: rgba(79, 70, 229, 0.85);
+  color: white;
+}
+
+.presence-card--foreign .presence-day--draft-start,
+.presence-card--foreign .presence-day--draft-end {
+  background: rgba(5, 150, 105, 0.85);
+}
+
+.presence-card .presence-day--draft-start {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.presence-card .presence-day--draft-end {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.range-planner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.range-year {
+  border-radius: 12px;
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  background: rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+  position: relative;
+}
+
+.presence-card--foreign .range-year {
+  border-color: rgba(16, 185, 129, 0.18);
+}
+
+.range-year-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.85rem;
+  background: rgba(99, 102, 241, 0.08);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 0.75rem;
+}
+
+.presence-card--foreign .range-year-header {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.range-year-title h4 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.range-year-title span {
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.range-year-icon {
+  font-size: 1rem;
+  transition: transform 0.25s ease;
+}
+
+.range-year-icon.expanded {
+  transform: rotate(180deg);
+}
+
+.range-year-content {
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  background: rgba(248, 250, 252, 0.85);
+  position: relative;
+}
+
+.presence-card--foreign .range-year-content {
+  background: rgba(236, 253, 245, 0.85);
+}
+
+.range-year-content.expanded {
+  max-height: 1200px;
+  padding: 0.75rem;
+}
+
+.range-year-content.collapsed {
+  max-height: 90px;
+  padding: 0.35rem 0.75rem;
+}
+
+.range-year-content.collapsed::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 24px;
+  background: linear-gradient(transparent, rgba(248, 250, 252, 0.95));
+  pointer-events: none;
+}
+
+.presence-card--foreign .range-year-content.collapsed::after {
+  background: linear-gradient(transparent, rgba(236, 253, 245, 0.95));
 }
 
 @media (max-width: 900px) {

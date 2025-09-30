@@ -1,6 +1,6 @@
 import { useCalculator } from './hooks/useCalculator';
 import { ModeToggle } from './components/ModeToggle';
-import { TaxYearFields } from './components/TaxYearFields';
+import { TaxYearSelector } from './components/TaxYearSelector';
 import { PeriodsEditor } from './components/PeriodsEditor';
 import { ResultsPanel } from './components/ResultsPanel';
 import './styles/app.css';
@@ -24,21 +24,28 @@ export function App() {
             onPlanningToggle={calculator.togglePlanningMode}
           />
 
-          <TaxYearFields
-            taxYearStart={calculator.state.taxYearStart}
-            taxYearEnd={calculator.state.taxYearEnd}
-            errors={calculator.errors}
-            onStartChange={calculator.setTaxYearStart}
-            onEndChange={calculator.setTaxYearEnd}
+          <TaxYearSelector
+            taxYear={calculator.state.taxYear}
+            taxYearOptions={calculator.taxYearOptions}
+            taxYearStart={calculator.taxYearStart}
+            taxYearEnd={calculator.taxYearEnd}
+            error={calculator.errors.tax_year}
+            onChange={calculator.setTaxYear}
           />
 
           <PeriodsEditor
             mode={calculator.state.mode}
+            taxYear={calculator.state.taxYear}
+            taxYearStart={calculator.taxYearStart}
+            taxYearEnd={calculator.taxYearEnd}
+            coverageStart={calculator.coverageStart}
+            coverageEnd={calculator.coverageEnd}
             periods={calculator.activePeriods}
             errors={calculator.errors}
             onAdd={calculator.addPeriod}
             onRemove={calculator.removePeriod}
             onChange={calculator.updatePeriod}
+            onCommitRange={(start, end) => calculator.commitInterval({ start_date: start, end_date: end })}
           />
 
           {calculator.errors.general && (
