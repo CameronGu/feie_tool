@@ -1,4 +1,4 @@
-export type DateISO = `${number}-${number}-${number}`;
+export type DateISO = string;
 
 export interface Interval {
   start_date: DateISO;

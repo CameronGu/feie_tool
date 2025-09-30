@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { calculateFeie } from '../../services/calculator';
-import type { CalculatorInput, CalculatorOutput, Interval } from '../../domain/types';
+import type { CalculatorInput, CalculatorOutput, Interval, DateISO } from '../../domain/types';
 import { isIsoDate, shiftYears } from '../../domain/dates';
 
 export type Mode = 'US_PERIODS' | 'FOREIGN_PERIODS';
@@ -89,7 +89,7 @@ function createRowFromInterval(interval: Interval): PeriodFormRow {
 function sanitizePeriods(rows: PeriodFormRow[]): Interval[] {
   return rows
     .filter(row => row.start_date && row.end_date && isIsoDate(row.start_date) && isIsoDate(row.end_date))
-    .map(row => ({ start_date: row.start_date, end_date: row.end_date }));
+    .map(row => ({ start_date: row.start_date as DateISO, end_date: row.end_date as DateISO }));
 }
 
 function validate(
