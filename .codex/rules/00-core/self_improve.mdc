@@ -1,0 +1,43 @@
+---
+description: Continuous improvement guidelines for Codex rules based on evolving workflows and code patterns
+globs: "**/*"
+alwaysApply: true
+---
+
+- **Improvement Signals**
+  - Repeated friction points while operating within the Codex CLI harness
+  - New coding patterns or technologies appearing across multiple files
+  - Recurring review feedback or defects that rules could prevent
+  - Changes to repository tooling, test strategy, or deployment processes
+  - Updates to Codex platform capabilities that affect workflow or communication
+
+- **Analysis Workflow**
+  - Compare recent tasks against existing rules to spot coverage gaps
+  - Capture authoritative examples from the codebase before drafting a new rule
+  - Check developer and system instructions to ensure alignment
+  - Validate that proposed rules complement, rather than duplicate, existing guidance
+  - Confirm tests or automation referenced by the rule are accessible in the repo
+
+- **When to Add Rules**
+  - A pattern appears in three or more files or within a critical path
+  - Preventable mistakes surface repeatedly in code reviews or QA
+  - New security, performance, or compliance requirements emerge
+  - Tooling or scripts gain mandatory usage steps that need reinforcement
+
+- **When to Revise Rules**
+  - Better examples or clearer wording become available
+  - Upstream instructions or repository conventions change
+  - Edge cases surface that the current rule does not address
+  - Related rules evolve and require cross-references or consolidation
+
+- **Quality Checklist**
+  - Keep directives specific, actionable, and scoped to observable behavior
+  - Use ASCII-friendly formatting and Codex-style file references (e.g., `tests/test_demo.py:15`)
+  - Provide real file paths instead of abstract placeholders
+  - Ensure rules remain DRY by referencing existing guidance when overlap exists
+
+- **Maintenance Practices**
+  - Review rules after major refactors, dependency upgrades, or process shifts
+  - Deprecate and remove outdated guidance once migrations complete
+  - Document rationale for significant rule changes in commit messages or PR notes
+  - Consult `30-workflow/codex_rules.mdc` for formatting expectations before adding or editing files

@@ -1,0 +1,40 @@
+---
+description: Solo developer Git workflow tuned for Codex-assisted tasks
+globs:
+alwaysApply: false
+---
+
+## Branch Strategy
+
+### main
+- Default branch for deployable code.
+- Commit directly when the change is small, well-tested, and low risk.
+- Tag semantic versions (`vMAJOR.MINOR.PATCH`) after validating the release workflow.
+
+### feature/*
+- Branch from `main` for work that spans multiple commits or sessions.
+- Rebase onto `main` before merging to keep history linear unless a merge commit conveys value.
+- Delete the branch after merge to avoid clutter.
+
+### hotfix/*
+- Branch from the relevant tag when shipping a production fix.
+- Merge back into `main`, bump the tag, and document any manual steps.
+
+## Commit Hygiene
+- Format: `type: concise summary` where type ∈ {feat, fix, docs, refactor, test, chore}.
+- Group logically-related changes together; avoid "mixed bag" commits.
+- Reference issue IDs or context when applicable to aid traceability.
+
+## Collaboration With Codex
+- Push intermediate work-in-progress branches when you need Codex to pick up context later.
+- Capture reproduction steps or test commands in commit messages or branch descriptions.
+- Keep the working tree clean before requesting Codex changes to reduce accidental diffs.
+
+## Pull Requests
+- Optional; open one when automation (CI, reviewers) provides clear value.
+- Include test evidence and a short change summary in the PR description.
+
+## Safeguards
+- Protect `main` only if automated tests or release gates are configured.
+- Run targeted tests (`pytest`, `npm test`, etc.) before merging; note skipped suites.
+- Avoid force-pushing shared branches unless all collaborators agree.
