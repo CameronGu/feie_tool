@@ -56,14 +56,12 @@ header h1 {
   border-bottom: none;
 }
 
-.actions-row,
 .manual-actions {
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
 }
 
-.actions-row button,
 .manual-actions button {
   width: fit-content;
 }

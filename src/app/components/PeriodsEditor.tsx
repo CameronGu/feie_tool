@@ -46,12 +46,6 @@ export function PeriodsEditor({
         </button>
       </div>
 
-      <div className="actions-row">
-        <button type="button" className="ghost" onClick={onClearAll}>
-          Clear all intervals
-        </button>
-      </div>
-
       <RangePlanner
         mode={mode}
         taxYear={taxYear}
@@ -68,6 +62,9 @@ export function PeriodsEditor({
       </p>
 
       <div className="manual-actions">
+        <button type="button" className="ghost" onClick={onClearAll}>
+          Clear all intervals
+        </button>
         <button type="button" className="secondary" onClick={onAdd}>
           + Add another interval
         </button>

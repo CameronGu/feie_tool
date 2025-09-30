@@ -267,9 +267,7 @@ export function useCalculator(): UseCalculatorResult {
         }
         return {
           ...prev,
-          mode,
-          usPeriods: prev.usPeriods.length > 0 ? prev.usPeriods : [createRow()],
-          foreignPeriods: prev.foreignPeriods.length > 0 ? prev.foreignPeriods : [createRow()]
+          mode
         };
       });
     },
