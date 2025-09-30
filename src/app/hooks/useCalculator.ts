@@ -139,16 +139,15 @@ function validate(
 export function useCalculator(): UseCalculatorResult {
   const [referenceDate] = useState(() => new Date());
   const taxYearOptions = useMemo(() => getTaxYearOptions(referenceDate), [referenceDate]);
-  const [state, setState] = useState<CalculatorState>(() => ({
-    taxYear: getDefaultTaxYear(referenceDate),
-    mode: 'FOREIGN_PERIODS',
-    planningMode: false,
-    usPeriods: [createRow()],
-    foreignPeriods: [createRow()]
-  }));
+  const [taxYear, setTaxYearState] = useState(() => getDefaultTaxYear(referenceDate));
+  const [modeState, setModeState] = useState<Mode>('FOREIGN_PERIODS');
+  const [planningMode, setPlanningMode] = useState(false);
+  const [usPeriods, setUsPeriods] = useState<PeriodFormRow[]>([createRow()]);
+  const [foreignPeriods, setForeignPeriods] = useState<PeriodFormRow[]>([createRow()]);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [result, setResult] = useState<CalculatorOutput | null>(null);
-  const taxYearBounds = useMemo(() => getTaxYearBounds(state.taxYear), [state.taxYear]);
+
+  const taxYearBounds = useMemo(() => getTaxYearBounds(taxYear), [taxYear]);
   const taxYearStart = taxYearBounds.start;
   const taxYearEnd = taxYearBounds.end;
   const coverageBounds = useMemo(() => {
@@ -160,55 +159,43 @@ export function useCalculator(): UseCalculatorResult {
   const coverageStart = coverageBounds.start;
   const coverageEnd = coverageBounds.end;
 
-  const activePeriods = useMemo(
-    () => (state.mode === 'US_PERIODS' ? state.usPeriods : state.foreignPeriods),
-    [state.mode, state.usPeriods, state.foreignPeriods]
-  );
+  const activePeriods = modeState === 'US_PERIODS' ? usPeriods : foreignPeriods;
 
   useEffect(() => {
-    const min = coverageStart;
-    const max = coverageEnd;
+    const clampRows = (rows: PeriodFormRow[]): PeriodFormRow[] => {
+      let changed = false;
+      const next = rows.map(row => {
+        let start = row.start_date;
+        let end = row.end_date;
 
-    setState(prev => {
-      const clampRows = (rows: PeriodFormRow[]) => {
-        let changed = false;
-        const next = rows.map(row => {
-          let start = row.start_date;
-          let end = row.end_date;
+        if (start && (start < coverageStart || start > coverageEnd)) {
+          start = '';
+          changed = true;
+        }
+        if (end && (end < coverageStart || end > coverageEnd)) {
+          end = '';
+          changed = true;
+        }
 
-          if (start && (start < min || start > max)) {
-            start = '';
-            changed = true;
-          }
-          if (end && (end < min || end > max)) {
-            end = '';
-            changed = true;
-          }
+        if (start !== row.start_date || end !== row.end_date) {
+          return { ...row, start_date: start, end_date: end };
+        }
+        return row;
+      });
 
-          if (start !== row.start_date || end !== row.end_date) {
-            return { ...row, start_date: start, end_date: end };
-          }
+      return changed ? next : rows;
+    };
 
-          return row;
-        });
-
-        return changed ? next : rows;
-      };
-
-      const nextUs = clampRows(prev.usPeriods);
-      const nextForeign = clampRows(prev.foreignPeriods);
-
-      if (nextUs === prev.usPeriods && nextForeign === prev.foreignPeriods) {
-        return prev;
-      }
-
-      return {
-        ...prev,
-        usPeriods: nextUs,
-        foreignPeriods: nextForeign
-      };
+    setUsPeriods(prev => {
+      const next = clampRows(prev);
+      return next === prev ? prev : next;
     });
-  }, [taxYearStart, taxYearEnd, coverageStart, coverageEnd]);
+
+    setForeignPeriods(prev => {
+      const next = clampRows(prev);
+      return next === prev ? prev : next;
+    });
+  }, [coverageStart, coverageEnd]);
 
   useEffect(() => {
     const validationErrors = validate(taxYearStart, taxYearEnd, coverageStart, coverageEnd, activePeriods);
@@ -223,11 +210,11 @@ export function useCalculator(): UseCalculatorResult {
     const calculatorInput: CalculatorInput = {
       tax_year_start: taxYearStart,
       tax_year_end: taxYearEnd,
-      mode: state.mode,
-      planning_mode: state.planningMode
+      mode: modeState,
+      planning_mode: planningMode
     };
 
-    if (state.mode === 'US_PERIODS') {
+    if (modeState === 'US_PERIODS') {
       calculatorInput.us_periods = sanitized;
     } else {
       calculatorInput.foreign_periods = sanitized;
@@ -248,7 +235,38 @@ export function useCalculator(): UseCalculatorResult {
 
     setErrors({});
     setResult(output);
-  }, [state, activePeriods, taxYearStart, taxYearEnd, coverageStart, coverageEnd]);
+  }, [modeState, planningMode, usPeriods, foreignPeriods, taxYearStart, taxYearEnd, coverageStart, coverageEnd]);
+
+  const state: CalculatorState = useMemo(
+    () => ({
+      taxYear,
+      mode: modeState,
+      planningMode,
+      usPeriods,
+      foreignPeriods
+    }),
+    [taxYear, modeState, planningMode, usPeriods, foreignPeriods]
+  );
+
+  const updateModeRows = (targetMode: Mode, updater: (rows: PeriodFormRow[]) => PeriodFormRow[]) => {
+    if (targetMode === 'US_PERIODS') {
+      setUsPeriods(prev => {
+        const next = updater(prev);
+        if (next === prev) {
+          return prev;
+        }
+        return next.length === 0 ? [createRow()] : next;
+      });
+    } else {
+      setForeignPeriods(prev => {
+        const next = updater(prev);
+        if (next === prev) {
+          return prev;
+        }
+        return next.length === 0 ? [createRow()] : next;
+      });
+    }
+  };
 
   return {
     state,
@@ -258,75 +276,50 @@ export function useCalculator(): UseCalculatorResult {
     coverageEnd,
     taxYearOptions,
     setTaxYear(value: number) {
-      setState(prev => ({ ...prev, taxYear: value }));
+      setTaxYearState(value);
     },
     setMode(mode: Mode) {
-      setState(prev => {
-        if (prev.mode === mode) {
-          return prev;
-        }
-        return {
-          ...prev,
-          mode
-        };
-      });
+      setModeState(prev => (prev === mode ? prev : mode));
     },
     togglePlanningMode() {
-      setState(prev => ({ ...prev, planningMode: !prev.planningMode }));
+      setPlanningMode(prev => !prev);
     },
     addPeriod() {
-      setState(prev => {
-        const key = prev.mode === 'US_PERIODS' ? 'usPeriods' : 'foreignPeriods';
-        return {
-          ...prev,
-          [key]: [...prev[key], createRow()]
-        };
-      });
+      updateModeRows(modeState, rows => [...rows, createRow()]);
     },
     removePeriod(id: string) {
-      setState(prev => {
-        const key = prev.mode === 'US_PERIODS' ? 'usPeriods' : 'foreignPeriods';
-        return {
-          ...prev,
-          [key]: prev[key].length > 1 ? prev[key].filter(row => row.id !== id) : prev[key]
-        };
+      updateModeRows(modeState, rows => {
+        if (rows.length <= 1) {
+          return rows;
+        }
+        const next = rows.filter(row => row.id !== id);
+        return next.length === 0 ? [createRow()] : next;
       });
     },
     updatePeriod(id: string, field: 'start_date' | 'end_date', value: string) {
-      setState(prev => {
-        const key = prev.mode === 'US_PERIODS' ? 'usPeriods' : 'foreignPeriods';
-        const updated = prev[key].map(row => (row.id === id ? { ...row, [field]: value } : row));
-        return {
-          ...prev,
-          [key]: updated
-        };
-      });
+      updateModeRows(modeState, rows =>
+        rows.map(row => (row.id === id ? { ...row, [field]: value } : row))
+      );
     },
     commitInterval(interval: Interval) {
-      setState(prev => {
-        const key = prev.mode === 'US_PERIODS' ? 'usPeriods' : 'foreignPeriods';
-        if (interval.start_date < coverageStart || interval.end_date > coverageEnd) {
-          return prev;
-        }
-        const rows = prev[key];
+      updateModeRows(modeState, rows => {
         const blankIndex = rows.findIndex(row => !row.start_date && !row.end_date);
-        let nextRows: PeriodFormRow[];
+        let next: PeriodFormRow[];
 
         if (blankIndex !== -1) {
-          nextRows = rows.map((row, index) =>
+          next = rows.map((row, index) =>
             index === blankIndex ? { ...row, start_date: interval.start_date, end_date: interval.end_date } : row
           );
         } else {
-          nextRows = [...rows, createRowFromInterval(interval)];
+          next = [...rows, createRowFromInterval(interval)];
         }
 
-        const hasBlank = nextRows.some(row => !row.start_date && !row.end_date);
-        if (!hasBlank) {
-          nextRows = [...nextRows, createRow()];
+        if (!next.some(row => !row.start_date && !row.end_date)) {
+          next = [...next, createRow()];
         }
 
         let blankSeen = false;
-        nextRows = nextRows.filter(row => {
+        next = next.filter(row => {
           if (!row.start_date && !row.end_date) {
             if (blankSeen) {
               return false;
@@ -336,21 +329,11 @@ export function useCalculator(): UseCalculatorResult {
           return true;
         });
 
-        return {
-          ...prev,
-          [key]: nextRows
-        };
+        return next;
       });
     },
     clearPeriods() {
-      setState(prev => {
-        const key = prev.mode === 'US_PERIODS' ? 'usPeriods' : 'foreignPeriods';
-        const next = [createRow()];
-        return {
-          ...prev,
-          [key]: next
-        };
-      });
+      updateModeRows(modeState, () => [createRow()]);
     },
     result,
     errors,

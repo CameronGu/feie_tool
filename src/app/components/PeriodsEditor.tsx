@@ -41,9 +41,6 @@ export function PeriodsEditor({
     <div className="card">
       <div className="sheet-header">
         <h2>{LABELS[mode]}</h2>
-        <button type="button" onClick={onAdd} className="secondary">
-          + Add interval
-        </button>
       </div>
 
       <RangePlanner
