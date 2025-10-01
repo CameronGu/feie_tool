@@ -483,3 +483,50 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+.mode-switch-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.mode-switch-dialog {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 1.75rem;
+  max-width: 420px;
+  box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mode-switch-dialog p {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
+.mode-switch-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mode-switch-actions button {
+  width: 100%;
+}
+
+@media (min-width: 600px) {
+  .mode-switch-actions {
+    flex-direction: row;
+  }
+
+  .mode-switch-actions button {
+    width: auto;
+  }
+}

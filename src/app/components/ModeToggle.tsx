@@ -1,8 +1,9 @@
+import { type ChangeEvent } from 'react';
 import type { Mode } from '../hooks/useCalculator';
 
 interface ModeToggleProps {
   mode: Mode;
-  onModeChange(mode: Mode): void;
+  onModeChange(mode: Mode, event: ChangeEvent<HTMLInputElement>): void;
 }
 
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
@@ -16,7 +17,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
             name="mode"
             value="FOREIGN_PERIODS"
             checked={mode === 'FOREIGN_PERIODS'}
-            onChange={() => onModeChange('FOREIGN_PERIODS')}
+            onChange={event => onModeChange('FOREIGN_PERIODS', event)}
           />
           Foreign travel periods
         </label>
@@ -26,7 +27,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
             name="mode"
             value="US_PERIODS"
             checked={mode === 'US_PERIODS'}
-            onChange={() => onModeChange('US_PERIODS')}
+            onChange={event => onModeChange('US_PERIODS', event)}
           />
           US travel periods
         </label>

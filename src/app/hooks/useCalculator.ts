@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { calculateFeie } from '../../services/calculator';
 import type { CalculatorInput, CalculatorOutput, Interval, DateISO } from '../../domain/types';
 import { isIsoDate, shiftYears } from '../../domain/dates';
+import { invertPeriods } from '../../domain/intervals';
 
 export type Mode = 'US_PERIODS' | 'FOREIGN_PERIODS';
 
@@ -25,13 +26,13 @@ export interface ValidationErrors {
 
 export interface UseCalculatorResult {
   state: CalculatorState;
-  taxYearStart: string;
-  taxYearEnd: string;
-  coverageStart: string;
-  coverageEnd: string;
+  taxYearStart: DateISO;
+  taxYearEnd: DateISO;
+  coverageStart: DateISO;
+  coverageEnd: DateISO;
   taxYearOptions: number[];
   setTaxYear(value: number): void;
-  setMode(mode: Mode): void;
+  setMode(mode: Mode, options?: { strategy?: 'convert' | 'literal' }): void;
   togglePlanningMode(): void;
   addPeriod(): void;
   removePeriod(id: string): void;
@@ -45,8 +46,8 @@ export interface UseCalculatorResult {
 
 function getTaxYearBounds(year: number) {
   return {
-    start: `${year}-01-01`,
-    end: `${year}-12-31`
+    start: `${year}-01-01` as DateISO,
+    end: `${year}-12-31` as DateISO
   } as const;
 }
 
@@ -84,6 +85,26 @@ function createRowFromInterval(interval: Interval): PeriodFormRow {
     start_date: interval.start_date,
     end_date: interval.end_date
   };
+}
+
+function ensureActiveRows(rows: PeriodFormRow[]): PeriodFormRow[] {
+  if (rows.length === 0) {
+    return [createRow()];
+  }
+  const hasBlank = rows.some(row => !row.start_date && !row.end_date);
+  if (!hasBlank) {
+    return [...rows, createRow()];
+  }
+  return rows;
+}
+
+function rowsFromIntervals(intervals: Interval[]): PeriodFormRow[] {
+  if (intervals.length === 0) {
+    return [createRow()];
+  }
+  const rows = intervals.map(createRowFromInterval);
+  rows.push(createRow());
+  return rows;
 }
 
 function sanitizePeriods(rows: PeriodFormRow[]): Interval[] {
@@ -144,6 +165,7 @@ export function useCalculator(): UseCalculatorResult {
   const [planningMode, setPlanningMode] = useState(false);
   const [usPeriods, setUsPeriods] = useState<PeriodFormRow[]>([createRow()]);
   const [foreignPeriods, setForeignPeriods] = useState<PeriodFormRow[]>([createRow()]);
+  const [lastEditedMode, setLastEditedMode] = useState<Mode>('FOREIGN_PERIODS');
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [result, setResult] = useState<CalculatorOutput | null>(null);
 
@@ -160,6 +182,36 @@ export function useCalculator(): UseCalculatorResult {
   const coverageEnd = coverageBounds.end;
 
   const activePeriods = modeState === 'US_PERIODS' ? usPeriods : foreignPeriods;
+
+  const syncRows = (
+    sourceMode: Mode,
+    computeNext: (rows: PeriodFormRow[]) => PeriodFormRow[],
+    options?: { preserveLastEditedMode?: boolean }
+  ) => {
+    if (sourceMode === 'US_PERIODS') {
+      setUsPeriods(prev => {
+        const next = ensureActiveRows(computeNext(prev));
+        const sanitized = sanitizePeriods(next);
+        const derivedForeignIntervals = sanitized.length > 0 ? invertPeriods(sanitized, coverageStart, coverageEnd) : [];
+        setForeignPeriods(rowsFromIntervals(derivedForeignIntervals));
+        if (!options?.preserveLastEditedMode) {
+          setLastEditedMode('US_PERIODS');
+        }
+        return next;
+      });
+    } else {
+      setForeignPeriods(prev => {
+        const next = ensureActiveRows(computeNext(prev));
+        const sanitized = sanitizePeriods(next);
+        const derivedUsIntervals = sanitized.length > 0 ? invertPeriods(sanitized, coverageStart, coverageEnd) : [];
+        setUsPeriods(rowsFromIntervals(derivedUsIntervals));
+        if (!options?.preserveLastEditedMode) {
+          setLastEditedMode('FOREIGN_PERIODS');
+        }
+        return next;
+      });
+    }
+  };
 
   useEffect(() => {
     const clampRows = (rows: PeriodFormRow[]): PeriodFormRow[] => {
@@ -186,15 +238,9 @@ export function useCalculator(): UseCalculatorResult {
       return changed ? next : rows;
     };
 
-    setUsPeriods(prev => {
-      const next = clampRows(prev);
-      return next === prev ? prev : next;
-    });
-
-    setForeignPeriods(prev => {
-      const next = clampRows(prev);
-      return next === prev ? prev : next;
-    });
+    const canonicalRows = lastEditedMode === 'US_PERIODS' ? usPeriods : foreignPeriods;
+    const clamped = clampRows(canonicalRows);
+    syncRows(lastEditedMode, () => clamped, { preserveLastEditedMode: true });
   }, [coverageStart, coverageEnd]);
 
   useEffect(() => {
@@ -249,23 +295,7 @@ export function useCalculator(): UseCalculatorResult {
   );
 
   const updateModeRows = (targetMode: Mode, updater: (rows: PeriodFormRow[]) => PeriodFormRow[]) => {
-    if (targetMode === 'US_PERIODS') {
-      setUsPeriods(prev => {
-        const next = updater(prev);
-        if (next === prev) {
-          return prev;
-        }
-        return next.length === 0 ? [createRow()] : next;
-      });
-    } else {
-      setForeignPeriods(prev => {
-        const next = updater(prev);
-        if (next === prev) {
-          return prev;
-        }
-        return next.length === 0 ? [createRow()] : next;
-      });
-    }
+    syncRows(targetMode, updater);
   };
 
   return {
@@ -278,8 +308,38 @@ export function useCalculator(): UseCalculatorResult {
     setTaxYear(value: number) {
       setTaxYearState(value);
     },
-    setMode(mode: Mode) {
-      setModeState(prev => (prev === mode ? prev : mode));
+    setMode(mode: Mode, options?: { strategy?: 'convert' | 'literal' }) {
+      const strategy = options?.strategy ?? 'convert';
+      setModeState(prev => {
+        if (prev === mode) {
+          return prev;
+        }
+
+        if (strategy === 'literal') {
+          const sourceRows = ensureActiveRows(prev === 'US_PERIODS' ? usPeriods : foreignPeriods);
+          const literalRows = ensureActiveRows(
+            sourceRows.map(row => ({
+              ...createRow(),
+              start_date: row.start_date,
+              end_date: row.end_date
+            }))
+          );
+
+          if (mode === 'US_PERIODS') {
+            setUsPeriods(literalRows);
+            setForeignPeriods([createRow()]);
+            setLastEditedMode('US_PERIODS');
+          } else {
+            setForeignPeriods(literalRows);
+            setUsPeriods([createRow()]);
+            setLastEditedMode('FOREIGN_PERIODS');
+          }
+        } else {
+          syncRows(prev, rows => [...rows], { preserveLastEditedMode: true });
+        }
+
+        return mode;
+      });
     },
     togglePlanningMode() {
       setPlanningMode(prev => !prev);

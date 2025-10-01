@@ -1,19 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { addDays, compareDate } from '../../domain/dates';
-import type { Interval } from '../../domain/types';
+import { addDays, compareDate, isIsoDate } from '../../domain/dates';
+import type { DateISO, Interval } from '../../domain/types';
 import type { Mode, PeriodFormRow } from '../hooks/useCalculator';
 
 interface RangePlannerProps {
   mode: Mode;
   taxYear: number;
-  coverageStart: string;
-  coverageEnd: string;
+  coverageStart: DateISO;
+  coverageEnd: DateISO;
   periods: PeriodFormRow[];
-  onRangeSelected(start: string, end: string): void;
+  onRangeSelected(start: DateISO, end: DateISO): void;
 }
 
 interface DayCell {
-  date: string;
+  date: DateISO;
   label: number;
   inMonth: boolean;
   inRange: boolean;
@@ -36,17 +36,17 @@ const monthFormatter = new Intl.DateTimeFormat('en-US', {
   timeZone: 'UTC'
 });
 
-function toISODate(year: number, monthIndex: number, day: number): string {
+function toISODate(year: number, monthIndex: number, day: number): DateISO {
   const month = `${monthIndex + 1}`.padStart(2, '0');
   const dd = `${day}`.padStart(2, '0');
-  return `${year}-${month}-${dd}`;
+  return `${year}-${month}-${dd}` as DateISO;
 }
 
 function lastDayOfMonth(year: number, monthIndex: number): number {
   return new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate();
 }
 
-function enumerateYears(start: string, end: string): number[] {
+function enumerateYears(start: DateISO, end: DateISO): number[] {
   const startYear = Number(start.slice(0, 4));
   const endYear = Number(end.slice(0, 4));
   const years: number[] = [];
@@ -59,8 +59,8 @@ function enumerateYears(start: string, end: string): number[] {
 function monthIntersectsCoverage(
   year: number,
   monthIndex: number,
-  coverageStart: string,
-  coverageEnd: string
+  coverageStart: DateISO,
+  coverageEnd: DateISO
 ): boolean {
   const monthStart = toISODate(year, monthIndex, 1);
   const monthEnd = toISODate(year, monthIndex, lastDayOfMonth(year, monthIndex));
@@ -70,19 +70,19 @@ function monthIntersectsCoverage(
 function buildDayCells(
   year: number,
   monthIndex: number,
-  coverageStart: string,
-  coverageEnd: string,
+  coverageStart: DateISO,
+  coverageEnd: DateISO,
   intervals: Interval[],
-  draftStart: string | null,
-  draftHover: string | null
+  draftStart: DateISO | null,
+  draftHover: DateISO | null
 ) {
   const monthStart = toISODate(year, monthIndex, 1);
   const firstDay = new Date(Date.UTC(year, monthIndex, 1));
   const offset = firstDay.getUTCDay();
-  let cursor = addDays(monthStart, -offset);
+  let cursor: DateISO = addDays(monthStart, -offset);
   const weeks: DayCell[][] = [];
 
-  const draftEndCandidate = (() => {
+  const draftEndCandidate: DateISO | null = (() => {
     if (!draftStart) return null;
     if (!draftHover) return draftStart;
     return compareDate(draftHover, draftStart) >= 0 ? draftHover : draftStart;
@@ -137,11 +137,11 @@ function buildDayCells(
 
 function buildMonthsForYear(
   year: number,
-  coverageStart: string,
-  coverageEnd: string,
+  coverageStart: DateISO,
+  coverageEnd: DateISO,
   intervals: Interval[],
-  draftStart: string | null,
-  draftHover: string | null
+  draftStart: DateISO | null,
+  draftHover: DateISO | null
 ): MonthData[] {
   const months: MonthData[] = [];
   for (let monthIndex = 0; monthIndex < 12; monthIndex += 1) {
@@ -168,14 +168,14 @@ export function RangePlanner({
 }: RangePlannerProps) {
   const intervals = useMemo(() => {
     return periods
-      .filter(row => row.start_date && row.end_date)
-      .map(row => ({ start_date: row.start_date, end_date: row.end_date }));
+      .filter(row => isIsoDate(row.start_date) && isIsoDate(row.end_date))
+      .map(row => ({ start_date: row.start_date as DateISO, end_date: row.end_date as DateISO }));
   }, [periods]);
 
   const years = useMemo(() => enumerateYears(coverageStart, coverageEnd), [coverageStart, coverageEnd]);
 
-  const [draftStart, setDraftStart] = useState<string | null>(null);
-  const [draftHover, setDraftHover] = useState<string | null>(null);
+  const [draftStart, setDraftStart] = useState<DateISO | null>(null);
+  const [draftHover, setDraftHover] = useState<DateISO | null>(null);
   const [expandedYears, setExpandedYears] = useState<Set<number>>(() => new Set([taxYear]));
 
   useEffect(() => {
@@ -301,6 +301,7 @@ export function RangePlanner({
                               ]
                                 .filter(Boolean)
                                 .join(' ')}
+                              data-date={cell.date}
                               onClick={() => handleDayClick(cell)}
                               onMouseEnter={() => handleMouseEnter(cell)}
                               disabled={cell.disabled}
