@@ -1,19 +1,20 @@
+import type { DateISO } from '../../domain/types';
 import type { Mode, PeriodFormRow, ValidationErrors } from '../hooks/useCalculator';
 import { RangePlanner } from './RangePlanner';
 
 interface PeriodsEditorProps {
   mode: Mode;
   taxYear: number;
-  taxYearStart: string;
-  taxYearEnd: string;
-  coverageStart: string;
-  coverageEnd: string;
+  taxYearStart: DateISO;
+  taxYearEnd: DateISO;
+  coverageStart: DateISO;
+  coverageEnd: DateISO;
   periods: PeriodFormRow[];
   errors: ValidationErrors;
   onAdd(): void;
   onRemove(id: string): void;
   onChange(id: string, field: 'start_date' | 'end_date', value: string): void;
-  onCommitRange(start: string, end: string): void;
+  onCommitRange(start: DateISO, end: DateISO): void;
   onClearAll(): void;
 }
 

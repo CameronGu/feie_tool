@@ -1,8 +1,10 @@
+import type { DateISO } from '../../domain/types';
+
 interface TaxYearSelectorProps {
   taxYear: number;
   taxYearOptions: number[];
-  taxYearStart: string;
-  taxYearEnd: string;
+  taxYearStart: DateISO;
+  taxYearEnd: DateISO;
   error?: string;
   onChange(year: number): void;
 }
