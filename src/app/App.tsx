@@ -4,6 +4,8 @@ import { ModeToggle } from './components/ModeToggle';
 import { TaxYearSelector } from './components/TaxYearSelector';
 import { PeriodsEditor } from './components/PeriodsEditor';
 import { ResultsPanel } from './components/ResultsPanel';
+import { SampleDataMenu } from './components/SampleDataMenu';
+import { SAMPLE_DATASETS } from './sample-data/datasets';
 import './styles/app.css';
 
 export function App() {
@@ -59,6 +61,13 @@ export function App() {
 
       <section className="input-grid">
         <div className="panel">
+          {import.meta.env.DEV && (
+            <SampleDataMenu
+              datasets={SAMPLE_DATASETS}
+              onLoad={dataset => calculator.loadDataset(dataset)}
+            />
+          )}
+
           <ModeToggle
             mode={calculator.state.mode}
             onModeChange={handleModeChange}
@@ -94,7 +103,13 @@ export function App() {
           )}
         </div>
 
-        <ResultsPanel result={calculator.result} planning={calculator.state.planningMode} />
+        <ResultsPanel
+          result={calculator.result}
+          planning={calculator.state.planningMode}
+          taxYear={calculator.state.taxYear}
+          usPeriods={calculator.state.usPeriods}
+          foreignPeriods={calculator.state.foreignPeriods}
+        />
       </section>
 
       {pendingMode && (

@@ -3,6 +3,7 @@ import { calculateFeie } from '../../services/calculator';
 import type { CalculatorInput, CalculatorOutput, Interval, DateISO } from '../../domain/types';
 import { isIsoDate, shiftYears } from '../../domain/dates';
 import { invertPeriods } from '../../domain/intervals';
+import { sanitizePeriodRows } from '../utils/periods';
 
 export type Mode = 'US_PERIODS' | 'FOREIGN_PERIODS';
 
@@ -10,6 +11,19 @@ export interface PeriodFormRow {
   id: string;
   start_date: string;
   end_date: string;
+}
+
+interface CoverageRange {
+  start: DateISO;
+  end: DateISO;
+}
+
+export interface SampleDatasetPayload {
+  mode: Mode;
+  taxYear: number;
+  planningMode?: boolean;
+  usPeriods?: Interval[];
+  foreignPeriods?: Interval[];
 }
 
 export interface CalculatorState {
@@ -39,6 +53,7 @@ export interface UseCalculatorResult {
   updatePeriod(id: string, field: 'start_date' | 'end_date', value: string): void;
   commitInterval(interval: Interval): void;
   clearPeriods(): void;
+  loadDataset(dataset: SampleDatasetPayload): void;
   result: CalculatorOutput | null;
   errors: ValidationErrors;
   activePeriods: PeriodFormRow[];
@@ -107,12 +122,6 @@ function rowsFromIntervals(intervals: Interval[]): PeriodFormRow[] {
   return rows;
 }
 
-function sanitizePeriods(rows: PeriodFormRow[]): Interval[] {
-  return rows
-    .filter(row => row.start_date && row.end_date && isIsoDate(row.start_date) && isIsoDate(row.end_date))
-    .map(row => ({ start_date: row.start_date as DateISO, end_date: row.end_date as DateISO }));
-}
-
 function validate(
   taxYearStart: string,
   taxYearEnd: string,
@@ -166,18 +175,22 @@ export function useCalculator(): UseCalculatorResult {
   const [usPeriods, setUsPeriods] = useState<PeriodFormRow[]>([createRow()]);
   const [foreignPeriods, setForeignPeriods] = useState<PeriodFormRow[]>([createRow()]);
   const [lastEditedMode, setLastEditedMode] = useState<Mode>('FOREIGN_PERIODS');
+  const [coverageOverride, setCoverageOverride] = useState<CoverageRange | null>(null);
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [result, setResult] = useState<CalculatorOutput | null>(null);
 
   const taxYearBounds = useMemo(() => getTaxYearBounds(taxYear), [taxYear]);
   const taxYearStart = taxYearBounds.start;
   const taxYearEnd = taxYearBounds.end;
-  const coverageBounds = useMemo(() => {
+  const coverageBounds = useMemo<CoverageRange>(() => {
+    if (coverageOverride) {
+      return coverageOverride;
+    }
     return {
       start: shiftYears(taxYearStart, -1),
       end: shiftYears(taxYearEnd, 1)
-    } as const;
-  }, [taxYearStart, taxYearEnd]);
+    };
+  }, [taxYearStart, taxYearEnd, coverageOverride]);
   const coverageStart = coverageBounds.start;
   const coverageEnd = coverageBounds.end;
 
@@ -191,7 +204,7 @@ export function useCalculator(): UseCalculatorResult {
     if (sourceMode === 'US_PERIODS') {
       setUsPeriods(prev => {
         const next = ensureActiveRows(computeNext(prev));
-        const sanitized = sanitizePeriods(next);
+        const sanitized = sanitizePeriodRows(next);
         const derivedForeignIntervals = sanitized.length > 0 ? invertPeriods(sanitized, coverageStart, coverageEnd) : [];
         setForeignPeriods(rowsFromIntervals(derivedForeignIntervals));
         if (!options?.preserveLastEditedMode) {
@@ -202,7 +215,7 @@ export function useCalculator(): UseCalculatorResult {
     } else {
       setForeignPeriods(prev => {
         const next = ensureActiveRows(computeNext(prev));
-        const sanitized = sanitizePeriods(next);
+        const sanitized = sanitizePeriodRows(next);
         const derivedUsIntervals = sanitized.length > 0 ? invertPeriods(sanitized, coverageStart, coverageEnd) : [];
         setUsPeriods(rowsFromIntervals(derivedUsIntervals));
         if (!options?.preserveLastEditedMode) {
@@ -245,7 +258,7 @@ export function useCalculator(): UseCalculatorResult {
 
   useEffect(() => {
     const validationErrors = validate(taxYearStart, taxYearEnd, coverageStart, coverageEnd, activePeriods);
-    const sanitized = sanitizePeriods(activePeriods);
+    const sanitized = sanitizePeriodRows(activePeriods);
 
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -306,6 +319,7 @@ export function useCalculator(): UseCalculatorResult {
     coverageEnd,
     taxYearOptions,
     setTaxYear(value: number) {
+      setCoverageOverride(null);
       setTaxYearState(value);
     },
     setMode(mode: Mode, options?: { strategy?: 'convert' | 'literal' }) {
@@ -394,6 +408,63 @@ export function useCalculator(): UseCalculatorResult {
     },
     clearPeriods() {
       updateModeRows(modeState, () => [createRow()]);
+    },
+    loadDataset(dataset: SampleDatasetPayload) {
+      const { start: datasetTaxYearStart, end: datasetTaxYearEnd } = getTaxYearBounds(dataset.taxYear);
+      const defaultCoverageStart = shiftYears(datasetTaxYearStart, -1);
+      const defaultCoverageEnd = shiftYears(datasetTaxYearEnd, 1);
+
+      const allIntervals: Interval[] = [];
+      if (dataset.usPeriods) {
+        allIntervals.push(...dataset.usPeriods);
+      }
+      if (dataset.foreignPeriods) {
+        allIntervals.push(...dataset.foreignPeriods);
+      }
+
+      let nextCoverageStart = defaultCoverageStart;
+      let nextCoverageEnd = defaultCoverageEnd;
+
+      allIntervals.forEach(interval => {
+        if (interval.start_date < nextCoverageStart) {
+          nextCoverageStart = interval.start_date;
+        }
+        if (interval.end_date > nextCoverageEnd) {
+          nextCoverageEnd = interval.end_date;
+        }
+      });
+
+      if (nextCoverageStart !== defaultCoverageStart || nextCoverageEnd !== defaultCoverageEnd) {
+        setCoverageOverride({ start: nextCoverageStart, end: nextCoverageEnd });
+      } else {
+        setCoverageOverride(null);
+      }
+
+      setTaxYearState(dataset.taxYear);
+      setPlanningMode(Boolean(dataset.planningMode));
+      setModeState(dataset.mode);
+      setLastEditedMode(dataset.mode);
+
+      if (dataset.mode === 'US_PERIODS') {
+        const canonicalRows = rowsFromIntervals(dataset.usPeriods ?? []);
+        setUsPeriods(canonicalRows);
+        const sanitized = sanitizePeriodRows(canonicalRows);
+        const foreignIntervals = dataset.foreignPeriods ?? (sanitized.length > 0
+          ? invertPeriods(sanitized, nextCoverageStart, nextCoverageEnd)
+          : []);
+        setForeignPeriods(rowsFromIntervals(foreignIntervals));
+      } else {
+        const canonicalRows = rowsFromIntervals(dataset.foreignPeriods ?? []);
+        setForeignPeriods(canonicalRows);
+        const sanitized = sanitizePeriodRows(canonicalRows);
+        const usIntervals = dataset.usPeriods ?? (sanitized.length > 0
+          ? invertPeriods(sanitized, nextCoverageStart, nextCoverageEnd)
+          : []);
+        setUsPeriods(rowsFromIntervals(usIntervals));
+      }
+
+      setErrors({});
+      setResult(null);
     },
     result,
     errors,

@@ -1,6 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { StrictMode, type ReactNode } from 'react';
 import { describe, expect, it } from 'vitest';
+import { SAMPLE_DATASETS } from '../../sample-data/datasets';
 import { useCalculator } from '../useCalculator';
 
 const strictWrapper = ({ children }: { children: ReactNode }) => <StrictMode>{children}</StrictMode>;
@@ -160,5 +161,41 @@ describe('useCalculator', () => {
     expect(result.current.state.foreignPeriods[0].start_date).toBe('2023-08-01');
     expect(result.current.state.foreignPeriods[0].end_date).toBe('2023-08-10');
     expect(result.current.state.usPeriods.every(row => !row.start_date && !row.end_date)).toBe(true);
+  });
+
+  it('loads the long-term US visits dataset and extends coverage bounds', () => {
+    const { result } = renderHook(() => useCalculator(), { wrapper: strictWrapper });
+    const dataset = SAMPLE_DATASETS.find(item => item.id === 'us-presence-archive');
+
+    expect(dataset).toBeDefined();
+
+    act(() => {
+      result.current.loadDataset(dataset!);
+    });
+
+    expect(result.current.state.mode).toBe('US_PERIODS');
+    expect(result.current.state.taxYear).toBe(dataset!.taxYear);
+    expect(result.current.state.usPeriods[0].start_date).toBe(dataset!.usPeriods?.[0].start_date);
+    expect(result.current.coverageStart).toBe('2016-05-28');
+    expect(result.current.coverageEnd).toBe('2025-12-31');
+  });
+
+  it('loads the foreign deployments dataset and pre-populates foreign intervals', () => {
+    const { result } = renderHook(() => useCalculator(), { wrapper: strictWrapper });
+    const dataset = SAMPLE_DATASETS.find(item => item.id === 'foreign-deployments');
+
+    expect(dataset).toBeDefined();
+
+    act(() => {
+      result.current.loadDataset(dataset!);
+    });
+
+    expect(result.current.state.mode).toBe('FOREIGN_PERIODS');
+    expect(result.current.state.taxYear).toBe(dataset!.taxYear);
+    expect(snapshotPeriods(result.current.state.foreignPeriods)[0]).toEqual({
+      start: dataset!.foreignPeriods?.[0].start_date,
+      end: dataset!.foreignPeriods?.[0].end_date
+    });
+    expect(filledRows(result.current.state.usPeriods).length).toBeGreaterThan(0);
   });
 });
