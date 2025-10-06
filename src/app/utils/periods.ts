@@ -1,4 +1,4 @@
-import { isIsoDate } from '../../domain/dates';
+import { compareDate, isIsoDate } from '../../domain/dates';
 import type { DateISO, Interval } from '../../domain/types';
 
 export interface PeriodLike {
@@ -7,7 +7,7 @@ export interface PeriodLike {
 }
 
 export function sanitizePeriodRows<T extends PeriodLike>(rows: T[]): Interval[] {
-  return rows
+  const sanitized = rows
     .filter(row =>
       row.start_date.length > 0 &&
       row.end_date.length > 0 &&
@@ -18,4 +18,14 @@ export function sanitizePeriodRows<T extends PeriodLike>(rows: T[]): Interval[] 
       start_date: row.start_date as DateISO,
       end_date: row.end_date as DateISO
     }));
+
+  sanitized.sort((a, b) => {
+    const startComparison = compareDate(a.start_date, b.start_date);
+    if (startComparison !== 0) {
+      return startComparison;
+    }
+    return compareDate(a.end_date, b.end_date);
+  });
+
+  return sanitized;
 }
