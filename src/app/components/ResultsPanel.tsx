@@ -85,11 +85,11 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
         location: interval.location,
         start: displayStart,
         end: displayEnd,
-        duration: diffDaysInclusive(displayStart, displayEnd)
+        duration: Math.max(0, diffDaysInclusive(displayStart, displayEnd))
       });
 
       return acc;
-    }, []);
+    }, []).sort((a, b) => (a.start < b.start ? -1 : a.start > b.start ? 1 : compareDate(a.end, b.end)));
     const prorationFraction = Number(primaryWindow.pro_rata_fraction ?? 0).toFixed(3);
 
     return {
