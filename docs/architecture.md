@@ -15,8 +15,8 @@
    - `calculator.ts`: Public API aligning with `CalculatorInput` and `CalculatorOutput`, delegating to domain helpers, handling error mapping and planning mode toggles.
 3. **UI Layer (`src/app`)**
    - React components providing two-mode input forms (US vs Foreign periods) with inline validation feedback.
-   - Visualization components for qualified windows, timeline summaries, and planning information.
-   - State management via hooks (`useCalculator`, `useIntervals`) to orchestrate interactions and validations in real-time.
+   - Visualization and reporting components for optimized windows, interactive timelines, PDF export, clipboard sharing, and planning insights.
+   - State management consolidated in `useCalculator`, which synchronizes US/foreign intervals, validation state, and calculator results in real-time.
 
 ## Validation Strategy
 - Centralized validators in `intervals.ts` to ensure date formats, ordering, non-overlap, and bounds relative to `(tax_year_start - 1 year)` and `(tax_year_end + 1 year)`.
@@ -30,4 +30,3 @@
 ## Deployment Considerations
 - Vite + React + TypeScript stack producing a static bundle deployable to static hosts or Vercel.
 - All heavy computation resides in pure TypeScript modules, enabling reuse in SSR, client-side, or serverless contexts.
-

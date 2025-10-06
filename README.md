@@ -14,6 +14,8 @@ A modular Foreign Earned Income Exclusion (FEIE) planner that evaluates every po
 - Quick-add calendar planner for both modes, supporting multi-year travel selection with visual feedback.
 - Optimized-window storytelling – clearly communicates the best FEIE window(s) and why they matter.
 - Planning insights that reveal remaining qualifying days when the threshold is not yet met.
+- Results panel with timeline visualization, PDF export, and clipboard sharing for client-ready summaries.
+- Sample data presets covering qualifying, borderline, and disqualifying travel histories for instant demos.
 
 ## Getting started
 ```bash
@@ -23,12 +25,35 @@ npm run dev
 
 The development server runs on Vite. Start the UI, select the appropriate tax year, and enter either U.S. or foreign intervals using the calendar or manual fields. Validation feedback appears inline.
 
+While running locally you can load pre-built travel scenarios from the **Sample data presets** menu to explore qualifying, borderline, and disqualifying cases without manual entry.
+
 ### Testing
 ```bash
-npm test -- --run
+npm test
 ```
 
-Vitest covers domain logic (interval normalization, inversion, FEIE evaluation) and the calculator service. Extend the suite when adding new validation scenarios or traversal rules.
+Vitest covers domain logic (interval normalization, inversion, FEIE evaluation), the calculator service, and critical UI flows. Extend the suite when adding new validation scenarios or traversal rules.
+
+### Programmatic usage
+The FEIE calculator can be reused outside the React app by importing `calculateFeie` from the package entry point.
+
+```ts
+import { calculateFeie } from 'feie-tool';
+
+const result = calculateFeie({
+  tax_year_start: '2024-01-01',
+  tax_year_end: '2024-12-31',
+  mode: 'FOREIGN_PERIODS',
+  foreign_periods: [
+    { start_date: '2024-01-01', end_date: '2024-11-30' }
+  ],
+  planning_mode: true
+});
+
+if (result.error) {
+  // Inspect error.code / error.message for remediation guidance.
+}
+```
 
 ## Project structure
 ```
@@ -60,4 +85,3 @@ Specify licensing before publishing (e.g., MIT, Apache 2.0). Add the chosen lice
 ## Suggested GitHub metadata
 - **Description**: "Plan optimized FEIE 12-month windows with smart validation, calendar inputs, and planning insights."
 - **Topics**: `feie`, `tax-planning`, `react`, `typescript`, `financial-tools`, `vite`
-
