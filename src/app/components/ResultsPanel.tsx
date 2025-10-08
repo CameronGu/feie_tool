@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { APP_NAME, APP_URL, AUTHOR_CREDIT, DISCLAIMER, SOURCE_FOOTER } from '@/constants/meta';
+import { APP_VERSION } from '@/version';
 import { compareDate, diffDaysInclusive, maxDate, minDate } from '../../domain/dates';
 import type { CalculatorOutput, DateISO } from '../../domain/types';
 import type { PeriodFormRow } from '../hooks/useCalculator';
@@ -144,6 +146,14 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
     }
 
     lines.push('', `Notes: ${feieData.notes}`);
+    const timestamp = new Date().toISOString().split('T')[0];
+    lines.push(
+      '',
+      '—',
+      `${APP_NAME} — ${APP_URL}`,
+      `${AUTHOR_CREDIT} · ${DISCLAIMER}`,
+      `Generated ${timestamp} | Build ${APP_VERSION}`
+    );
 
     try {
       if (!navigator.clipboard) {
@@ -166,6 +176,8 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
     try {
       const { jsPDF } = await import('jspdf');
       const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+      const timestamp = new Date().toISOString().split('T')[0];
+      const footer = `${SOURCE_FOOTER} · Generated ${timestamp} | Build ${APP_VERSION}`;
 
       const pageWidth = doc.internal.pageSize.getWidth();
       const pageHeight = doc.internal.pageSize.getHeight();
@@ -332,19 +344,23 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
         cursorY = marginY;
       }
 
-      const generatedOn = new Date().toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
+      const pageCount = doc.getNumberOfPages();
+      doc.setPage(pageCount);
+      const lastPageWidth = doc.internal.pageSize.getWidth();
+      const lastPageHeight = doc.internal.pageSize.getHeight();
+
+      const footerLines = doc.splitTextToSize(footer, lastPageWidth - marginX * 2);
 
       doc.setDrawColor(229, 231, 235);
-      doc.line(marginX, pageHeight - marginY, pageWidth - marginX, pageHeight - marginY);
+      doc.line(marginX, lastPageHeight - marginY, lastPageWidth - marginX, lastPageHeight - marginY);
 
-      doc.setFont('helvetica', 'italic');
-      doc.setFontSize(10);
-      doc.setTextColor(107, 114, 128);
-      doc.text(`Generated on ${generatedOn}`, marginX, pageHeight - marginY + 16);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(136, 136, 136);
+      doc.text(footerLines, lastPageWidth / 2, lastPageHeight - marginY + 10, {
+        align: 'center',
+        maxWidth: lastPageWidth - marginX * 2
+      });
 
       doc.save(`feie-window-summary-${feieData.summary.taxYear}.pdf`);
     } catch (error) {

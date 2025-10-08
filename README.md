@@ -1,3 +1,5 @@
+**FEIE Window Optimizer** — a calculator that identifies the most tax-advantageous 12-month Foreign Earned Income Exclusion window.
+
 # FEIE Window Optimizer
 
 A modular Foreign Earned Income Exclusion (FEIE) planner that evaluates every possible 12-month window spanning a U.S. tax year and the required "+/- 1 year" coverage to surface the period(s) with the strongest tax benefit. The tool is designed for static deployment (Vite + React) with reusable TypeScript domain logic suitable for serverless or SSR integrations.
@@ -85,3 +87,7 @@ Specify licensing before publishing (e.g., MIT, Apache 2.0). Add the chosen lice
 ## Suggested GitHub metadata
 - **Description**: "Plan optimized FEIE 12-month windows with smart validation, calendar inputs, and planning insights."
 - **Topics**: `feie`, `tax-planning`, `react`, `typescript`, `financial-tools`, `vite`
+
+---
+Developed by Cameron Guthrie  
+https://cameronjguthrie.com/tools/feie-window-optimizer

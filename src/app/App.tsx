@@ -1,4 +1,5 @@
 import { useState, type ChangeEvent } from 'react';
+import { APP_NAME } from '@/constants/meta';
 import { useCalculator, type Mode } from './hooks/useCalculator';
 import { ModeToggle } from './components/ModeToggle';
 import { TaxYearSelector } from './components/TaxYearSelector';
@@ -55,7 +56,7 @@ export function App() {
   return (
     <div className="app-shell">
       <header>
-        <h1>FEIE Window Optimizer</h1>
+        <h1>{APP_NAME}</h1>
         <p>Plan and validate your Foreign Earned Income Exclusion 12-month windows.</p>
       </header>
 
