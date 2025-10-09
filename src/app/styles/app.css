@@ -28,6 +28,13 @@ header h1 {
   font-size: 2rem;
 }
 
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
 .input-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -124,6 +131,55 @@ button.ghost {
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.site-footer {
+  background: rgba(255, 255, 255, 0.82);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.footer-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: #312e81;
+  font-weight: 600;
+}
+
+.footer-separator {
+  color: rgba(79, 70, 229, 0.35);
+}
+
+.footer-link {
+  color: #4338ca;
+  text-decoration: none;
+}
+
+.footer-link:hover,
+.footer-link:focus {
+  text-decoration: underline;
+}
+
+.footer-build {
+  font-weight: 600;
+}
+
+.footer-disclaimer,
+.footer-app-name {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.85rem;
+  line-height: 1.4;
 }
 
 .toggle-row {
@@ -335,6 +391,20 @@ button:disabled {
 
   .feie-summary-actions button {
     width: 100%;
+  }
+
+  .site-footer {
+    padding: 1rem 1.25rem;
+  }
+
+  .footer-meta {
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.88rem;
+  }
+
+  .footer-separator {
+    display: none;
   }
 }
 

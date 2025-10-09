@@ -8,6 +8,7 @@ import { ResultsPanel } from './components/ResultsPanel';
 import { SampleDataMenu } from './components/SampleDataMenu';
 import { SAMPLE_DATASETS } from './sample-data/datasets';
 import './styles/app.css';
+import { AppFooter } from './components/AppFooter';
 
 export function App() {
   const calculator = useCalculator();
@@ -60,58 +61,62 @@ export function App() {
         <p>Plan and validate your Foreign Earned Income Exclusion 12-month windows.</p>
       </header>
 
-      <section className="input-grid">
-        <div className="panel">
-          {import.meta.env.DEV && (
-            <SampleDataMenu
-              datasets={SAMPLE_DATASETS}
-              onLoad={dataset => calculator.loadDataset(dataset)}
+      <main className="app-main">
+        <section className="input-grid">
+          <div className="panel">
+            {import.meta.env.DEV && (
+              <SampleDataMenu
+                datasets={SAMPLE_DATASETS}
+                onLoad={dataset => calculator.loadDataset(dataset)}
+              />
+            )}
+
+            <ModeToggle
+              mode={calculator.state.mode}
+              onModeChange={handleModeChange}
             />
-          )}
 
-          <ModeToggle
-            mode={calculator.state.mode}
-            onModeChange={handleModeChange}
-          />
+            <TaxYearSelector
+              taxYear={calculator.state.taxYear}
+              taxYearOptions={calculator.taxYearOptions}
+              taxYearStart={calculator.taxYearStart}
+              taxYearEnd={calculator.taxYearEnd}
+              error={calculator.errors.tax_year}
+              onChange={calculator.setTaxYear}
+            />
 
-          <TaxYearSelector
+            <PeriodsEditor
+              mode={calculator.state.mode}
+              taxYear={calculator.state.taxYear}
+              taxYearStart={calculator.taxYearStart}
+              taxYearEnd={calculator.taxYearEnd}
+              coverageStart={calculator.coverageStart}
+              coverageEnd={calculator.coverageEnd}
+              periods={calculator.activePeriods}
+              errors={calculator.errors}
+              onAdd={calculator.addPeriod}
+              onRemove={calculator.removePeriod}
+              onChange={calculator.updatePeriod}
+              onCommitRange={(start, end) => calculator.commitInterval({ start_date: start, end_date: end })}
+              onClearAll={calculator.clearPeriods}
+            />
+
+            {calculator.errors.general && (
+              <div className="error-banner">{calculator.errors.general}</div>
+            )}
+          </div>
+
+          <ResultsPanel
+            result={calculator.result}
+            planning={calculator.state.planningMode}
             taxYear={calculator.state.taxYear}
-            taxYearOptions={calculator.taxYearOptions}
-            taxYearStart={calculator.taxYearStart}
-            taxYearEnd={calculator.taxYearEnd}
-            error={calculator.errors.tax_year}
-            onChange={calculator.setTaxYear}
+            usPeriods={calculator.state.usPeriods}
+            foreignPeriods={calculator.state.foreignPeriods}
           />
+        </section>
+      </main>
 
-          <PeriodsEditor
-            mode={calculator.state.mode}
-            taxYear={calculator.state.taxYear}
-            taxYearStart={calculator.taxYearStart}
-            taxYearEnd={calculator.taxYearEnd}
-            coverageStart={calculator.coverageStart}
-            coverageEnd={calculator.coverageEnd}
-            periods={calculator.activePeriods}
-            errors={calculator.errors}
-            onAdd={calculator.addPeriod}
-            onRemove={calculator.removePeriod}
-            onChange={calculator.updatePeriod}
-            onCommitRange={(start, end) => calculator.commitInterval({ start_date: start, end_date: end })}
-            onClearAll={calculator.clearPeriods}
-          />
-
-          {calculator.errors.general && (
-            <div className="error-banner">{calculator.errors.general}</div>
-          )}
-        </div>
-
-        <ResultsPanel
-          result={calculator.result}
-          planning={calculator.state.planningMode}
-          taxYear={calculator.state.taxYear}
-          usPeriods={calculator.state.usPeriods}
-          foreignPeriods={calculator.state.foreignPeriods}
-        />
-      </section>
+      <AppFooter />
 
       {pendingMode && (
         <div className="mode-switch-overlay" role="dialog" aria-modal="true" aria-labelledby="mode-switch-title">
