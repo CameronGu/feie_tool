@@ -28,7 +28,7 @@ export function AppFooter() {
         {DISCLAIMER} Please consult a qualified tax professional before making financial decisions.
       </p>
       <p className="footer-app-name">
-        {APP_NAME} keeps data in your browser only—no submissions or analytics are collected.
+        {APP_NAME} keeps data in your browser only - no submissions or analytics are collected.
       </p>
     </footer>
   );

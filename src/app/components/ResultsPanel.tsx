@@ -149,8 +149,8 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
     const timestamp = new Date().toISOString().split('T')[0];
     lines.push(
       '',
-      '—',
-      `${APP_NAME} — ${APP_URL}`,
+      '-',
+      `${APP_NAME} - ${APP_URL}`,
       `${AUTHOR_CREDIT} · ${DISCLAIMER}`,
       `Generated ${timestamp} | Build ${APP_VERSION}`
     );
@@ -376,7 +376,7 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
       <div className={tone}>{status}</div>
       <div className="field">
         <span>Total tax-year days</span>
-        <strong>{result.total_tax_year_days ?? '—'}</strong>
+        <strong>{result.total_tax_year_days ?? '-'}</strong>
       </div>
 
       {primaryWindow && (
@@ -389,7 +389,7 @@ export function ResultsPanel({ result, planning, taxYear, usPeriods, foreignPeri
           </p>
           {additionalCount > 0 && (
             <p>
-              We also found {additionalCount} other {additionalCount === 1 ? 'window' : 'windows'} with the same coverage—check the timeline for
+              We also found {additionalCount} other {additionalCount === 1 ? 'window' : 'windows'} with the same coverage - check the timeline for
               alternate date ranges that still qualify.
             </p>
           )}

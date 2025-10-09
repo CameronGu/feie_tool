@@ -1,4 +1,4 @@
-**FEIE Window Optimizer** — a calculator that identifies the most tax-advantageous 12-month Foreign Earned Income Exclusion window.
+**FEIE Window Optimizer** - a calculator that identifies the most tax-advantageous 12-month Foreign Earned Income Exclusion window.
 
 # FEIE Window Optimizer
 
