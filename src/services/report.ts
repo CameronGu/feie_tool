@@ -206,18 +206,20 @@ export function foreignBasisText(period: PeriodEvidence): string {
   return `Foreign-day basis: ${parts.join(', ') || 'no supported foreign days'}.`;
 }
 export function standardReferences(report: TravelReport): TravelReport['references'] {
-  const urls = ['physical-presence-test', 'section-1.911-3', report.supporting_periods.length > 1 ? '/instructions/i2555' : 'what-is-foreign-earned-income'];
+  const urls = report.supporting_periods.length ? ['physical-presence-test', 'section-1.911-3', report.supporting_periods.length > 1 ? '/instructions/i2555' : 'what-is-foreign-earned-income'] : ['physical-presence-test', 'section-1.911-2'];
   return urls.map(url => { const reference = report.references.find(ref => ref.url.includes(url))!;
-    return { ...reference, text: url === 'physical-presence-test' ? 'IRS physical-presence test' : url === 'section-1.911-3' ? '26 CFR 1.911-3(d)(3)' : url === '/instructions/i2555' ? 'Form 2555 instructions' : 'IRS income sourcing' };
+    return { ...reference, text: url === 'physical-presence-test' ? 'IRS physical-presence test' : url === 'section-1.911-3' ? '26 CFR 1.911-3(d)(3)' : url === '/instructions/i2555' ? 'Form 2555 instructions' : url === 'section-1.911-2' ? '26 CFR 1.911-2: foreign days and tax home' : 'IRS income sourcing' };
   });
 }
 export function basisLines(report: TravelReport): string[] {
-  const periods = displayPeriods(report);
-  const ids = new Set(report.segments.filter(segment => periods.some(period => segmentDaysWithin(segment, intervalOf(period)) > 0)).flatMap(segment => segment.record_ids));
-  const declarations = report.records.filter(record => record.kind === 'foreign_assumption' && ids.has(record.id));
+  const contexts = report.comparison ? [report, report.comparison.completed_report] : [report];
+  const contextIds = (context: TravelReport) => new Set(context.segments.filter(segment => displayPeriods(context).some(period => segmentDaysWithin(segment, intervalOf(period)) > 0)).flatMap(segment => segment.record_ids));
+  const currentIds = contextIds(report);
+  const ids = new Set(contexts.flatMap(context => [...contextIds(context)]));
+  const declarations = [...new Map(contexts.flatMap(context => context.records).filter(record => record.kind === 'foreign_assumption' && ids.has(record.id)).map(record => [record.id, record])).values()];
   return [
     ...(report.example ? ['Demonstration data; this report does not describe your saved travel history.'] : []),
-    ...declarations.map(record => `Full foreign presence is assumed from ${dateLabel(record.start_date)} ${record.ongoing ? 'onward (ongoing)' : `through ${dateLabel(record.end_date)}`}, except recorded exceptions.${record.status === 'proposed' ? ' This declaration is proposed.' : ''}${record.note ? ` Declaration note: ${record.note}` : ''}`),
+    ...declarations.map(record => `Full foreign presence is assumed from ${dateLabel(record.start_date)} ${record.ongoing ? 'onward (ongoing)' : `through ${dateLabel(record.end_date)}`}, except recorded exceptions.${!currentIds.has(record.id) ? ' This declaration supports the completed baseline only.' : record.status === 'proposed' ? ' This declaration is proposed.' : ''}${record.note ? ` Declaration note: ${record.note}` : ''}`),
     `Completed through: ${report.last_completed_day}.${report.scenario ? ' Proposed dates and future continuation are projected, not completed evidence.' : ' Later dates do not establish completed presence.'}`,
     ...(report.cutoff.basis === 'manual' ? ['The completed-day cutoff was manually selected for the travel calendar.'] : []),
     'Foreign tax home for the supporting foreign days and broader FEIE eligibility are unverified.',
@@ -334,7 +336,7 @@ export function reportText(report: TravelReport): string {
     report.status_label,
     `${report.tax_year} qualifying-period days: ${fractionLabel(report.qualifying_days, report.tax_year_days)}${incomplete ? ' (supported coverage; evidence incomplete)' : ` (${(report.fraction * 100).toFixed(2)}% coverage)`}.`,
     ...reportSections(report).flatMap(group => ['', group.title, ...group.lines.map(line => line.url ? `${line.text}: ${line.url}` : line.text),
-      ...(group.table ? group.table.rows.map(row => row.map(cell => cell.replace(/\n/g, '; ')).join(': ')) : [])]), '',
+      ...(group.table ? ['Days counted within supporting periods; original travel dates retained.', ...(group.table.headers[0].startsWith('U.S.') ? ['U.S. visits:'] : []), ...group.table.rows.map(row => row.map(cell => cell.replace(/\n/g, '; ')).join(': '))] : [])]), '',
     'FEIE Window Optimizer | by Cameron Guthrie',
     `Generated ${dateLabel(report.generated_at.slice(0, 10))} | App ${report.app_version} | Calculation ${report.calculation_version}`
   ].join('\n');

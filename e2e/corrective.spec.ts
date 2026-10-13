@@ -170,7 +170,9 @@ test('bounded baseline setup, validation focus, import recognition and two-perio
   await page.getByRole('button', { name: 'Replace history with backup' }).click();
   await expect(page.getByRole('heading', { name: 'Threshold met under declared assumptions' })).toBeVisible();
   const report = await page.getByLabel('Preparer report text').inputValue();
-  expect(report).toContain('Supporting periods: 2.');
+  expect(report).toContain('1. July 7, 2023 to July 6, 2024');
+  expect(report).toContain('2. July 7, 2024 to July 6, 2025');
+  await expect(page.locator('.period-card')).toHaveCount(2);
   const downloaded = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Download PDF report' }).click();
   await (await downloaded).saveAs(join('output/playwright/corrective-review', info.project.name, 'multiple-periods.pdf'));

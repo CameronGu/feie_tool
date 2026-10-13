@@ -74,6 +74,7 @@ test('native report samples reconcile every assessment fixture with the unchange
     { name: 'failure', year: 2025, data: history(record('failure-before', 'nonqualifying', '2024-01-02', '2024-12-31'), record('failure-foreign', 'foreign', '2025-01-01', '2025-11-25'), record('failure-after', 'nonqualifying', '2025-11-26', '2026-12-30')) },
     { name: 'positive-comparison', year: 2025, scenario: true, data: history(record('positive-completed', 'foreign', '2025-01-01', '2025-11-25'), record('positive-proposal', 'foreign', '2025-11-26', '2025-11-26', { status: 'proposed' })) },
     { name: 'negative-comparison', year: 2025, scenario: true, data: history(record('negative-completed', 'foreign', '2025-01-01', '2025-11-26'), record('negative-proposal', 'us', '2025-11-26', '2025-11-26', { status: 'proposed' })) },
+    { name: 'overridden-declaration', year: 2025, scenario: true, data: history(record('override-assumption', 'foreign_assumption', '2025-01-01', '2025-12-31', { note: 'Baseline declaration retained for comparison' }), record('override-proposal', 'foreign', '2025-01-01', '2025-12-31', { status: 'proposed' })) },
     { name: 'unicode', year: 2025, data: history(approved.records[0], { ...approved.records[1], note: 'Résumé — Málaga Ελληνικά Кириллица 東京 🌍' }, approved.records[2]) },
     { name: 'long-history', year: 2024, data: long }
   ];
@@ -87,6 +88,7 @@ test('native report samples reconcile every assessment fixture with the unchange
     const report = buildReport(assessment, undefined, baseline);
     const text = await page.getByLabel('Preparer report text').inputValue();
     expect(text).toContain(report.status_label);
+    if (fixture.name === 'overridden-declaration') expect(text).toContain('This declaration supports the completed baseline only.');
     expect(text).toContain(`${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)}`);
     await writeFile(join(directory, fixture.name + '.clipboard.txt'), text);
     await download(page, directory, fixture.name);

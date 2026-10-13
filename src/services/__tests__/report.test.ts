@@ -34,7 +34,7 @@ describe('shared preparer evidence and concise presentation', () => {
     expect(exceptions[1].record.end_date).toBe('2026-01-13');
     expect(exceptions[1].ranges).toEqual([{ start_date: '2025-12-13', end_date: '2025-12-17' }]);
     const text = reportText(report);
-    for (const phrase of ['351 / 365 = 0.961644', '96.16%', '330 full foreign days', '35 U.S. days', 'December 13, 2025 to January 13, 2026', 'December 13, 2025 to December 17, 2025 (5 days)']) expect(text).toContain(phrase);
+    for (const phrase of ['U.S. visits:', 'Days counted within supporting periods', '351 / 365 = 0.961644', '96.16%', '330 full foreign days', '35 U.S. days', 'December 13, 2025 to January 13, 2026', 'December 13, 2025 to December 17, 2025 (5 days)']) expect(text).toContain(phrase);
     for (const phrase of ['synthetic-cross-year-trip', 'irrelevant-in-horizon', 'January 3, 2024', 'NORMALIZED', 'algorithm', '2100-12-31']) expect(text).not.toContain(phrase);
     expect(appendixText(report)).toContain('synthetic-cross-year-trip: 2025-12-13 to 2026-01-13');
     expect(appendixText(report)).not.toContain('irrelevant-in-horizon');
@@ -86,6 +86,14 @@ describe('shared preparer evidence and concise presentation', () => {
     expect(reportText(report)).toContain(`change: ${sign > 0 ? '+' : '-'}365 days`);
     expect(appendixText(report)).toContain('Completed baseline normalized evidence');
     expect(() => buildReport(scenario, undefined, assessTravel(EMPTY_HISTORY, 2025, '2026-10-13'))).toThrow('same history');
+  });
+  it('retains the completed declaration when proposals override it throughout the scenario', () => {
+    const history = data(row('a', 'foreign_assumption', '2025-01-01', '2025-12-31', { note: 'Declared basis note' }), row('p', 'foreign', '2025-01-01', '2025-12-31', { status: 'proposed' }));
+    const report = buildReport(assessTravel(history, 2025, '2026-10-13', true), undefined, assessTravel(history, 2025, '2026-10-13'));
+    expect(basisLines(report).join(' ')).toContain('This declaration supports the completed baseline only.');
+    expect(reportText(report)).toContain('Declared basis note');
+    expect(reportText(report)).toContain('January 1, 2025 to December 31, 2025: 365 projected full foreign days');
+    expect(appendixText(report)).toContain('a: 2025-01-01 to 2025-12-31');
   });
   it('counts proposal-overridden exceptions once and keeps projected assumption days separate', () => {
     const history = data(row('a', 'foreign_assumption', '2025-01-01', '2100-12-31', { ongoing: true }), row('u', 'us', '2025-02-01', '2025-02-10'), row('p', 'foreign', '2025-02-04', '2025-02-06', { status: 'proposed' }));
@@ -155,6 +163,12 @@ describe('real embedded-font PDFs', () => {
     expect(text).not.toContain('(no note)');
     expect(text).toContain('PDF character preservation');
     expect(pdfSafeText('Málaga 東京')).toBe('Málaga [U+6771][U+4EAC]');
+  });
+  it('wraps maximal unbroken descriptions and long identifiers without losing their ends', async () => {
+    const report = reportFor(data(approved.records[0], { ...approved.records[1], id: 'r'.repeat(100), note: 'W'.repeat(490) + 'NOTEEND' }, approved.records[2]));
+    const doc = await createReportPdf(report, { includeAppendix: true });
+    expect(pdfPageText(doc).join(' ')).toContain('NOTEEND');
+    expect(reportText(report)).toContain('W'.repeat(490) + 'NOTEEND');
   });
   it('renders empty, failed and multiple-period assessments from their shared sections', async () => {
     for (const report of [reportFor(EMPTY_HISTORY), reportFor(failed, 2025, '2027-01-01'), reportFor(multiple, 2024)]) {
