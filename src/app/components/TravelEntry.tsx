@@ -19,6 +19,7 @@ export function TravelEntry({ view, editing, onSave, onCancel }: Props) {
   const [acknowledged, setAcknowledged] = useState(editing?.kind === 'foreign_assumption');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  const errorRef = useRef<HTMLParagraphElement>(null);
   const startRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export function TravelEntry({ view, editing, onSave, onCancel }: Props) {
       if (!editing) { setStart(''); setEnd(''); setNote(''); setAcknowledged(false); }
       setMessage('Travel record saved.');
       startRef.current?.focus();
-    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Could not save this record.'); }
+    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Could not save this record.'); requestAnimationFrame(() => errorRef.current?.focus()); }
   }
 
   const isForeign = kind === 'foreign' || kind === 'foreign_assumption';
@@ -46,12 +47,6 @@ export function TravelEntry({ view, editing, onSave, onCancel }: Props) {
       <select id="record-kind" value={kind} onChange={event => { setKind(event.target.value as RecordKind); setAcknowledged(false); }}>
         {Object.entries(KIND_LABELS).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
       </select>
-      <p id="record-help" className="help">
-        {isForeign ? 'Use the first and last FULL foreign days, inclusive. Ordinary arrival and departure days are partial: exclude them and record transit separately.' :
-          kind === 'us' ? 'Include arrival and departure dates of U.S. visits. Record additional transit days separately. U.S. visits alone do not establish foreign presence on other dates.' :
-          kind === 'nonqualifying' ? 'Use this for partial travel days, U.S. territories, international waters, or other days that cannot count. Check IRS rules for short transit between foreign countries.' :
-          'Use this for uncertain travel dates. Unknown days do not count toward the 330-day threshold.'}
-      </p>
       <div className="date-fields">
         <div><label htmlFor="record-start">{isForeign ? 'First full foreign day' : 'Start date'}</label>
           <input ref={startRef} id="record-start" type="date" required min="1900-01-01" max="2100-12-31" value={start}
@@ -60,6 +55,12 @@ export function TravelEntry({ view, editing, onSave, onCancel }: Props) {
           <input id="record-end" type="date" required min="1900-01-01" max="2100-12-31" value={end}
             aria-describedby="record-help record-error" aria-invalid={Boolean(error)} onChange={event => { setEnd(event.target.value); setMessage(''); }} /></div>
       </div>
+      <p id="record-help" className="help">
+        {isForeign ? 'Use the first and last FULL foreign days, inclusive. Ordinary arrival and departure days are partial: exclude them and record transit separately.' :
+          kind === 'us' ? 'Include arrival and departure dates of U.S. visits. Record additional transit days separately. Visits override a declared foreign baseline.' :
+          kind === 'nonqualifying' ? 'Use this for partial travel days, U.S. territories, international waters, or other days that cannot count. Check IRS rules for short transit between foreign countries.' :
+          'Use this for uncertain travel dates. Unknown days do not count toward the 330-day threshold.'}
+      </p>
       <label htmlFor="record-status">Travel status</label>
       <select id="record-status" value={status} onChange={event => setStatus(event.target.value as RecordStatus)}>
         <option value="completed">Completed travel</option><option value="proposed">Proposed scenario</option>
@@ -71,7 +72,7 @@ export function TravelEntry({ view, editing, onSave, onCancel }: Props) {
         <input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />
         I explicitly assume full foreign presence in this range except my recorded U.S., nonqualifying and unknown days.
       </label>}
-      <p id="record-error" className="error" role={error ? 'alert' : undefined}>{error}</p>
+      <p ref={errorRef} tabIndex={-1} id="record-error" className="error" role={error ? 'alert' : undefined}>{error}</p>
       <div className="actions"><button type="submit">{editing ? 'Save changes' : 'Save travel record'}</button>
         {editing && <button type="button" className="secondary" onClick={onCancel}>Cancel edit</button>}</div>
       <p className="feedback" role="status">{message}</p>

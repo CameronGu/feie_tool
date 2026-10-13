@@ -65,7 +65,7 @@ test('bounded U.S. workflow, shared copy/PDF evidence and portable backup restor
     value: { writeText: async (text: string) => { (window as unknown as { copiedReport: string }).copiedReport = text; } } }));
   await open(page);
   await page.getByRole('button', { name: 'Enter U.S. visits' }).click();
-  await expect(page.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeVisible();
   await add(page, 'foreign_assumption', '2024-01-01', '2024-12-31');
   await add(page, 'us', '2024-12-01', '2024-12-31');
   await expect(page.getByRole('heading', { name: 'Threshold met under declared assumptions' })).toBeVisible();
@@ -100,7 +100,7 @@ test('bounded U.S. workflow, shared copy/PDF evidence and portable backup restor
 test('scenario and example previews preserve history; malformed import is recoverable', async ({ page }) => {
   await open(page);
   await add(page, 'foreign', '2024-01-01', '2024-12-31', true);
-  await expect(page.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeVisible();
   const source = await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'));
   await page.getByLabel('Compare proposed and future travel').check();
   await expect(page.getByRole('heading', { name: 'Projected physical-presence coverage' })).toBeVisible();
@@ -109,7 +109,7 @@ test('scenario and example previews preserve history; malformed import is recove
   expect(await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'))).toBe(source);
   await page.getByRole('button', { name: 'Close example' }).click();
   await page.getByLabel('Compare proposed and future travel').uncheck();
-  await expect(page.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeVisible();
   await page.getByLabel('Choose travel-history backup').setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{broken') });
   await expect(page.getByRole('alert')).toContainText('not valid JSON');
   expect(await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'))).toBe(source);

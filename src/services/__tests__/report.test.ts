@@ -36,7 +36,8 @@ describe('single structured preparer report', () => {
   it('exports incomplete and unsuccessful cases with the best failing period and unknown dates', () => {
     const report = buildReport(assessTravel(EMPTY_HISTORY, 2024, '2026-10-12'));
     expect(report.status).toBe('incomplete');
-    expect(reportText(report)).toContain('CLOSEST EVALUATED PERIOD (NOT QUALIFYING)');
+    expect(reportText(report)).toContain('No relevant travel evidence');
+    expect(reportText(report)).not.toContain('STRONGEST SUPPORTED PERIOD');
     expect(reportText(report)).toContain('unknown | unrecorded');
     expect(reportText(report)).toContain('0 / 366 = 0.000000');
     expect(report.supporting_periods).toEqual([]);
@@ -86,4 +87,45 @@ describe('real PDF generation', () => {
   it('preserves unsupported Unicode as explicit code points instead of silently losing note text', () => {
     expect(pdfSafeText('Málaga 東京')).toBe('Málaga [U+6771][U+4EAC]');
   });
+});
+
+
+it('C03: carries the completed baseline, scenario, denominator and signed delta into text and PDF', async () => {
+  const data: TravelHistory = { schema_version: 1, records: [
+    { id: 'completed', kind: 'foreign', status: 'completed', start_date: '2025-01-01', end_date: '2025-11-25', note: '' },
+    { id: 'extra', kind: 'foreign', status: 'proposed', start_date: '2025-11-26', end_date: '2025-11-26', note: '' }
+  ] };
+  const baseline = assessTravel(data, 2025, '2026-10-13');
+  const scenario = assessTravel(data, 2025, '2026-10-13', true);
+  const report = buildReport(scenario, undefined, baseline);
+  expect(report.comparison).toMatchObject({ tax_year: 2025, completed_days: 0, scenario_days: 365, denominator: 365, delta_days: 365 });
+  expect(reportText(report)).toContain('Scenario coverage: 365 / 365; change: +365 days.');
+  const doc = await createReportPdf(report);
+  const commands = (doc.internal.pages as unknown as string[][]).slice(1).flat().join(' ');
+  expect(commands).toContain('Completed-record coverage: 0 / 365');
+  expect(commands).toContain('Scenario coverage: 365 / 365; change: +365 days.');
+  expect(() => buildReport(scenario, undefined, assessTravel(data, 2024, '2026-10-13'))).toThrow('same history');
+});
+
+it('C04: keeps the reviewed two-source/two-support PDF on one page with all evidence and references', async () => {
+  const report = buildReport(assessTravel(source, 2024, '2026-10-13'));
+  const doc = await createReportPdf(report);
+  expect(doc.getNumberOfPages()).toBe(1);
+  const commands = (doc.internal.pages as unknown as string[][]).slice(1).flat().join(' ');
+  expect(commands).toContain('NORMALIZED EVIDENCE');
+  expect(commands).toContain('Foreign tax home must be checked separately');
+  expect(commands).toContain('Not legal or tax advice.');
+  expect(new TextDecoder().decode(doc.output('arraybuffer'))).toContain('https://www.ecfr.gov/current/title-26/section-1.911-2');
+});
+
+it('retains a negative scenario delta and rejects a baseline from another history', () => {
+  const data: TravelHistory = { schema_version: 1, records: [
+    { id: 'c', kind: 'foreign', status: 'completed', start_date: '2025-01-01', end_date: '2025-11-26', note: '' },
+    { id: 'p', kind: 'us', status: 'proposed', start_date: '2025-11-26', end_date: '2025-11-26', note: '' }
+  ] };
+  const scenario = assessTravel(data, 2025, '2026-10-13', true);
+  const report = buildReport(scenario, undefined, assessTravel(data, 2025, '2026-10-13'));
+  expect(report.comparison?.delta_days).toBe(-365);
+  expect(reportText(report)).toContain('Scenario coverage: 0 / 365; change: -365 days.');
+  expect(() => buildReport(scenario, undefined, assessTravel(EMPTY_HISTORY, 2025, '2026-10-13'))).toThrow('same history');
 });

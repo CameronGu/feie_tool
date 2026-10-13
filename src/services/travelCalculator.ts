@@ -1,4 +1,4 @@
-import { evaluateFeie, type FeieComputationResult } from '../domain/feie';
+import { enumerateWindows, evaluateFeie, type FeieComputationResult } from '../domain/feie';
 import { addDays } from '../domain/dates';
 import { normalizeHistory, segmentDaysWithin, type NormalizedHistory, type TravelHistory } from '../domain/history';
 
@@ -10,6 +10,9 @@ export interface TravelAssessment {
   relevantUnknownDays: number;
   assumedForeignDays: number;
   projectedForeignDays: number;
+  maxPossibleForeignDays: number;
+  possibleWindow: FeieComputationResult['closestWindow'];
+  hasEvidence: boolean;
 }
 
 export function assessTravel(history: TravelHistory, year: number, asOf: string, includeProposals = false): TravelAssessment {
@@ -33,11 +36,19 @@ export function assessTravel(history: TravelHistory, year: number, asOf: string,
   const relevantUnknownDays = daysMatching(segment => segment.kind === 'unknown');
   const assumedForeignDays = daysMatching(segment => segment.kind === 'foreign' && segment.basis === 'assumed');
   const projectedForeignDays = daysMatching(segment => segment.kind === 'foreign' && segment.projected);
-  // A failed test is definitive only if every relevant candidate's horizon is known.
-  const horizonIncomplete = normalized.segments.some(segment => segment.kind === 'unknown');
+  // Upper bound: every unresolved, elapsed date could be foreign. Future days cannot
+  // establish completed presence, even when normalization labels them unknown.
+  const possiblePeriods = normalized.segments.filter(segment => segment.kind === 'foreign' || segment.kind === 'unknown')
+    .filter(segment => includeProposals || segment.start_date < asOf)
+    .map(segment => ({ start_date: segment.start_date,
+      end_date: !includeProposals && segment.end_date >= asOf ? addDays(asOf, -1) : segment.end_date }));
+  const possibleWindow = enumerateWindows({ ...normalized.input, foreignPeriods: possiblePeriods })
+    .sort((a, b) => b.foreign_days - a.foreign_days || b.overlap_days - a.overlap_days || a.window_start.localeCompare(b.window_start))[0];
+  const maxPossibleForeignDays = possibleWindow.foreign_days;
+  const hasEvidence = normalized.segments.some(segment => segment.basis !== 'unrecorded');
   const projectedPeriod = support.some(window => window.window_end >= asOf);
   const status: AssessmentStatus = calculation.leapDayReview ? 'review-required' :
     calculation.qualified ? projectedForeignDays > 0 || projectedPeriod ? 'projected' : assumedForeignDays > 0 ? 'conditional' : 'met' :
-    horizonIncomplete ? 'incomplete' : 'not-met';
-  return { status, normalized, calculation, relevantUnknownDays, assumedForeignDays, projectedForeignDays };
+    maxPossibleForeignDays >= 330 ? 'incomplete' : 'not-met';
+  return { status, normalized, calculation, relevantUnknownDays, assumedForeignDays, projectedForeignDays, maxPossibleForeignDays, possibleWindow, hasEvidence };
 }

@@ -106,3 +106,25 @@ describe('backup integrity', () => {
     expect(parseHistory(serializeHistory(small))).toEqual(small);
   });
 });
+
+it('round trips ongoing presence, applies exceptions and projects continuation across years', () => {
+  const baseline: TravelRecord = { ...record('foreign_assumption', '2024-01-01', '2100-12-31'), ongoing: true };
+  const data = history(baseline, record('us', '2025-01-10', '2025-01-12', 'visit'));
+  expect(parseHistory(serializeHistory(data))).toEqual(data);
+  const completed = normalizeHistory(data, 2025, '2025-06-01', false);
+  expect(completed.segments.some(segment => segment.kind === 'foreign' && segment.end_date >= '2025-06-01')).toBe(false);
+  const projected = normalizeHistory(data, 2025, '2025-06-01', true);
+  expect(projected.segments.find(segment => segment.start_date === '2025-01-10')?.kind).toBe('us');
+  expect(projected.segments.find(segment => segment.start_date === '2025-06-01')).toMatchObject({ projected: true, basis: 'assumed' });
+  expect(normalizeHistory(data, 2027, '2028-01-01', false).input.foreignPeriods.length).toBeGreaterThan(0);
+  const ended = history({ ...baseline, ongoing: undefined, end_date: '2025-05-31' }, data.records[1]);
+  expect(normalizeHistory(ended, 2027, '2028-01-01', true).input.foreignPeriods).toEqual([]);
+  expect(data.records[0].ongoing).toBe(true);
+});
+
+it('rejects ongoing flags on trips, proposals and inconsistent endpoints', () => {
+  const baseline: TravelRecord = { ...record('foreign_assumption', '2024-01-01', '2100-12-31'), ongoing: true };
+  expect(() => validateHistory(history({ ...baseline, kind: 'foreign' }))).toThrow('Ongoing');
+  expect(() => validateHistory(history({ ...baseline, status: 'proposed' }))).toThrow('Ongoing');
+  expect(() => validateHistory(history({ ...baseline, end_date: '2025-12-31' }))).toThrow('Ongoing');
+});

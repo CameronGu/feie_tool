@@ -85,3 +85,33 @@ tbody tr:nth-child(even) { background: #f7f9fb; }
 @media (max-width: 480px) { .app-shell { padding: 20px 14px; } .panel { padding: 18px; } .date-fields { grid-template-columns: minmax(0, 1fr); gap: 0; } .year-bar { gap: 12px; } .year-bar > p.help { margin-top: 8px; } .view-switch button { padding: 8px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; } }
 @media print { body { background: white; } .app-shell { padding: 0; } button, form, .view-switch, .year-bar, .skip-link { display: none; } .calculator-grid { display: block; } .panel { box-shadow: none; break-inside: avoid; } a { color: inherit; } }
+
+/* Ordinary baseline status, distinct from alerts and validation. */
+.baseline-summary { padding: 12px 0; margin-bottom: 14px; border-bottom: 1px solid #d4dfe6; }
+.baseline-summary p { margin-bottom: 6px; }
+.baseline-intro { padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid #d4dfe6; }
+.import-preview { max-height: 240px; overflow-y: auto; padding-left: 22px; }
+.scope-note { background: none; border: 0; padding: 0; margin-bottom: 14px; }
+@media (max-width: 600px) {
+  .app-shell { padding: 14px; }
+  .app-header { gap: 8px; padding-bottom: 12px; }
+  .app-header h1 { font-size: 1.65rem; margin-bottom: 6px; }
+  .app-header p { font-size: .86rem; }
+  .app-header > button { padding: 4px 10px; font-size: .85rem; }
+  .scope-note { font-size: .8rem; margin-bottom: 12px; }
+  .year-bar { gap: 4px 14px; padding-bottom: 12px; align-items: end; }
+  .year-bar .check-row { font-size: .8rem; flex: 1; min-width: 145px; margin: 0; }
+  .panel { padding: 16px; }
+  .view-switch { gap: 6px; padding-bottom: 12px; margin-bottom: 12px; }
+  .view-switch button { padding: 6px; font-size: .85rem; }
+  .history-panel .table-scroll { overflow: visible; border: 0; }
+  .history-panel table { min-width: 0; table-layout: auto; }
+  .history-panel thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .history-panel tbody, .history-panel tr, .history-panel td { display: block; width: 100%; }
+  .history-panel tr { border: 1px solid #d4dfe6; border-radius: 8px; margin-bottom: 12px; padding: 12px; }
+  .history-panel td { border: 0; padding: 4px 0; }
+  .history-panel td:first-child { font-weight: 650; }
+  .history-panel td:first-child br { display: none; }
+  .history-panel td.empty-note { display: none; }
+  .history-panel td:nth-child(3) { color: #4d6474; font-size: .85rem; }
+}

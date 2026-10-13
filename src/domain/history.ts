@@ -3,6 +3,8 @@ import { computeCoverageBounds } from './feie';
 import type { Interval, NormalizedInput } from './types';
 
 export const HISTORY_VERSION = 1;
+// Version-1 extension: ongoing declarations use the supported date ceiling, never a completed-future claim.
+export const ONGOING_END = '2100-12-31';
 export const MAX_RECORDS = 5000;
 export const MAX_BACKUP_BYTES = 2_000_000;
 export const RECORD_KINDS = ['foreign', 'foreign_assumption', 'us', 'nonqualifying', 'unknown'] as const;
@@ -14,6 +16,7 @@ export interface TravelRecord extends Interval {
   kind: RecordKind;
   status: RecordStatus;
   note: string;
+  ongoing?: true;
 }
 
 export interface TravelHistory {
@@ -64,7 +67,11 @@ export function validateHistory(value: unknown): TravelHistory {
       typeof record.note !== 'string' || record.note.length > 500) {
       throw new Error(`Record ${index + 1} has an invalid type, status or note (maximum 500 characters).`);
     }
-    return { id: record.id, start_date: record.start_date, end_date: record.end_date,
+    if (record.ongoing !== undefined && (record.ongoing !== true || record.kind !== 'foreign_assumption' ||
+      record.status !== 'completed' || record.end_date !== ONGOING_END)) {
+      throw new Error('Ongoing presence requires a completed foreign declaration with the supported open endpoint.');
+    }
+    return { ...(record.ongoing === true ? { ongoing: true as const } : {}), id: record.id, start_date: record.start_date, end_date: record.end_date,
       kind: record.kind as RecordKind, status: record.status, note: record.note };
   });
   records.sort((a, b) => a.start_date.localeCompare(b.start_date) || a.end_date.localeCompare(b.end_date) || a.id.localeCompare(b.id));

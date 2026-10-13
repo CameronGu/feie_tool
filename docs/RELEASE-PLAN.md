@@ -1,5 +1,7 @@
 # First release plan
 
+Current work: corrective candidate **0.2.0-rc.2**, assessment **physical-presence-2.1**; ordinary counting engine unchanged. Initial rc.1 milestones below are historical; current acceptance is recorded in the corrective-pass section.
+
 Branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
 No push, deployment, publication, backend, accounts, or external travel-data submission is authorized.
 
@@ -16,7 +18,7 @@ No push, deployment, publication, backend, accounts, or external travel-data sub
 
 Each milestone receives targeted regression tests, relevant browser verification, log updates, and a local commit. Correct regressions before advancement. Domain-only work need not wait for the scheduled replacement of stale UI fixtures. Final completion requires **all** milestones and an evidence-based readiness audit, not merely a passing build.
 
-Candidate: `0.2.0-rc.1`; calculation version `physical-presence-2`. All requested local milestones are complete. See [RELEASE-READINESS.md](RELEASE-READINESS.md) for the requirement-by-requirement audit and explicit remaining limits. No known blocker remains in the scoped ordinary physical-presence planning product. No deployment, push or publication occurred.
+Candidate: `0.2.0-rc.1`; calculation version `physical-presence-2`. All requested local milestones are complete. See [RELEASE-READINESS.md](RELEASE-READINESS.md) for the requirement-by-requirement audit and explicit remaining limits. That initial conclusion is superseded by the independent review and corrective acceptance pass below. No deployment, push or publication occurred.
 
 ## Verification commands
 
@@ -32,3 +34,14 @@ The assignment baseline build passes; 17 tests comprise 11 passes and six failur
 ## Rules for completion
 
 Maintain `CALCULATION-SPEC.md`, `PROGRESS.md`, and `RELEASE-READINESS.md`. Explicitly document unresolved tax questions and sensitivity, without claiming full FEIE eligibility or actual tax savings. Preserve historical audit documents as dated evidence. Inspect and test current state instead of assuming those reports remain current.
+
+
+## Corrective pass — independent review and visual requirements
+
+Scope: C01 candidate upper bounds; C02 isolated example; C03 shared scenario baseline/delta; C04 concise PDF pagination; specific tax-home premise and example; direct ongoing foreign-baseline setup/edit/confirmed end; shorter mobile first use; stacked mobile history; informative empty states and import review. Keep static/private operation and the existing ordinary counting engine.
+
+Implementation sequence: assessment/history extensions and regression cases; baseline/history/results UX; ordered shared report and PDF layout; production browser workflows and before/after evidence; release documentation and final gates. No new dependencies, tax-home calculator or separate baseline data store.
+
+Acceptance: `npm run check` and full `npm run test:e2e`; actual production captures at 1440×1000 and 390×844, including ongoing setup, several visits, baseline editing/ending, mobile correction, qualifying and projected results; downloaded PDF text and raster inspection, ordinary one-page and multi-period cases. Existing independent screenshots remain immutable comparison references. Corrective local acceptance is complete: 90 unit/integration tests, full TypeScript/build, and 48 production browser passes with two platform skips. Actual mobile/desktop flows, one-page ordinary/scenario/two-support PDFs, a large appendix and the before/after package were inspected; see RELEASE-READINESS.md. The initial rc.1 audit does not establish corrective completion.
+
+Qualified tax review of the changing-tax-home example and multiple-period filing remains a publication prerequisite, outside software verification. Nothing in this plan authorizes push, publication or deployment.

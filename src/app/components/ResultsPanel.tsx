@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { reportText, type TravelReport } from '../../services/report';
+import { TAX_HOME_EXAMPLE, TAX_HOME_NOTE, reportText, type TravelReport } from '../../services/report';
 
-export function ResultsPanel({ report, baselineDays, example = false }: { report: TravelReport; baselineDays: number; example?: boolean }) {
+export function ResultsPanel({ report, example = false }: { report: TravelReport; example?: boolean }) {
   const [feedback, setFeedback] = useState('');
   const [failed, setFailed] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const periods = report.supporting_periods.length ? report.supporting_periods : [report.closest_period];
+  const periods = report.has_evidence ? report.supporting_periods.length ? report.supporting_periods : [report.closest_period] : [];
+  const comparison = report.comparison;
   async function copy() {
     try {
       await navigator.clipboard.writeText(reportText(report)); setFailed(false); setFeedback('Preparer report copied.');
@@ -26,17 +27,22 @@ export function ResultsPanel({ report, baselineDays, example = false }: { report
       <div className="eyebrow">{example ? 'Example preview' : report.scenario ? 'Scenario comparison' : 'Completed travel assessment'}</div>
       <h2 id="results-heading">Physical presence · {report.tax_year}</h2>
       <div className={`assessment assessment-${report.status}`} role="status" aria-live="polite">
-        <h3>{report.status_label}</h3>
-        <p><strong className="coverage-number">{report.qualifying_days}</strong> of {report.tax_year_days} tax-year days covered by supported qualifying periods.</p>
+        <h3>{report.has_evidence ? report.status_label : 'Add travel evidence to begin'}</h3>
+        {report.has_evidence ? <p><strong className="coverage-number">{report.qualifying_days}</strong> of {report.tax_year_days} tax-year days covered by supported qualifying periods.</p> : <p>Enter full foreign days, or establish normal foreign presence and record U.S. visits and other exceptions. Unrecorded dates remain unknown.</p>}
       </div>
-      {report.scenario && <p className="notice">Completed-record coverage: <strong>{baselineDays} days</strong>. Scenario coverage: <strong>{report.qualifying_days} days</strong> ({report.qualifying_days - baselineDays >= 0 ? '+' : ''}{report.qualifying_days - baselineDays}). Saved completed records are preserved.</p>}
-      <p><strong>Coverage fraction:</strong> {report.qualifying_days} / {report.tax_year_days} = {report.fraction.toFixed(6)} <span className="help">(rounded display)</span></p>
-      <p className="help">Physical-presence coverage is conditional on foreign tax home and other eligibility requirements. It is not the amount of your exclusion or tax savings. Missing dates count as zero foreign days; adding evidence may increase coverage.</p>
-      {report.status === 'incomplete' && <p className="notice">No supported period reaches 330 full foreign days. Unrecorded or unknown dates prevent a conclusive failure assessment. Add missing travel evidence or an explicit foreign-presence declaration.</p>}
+      {comparison && <p className="notice">Completed-record coverage: <strong>{comparison.completed_days} / {comparison.denominator} days</strong>. Scenario coverage: <strong>{comparison.scenario_days} / {comparison.denominator} days</strong> ({comparison.delta_days >= 0 ? '+' : ''}{comparison.delta_days}). Saved completed records are preserved.</p>}
+      {report.has_evidence && <p><strong>Coverage fraction:</strong> {report.qualifying_days} / {report.tax_year_days} = {report.fraction.toFixed(6)} <span className="help">(rounded display)</span></p>}
+      <p className="help">{TAX_HOME_NOTE} This is not your exclusion amount or tax savings.</p>
+      {report.has_evidence && <details><summary>Why foreign tax-home dates matter</summary><p className="help">{TAX_HOME_EXAMPLE}</p></details>}
+      {report.has_evidence && !report.supporting_periods.length && <p className="notice">
+        No supported ordinary period reaches 330 full foreign days. Maximum possible across ordinary periods: <strong>{report.max_possible_foreign_days} / 330</strong>, treating unresolved elapsed dates as foreign.
+        {' '}{report.max_possible_foreign_days < 330 ? 'Even that upper bound is below 330, so missing dates cannot change the ordinary threshold failure.' : 'Missing evidence could change the conclusion. Add missing travel records or an explicit foreign-presence assumption.'}
+        {' '}Future dates cannot establish completed presence.
+      </p>}
       {report.leap_day_review && <div className="notice"><h3>February 29 boundary needs review</h3>
         <p>The longer leap-start convention could cover {report.leap_day_review.alternative_coverage_days} days. This is separate from the {report.qualifying_days}-day baseline. Ask your preparer to resolve the endpoint convention.</p></div>}
-      <h3>{report.supporting_periods.length ? 'Supporting 12-month periods' : 'Closest evaluated period'}</h3>
-      <p className="help">{report.supporting_periods.length ? `${report.qualifying_period_count} periods pass. This compact supporting set covers their combined tax-year dates; overlapping days count once.` :
+      {report.has_evidence && <h3>{report.supporting_periods.length ? 'Supporting 12-month periods' : 'Strongest supported period'}</h3>}
+      <p className="help">{!report.has_evidence ? '' : report.supporting_periods.length ? `${report.qualifying_period_count} periods pass. This compact supporting set covers their combined tax-year dates; overlapping days count once.` :
         `This period has ${report.closest_period.foreign_days} full foreign days; ${Math.max(0, 330 - report.closest_period.foreign_days)} more would be needed inside this same period. This is a count deficit, not a recommended itinerary.`}</p>
       {periods.map(window => <article className="period-card" key={window.window_start}>
         <h4>{window.window_start} to {window.window_end}</h4>
@@ -48,7 +54,8 @@ export function ResultsPanel({ report, baselineDays, example = false }: { report
           <div><dt>Projected foreign</dt><dd>{window.projected_foreign_days}</dd></div>
           <div><dt>Unknown days</dt><dd>{window.unknown_days}</dd></div></dl>
       </article>)}
-      <p className="help">Assumed and projected counts can overlap. Period dates describe the containing test period, not a recommendation to stay abroad continuously.</p>
+      {report.has_evidence && <p className="help">Assumed and projected counts can overlap. Period dates describe the containing test period, not a recommendation to stay abroad continuously.</p>}
+      {report.has_evidence && !report.supporting_periods.length && <p className="help">Upper-bound period: {report.possible_period.window_start} to {report.possible_period.window_end}. This can differ from the strongest supported period; it is a possibility, not evidence.</p>}
       {report.coverage.length > 0 && <details><summary>Tax-year dates covered</summary><ul>{report.coverage.map(segment => <li key={segment.start_date}>{segment.start_date} to {segment.end_date}</li>)}</ul></details>}
       <div className="actions"><button className="secondary" onClick={copy}>Copy preparer report</button>
         <button onClick={exportPdf} disabled={exporting}>{exporting ? 'Preparing PDF...' : 'Download PDF report'}</button></div>

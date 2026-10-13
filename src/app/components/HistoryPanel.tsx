@@ -52,10 +52,10 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
         <table><caption className="sr-only">Recorded and proposed travel across all years</caption><thead><tr>
           <th scope="col">Dates (inclusive)</th><th scope="col">Type / status</th><th scope="col">Country / note</th><th scope="col">Actions</th>
         </tr></thead><tbody>{history.records.map(record => <tr key={record.id}>
-          <td>{record.start_date}<br />to {record.end_date}</td>
-          <td>{KIND_LABELS[record.kind]}<br /><span className="badge">{record.status}</span></td>
-          <td>{record.note || 'No note'}</td>
-          <td><div className="actions"><button className="secondary" aria-label={`Edit ${KIND_LABELS[record.kind]} ${record.start_date}`} onClick={() => onEdit(record)}>Edit</button>
+          <td data-label="Dates">{record.start_date}<br />{' '}{record.ongoing ? '· Ongoing' : `to ${record.end_date}`}</td>
+          <td data-label="Type / status">{KIND_LABELS[record.kind]}<br /><span className="badge">{record.kind === 'foreign_assumption' && record.status === 'completed' ? 'Assumed baseline' : record.status}</span></td>
+          <td data-label="Note" className={record.note ? undefined : 'empty-note'}>{record.note || 'No note'}</td>
+          <td data-label="Actions"><div className="actions"><button className="secondary" aria-label={`Edit ${KIND_LABELS[record.kind]} ${record.start_date}`} onClick={() => onEdit(record)}>Edit</button>
             <button className="secondary" aria-label={`Delete ${KIND_LABELS[record.kind]} ${record.start_date}`} onClick={() => { onDelete(record.id); setMessage('Record deleted. Use Undo last history change to restore it.'); }}>Delete</button></div></td>
         </tr>)}</tbody></table></div> : <p>No travel saved yet. Add full foreign days, or declare a bounded foreign range and record its exceptions.</p>}
       <div className="actions backup-actions">
@@ -66,6 +66,9 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
       </div>
       {pending && <div className="notice" aria-label="Review backup import">
         <h3>Review import: {pending.records.length} records</h3>
+        <p>{pending.records.length ? `${pending.records[0].start_date} through ${pending.records.some(record => record.ongoing) ? 'ongoing presence' : [...pending.records].sort((a, b) => b.end_date.localeCompare(a.end_date))[0].end_date}.` : 'Empty backup.'}
+          {' '}{pending.records.filter(record => record.status === 'proposed').length} proposed; {pending.records.filter(record => record.kind === 'foreign_assumption').length} foreign baselines.</p>
+        <ul className="import-preview">{pending.records.map(record => <li key={record.id}>{record.start_date} to {record.ongoing ? 'ongoing' : record.end_date} · {KIND_LABELS[record.kind]} · {record.status}{record.note ? ` · ${record.note}` : ''}</li>)}</ul>
         <p>Merge keeps existing records and rejects conflicts. Replacement discards the current history; export a backup first.</p>
         <label className="check-row"><input type="checkbox" checked={replaceConfirmed} onChange={event => setReplaceConfirmed(event.target.checked)} />
           Replace all {history.records.length} existing records with this backup.</label>

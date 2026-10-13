@@ -23,7 +23,7 @@ function add(kind: string, start: string, end: string, proposed = false) {
 describe('primary travel workflows', () => {
   it('leaves an empty U.S. entry view incomplete and does not require a mode-transfer dialog', () => {
     open(); fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
-    expect(screen.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
     expect(screen.queryByRole('dialog')).toBeNull();
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toEqual([]);
   });
@@ -63,11 +63,11 @@ describe('primary travel workflows', () => {
   });
   it('compares a proposal without replacing the completed-record result', () => {
     open(); add('foreign', '2024-01-01', '2024-12-31', true);
-    expect(screen.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
     fireEvent.click(screen.getByLabelText('Compare proposed and future travel'));
     expect(screen.getByRole('heading', { name: 'Projected physical-presence coverage' })).toBeTruthy();
     fireEvent.click(screen.getByLabelText('Compare proposed and future travel'));
-    expect(screen.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records[0].status).toBe('proposed');
   });
   it('rejects conflicts and requires a deliberate reset; undo restores records', () => {
@@ -97,7 +97,55 @@ describe('primary travel workflows', () => {
     const error = vi.spyOn(console, 'error');
     open(); add('foreign', '2024-01-01', '2024-12-31');
     fireEvent.click(screen.getByRole('button', { name: 'Delete Full foreign days 2024-01-01' }));
-    expect(screen.getByRole('heading', { name: 'Incomplete travel evidence' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
     expect(error).not.toHaveBeenCalled();
   });
+});
+
+it('establishes ongoing presence, returns to visits, edits and deliberately ends the same baseline', () => {
+  open(); fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Establish default foreign presence' }));
+  expect(screen.queryByLabelText('Travel status')).toBeNull();
+  fireEvent.change(screen.getByLabelText('First full foreign day'), { target: { value: '2024-01-01' } });
+  fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  fireEvent.click(screen.getByRole('button', { name: 'Save default foreign presence' }));
+  expect(screen.getByText('Default foreign presence since 2024-01-01 · Ongoing')).toBeTruthy();
+  expect((screen.getByLabelText('Record type') as HTMLSelectElement).value).toBe('us');
+  add('us', '2024-02-01', '2024-02-05'); add('us', '2024-06-01', '2024-06-05');
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+  expect(saved.records).toHaveLength(3);
+  expect(saved.records[0].ongoing).toBe(true);
+  fireEvent.click(screen.getByRole('button', { name: 'Edit default presence' }));
+  fireEvent.change(screen.getByLabelText('First full foreign day'), { target: { value: '2023-12-31' } });
+  fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  fireEvent.click(screen.getByRole('button', { name: 'Save default foreign presence' }));
+  fireEvent.click(screen.getByRole('button', { name: 'End default presence' }));
+  const confirm = screen.getByRole('button', { name: 'Confirm end of foreign presence' }) as HTMLButtonElement;
+  expect(confirm.disabled).toBe(true);
+  fireEvent.change(screen.getByLabelText('Final covered full foreign day'), { target: { value: '2024-12-31' } });
+  fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  expect(confirm.disabled).toBe(true);
+  fireEvent.click(screen.getByLabelText(/End default foreign presence after/));
+  fireEvent.click(confirm);
+  const ended = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+  expect(ended.records).toHaveLength(3);
+  expect(ended.records[0]).toMatchObject({ id: saved.records[0].id, start_date: '2023-12-31', end_date: '2024-12-31' });
+  expect(ended.records[0].ongoing).toBeUndefined();
+  expect(screen.queryByText(/Default foreign presence since/)).toBeNull();
+}, 15000);
+
+it('C02: never mixes saved 2024 coverage with the 2025 example', () => {
+  open(); add('foreign', '2024-01-01', '2024-12-31');
+  fireEvent.click(screen.getByRole('button', { name: 'Preview an example' }));
+  const text = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
+  expect(text).toContain('Calendar tax year: 2025');
+  expect(text).not.toContain('COMPLETED / SCENARIO COMPARISON');
+  expect(screen.queryByText(/Completed-record coverage:/)).toBeNull();
+});
+
+it('shows an actionable empty state without an arbitrary candidate or deficit', () => {
+  open();
+  expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
+  expect(screen.queryByText('Strongest supported period')).toBeNull();
+  expect(screen.queryByText(/more would be needed/)).toBeNull();
 });

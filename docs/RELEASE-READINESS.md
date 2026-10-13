@@ -1,5 +1,7 @@
 # Release readiness
 
+Current corrective candidate: **0.2.0-rc.2**, calculation/assessment **physical-presence-2.1**. See the corrective acceptance section at the end. The rc.1 audit below is retained as historical evidence and was superseded by `SECOND-PASS-REVIEW.md`.
+
 Candidate: **0.2.0-rc.1**, calculation **physical-presence-2**.
 Branch: `refactor/project-update`. Assessment: October 12, 2026 America/Managua; UTC test/report timestamps extend into October 13.
 
@@ -72,3 +74,25 @@ npm run dev
 A local production preview was started at `http://127.0.0.1:4173`; its availability depends on the local process remaining alive. To restart: `npm run build`, then `npm run preview -- --host 127.0.0.1 --port 4173`.
 
 Plan: `RELEASE-PLAN.md`. Specification: `CALCULATION-SPEC.md`. Decisions/checkpoints: `PROGRESS.md`. Historical alpha assessments remain unchanged. Local browser/PDF evidence is ignored under `output/playwright/`; browser download/trace output is under `test-results/` and the HTML report under `playwright-report/`. Artifacts contain synthetic test records, not user travel data.
+
+
+## Corrective acceptance — 2026-10-13
+
+Candidate **0.2.0-rc.2**, calculation/assessment **physical-presence-2.1**: **locally verified for the scoped private planning and preparer-evidence workflow**. Ordinary window enumeration, day counting and union arithmetic are unchanged. No push, deployment or publication occurred. The initial rc.1 readiness claims above do not replace this audit.
+
+| Requirement | Corrective evidence |
+| --- | --- |
+| C01 / empty results | Permanent one-unknown-date and 329-day upper-bound fixtures; unresolved elapsed dates can establish a conclusive ordinary failure below 330. Empty/proposal-only completed views prompt for evidence without arbitrary candidate/deficit. Known evidence displays the strongest supported period and a separately maximized possible bound. |
+| C02 | Saved 2024 history never becomes the 2025 example baseline; production tests verify no comparison in the example. |
+| C03 | Shared same-history/year/as-of report fields carry completed/scenario numerators, denominator and signed delta. Positive and negative changes tested; mismatched baselines rejected. Page, native clipboard and actual scenario PDF agree. |
+| C04 / report hierarchy | Summary, periods and case assumptions precede source/normalized details, provenance and linked references. Actual ordinary, projected and two-support PDFs are each one A4 page. All source ids and normalized evidence remain. Large reports retain pagination/context without a reference-only final page. |
+| Foreign baseline | Direct U.S.-entry setup with first full day, ongoing/specified end and acknowledgment; immediate return to U.S. visits. One validated version-1 record extension, no additional store. Summary/edit/confirmed end tested with three visits and retained declaration id/history. Ended declaration remains editable. |
+| Mobile UX | First date input is within the first 844px viewport (asserted top <650px). Stacked records keep dates, type/status, actual notes and actions together. In-place visit correction, validation focus and recognizable import/cancel/replacement tested. |
+| Tax-home wording | Explicit premise for the 330 supporting days beside results and in reports; shared changing-tax-home example. Raw coverage is not an established exclusion-limit numerator. No automatic tax-home clipping or eligibility engine. |
+| Production visual review | Actual rc.2 desktop/mobile originals, viewport details, native workflow recordings and downloaded PDF rasters inspected; original independent screenshots remain unchanged before references. This is additional evidence beyond code review and axe. |
+
+Final gates: `npm run check` **90/90 tests in 10 files**, TypeScript and production build pass. `npm run test:e2e -- --workers=1` **48 passed / 2 expected Firefox native-clipboard skips** across 50 cases and five projects. `npm ls --depth=0` and `git diff --check` pass. Installed dependencies were reused; no dependency additions or new clean installation. A capture-heavy run timed out in Firefox after reaching the end/PDF state; redundant nonselected screenshots were removed, the long capture test received an explicit extended allowance, and the final complete run passed.
+
+Local evidence: [gallery](../output/playwright/corrective-review/index.html), [manifest](../output/playwright/corrective-review/REVIEW-MANIFEST.md), [PDF reconciliation](../output/playwright/corrective-review/pdf-inspection.json). The package has 30 selected full screenshots (26 after, four original before), 26 viewport details, three native recordings, standalone screenshot/workflow archives and linked PDFs. Captures use isolated synthetic browser contexts; no user storage, profiles, traces or credentials are exported. Recordings use reduced fixed video canvases and can briefly resize during full-page screenshot capture; gray canvas/zoom transitions at those instants are capture artifacts. Screenshots retain original resolution. Local evidence is ignored under `output/playwright/`.
+
+Remaining limits: **qualified tax review of the changing-tax-home example and multi-period filing is still outstanding before publication or filing reliance**. February 29 interpretation stays explicit. No Safari, real iOS/Android, OS screen-reader certification, tagged Unicode PDF, remote CI or hosted configuration verification was performed. No publication is authorized. No known unresolved blocker remains in the verified local software scope.

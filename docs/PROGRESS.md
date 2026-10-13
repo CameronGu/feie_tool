@@ -49,3 +49,28 @@ This log records completed actions and evidence; pending verification is never a
 - Final review: keep leap-start and Form 2555 multiple-period filing questions explicit, maintain scope limits, and record actual verification plus real-device/PDF-accessibility limitations in readiness. A local production preview is available for review at `http://127.0.0.1:4173` while its process remains running.
 - Default year is the previous UTC calendar year, with direct user selection; filing context varies and should not be inferred from an October deadline. Final keyboard review also removed the visually hidden file input from tab navigation; the visible Import button remains keyboard-operable. Its explicit browser regression and final production rerun are being collected.
 - Final keyboard-refinement rerun completed: `npm run check` **79/79**, full production browser suite **28 passed / 2 documented Firefox native-clipboard skips**, all five projects green. The release-readiness document now audits all thirteen completion requirements and distinguishes verified local behavior from remaining scope/platform/licensing limits. The milestone plan is complete; the candidate is ready for user review, with no push/publication/deployment.
+
+
+## 2026-10-13 — corrective implementation (verification in progress)
+
+- Preserved rc.1 review and all original evidence in checkpoint `6c84444` before edits.
+- Read the calculation contract and independent review, including C01–C04 and Q01. Reopened live 26 CFR 1.911-2/3 for precise tax-home wording; retained raw union arithmetic and explicit professional-review limits.
+- Added candidate upper-bound assessment, actionable empty results, isolated example context and same-history/year/as-of scenario fields in the shared report.
+- Extended the sole version-1 history model with a validated ongoing declaration flag. Built direct baseline setup with assumption acknowledgment, ordinary ongoing summary, edit and confirmed final-day ending. No completed/proposed selector in baseline setup; future continuation remains projected.
+- Moved date guidance beside inputs, consolidated first-use copy, stacked narrow-screen history records and added import date/type/proposal preview. Added summary-first report sections, short source references retaining original ids, linked authoritative references and paragraph-aware pagination.
+- Added targeted unit/integration cases and production browser acceptance workflows/captures. First gate found a PDF link-assertion mismatch and a timeout in the multi-step baseline test; both corrected. This entry records implementation, not a verified release.
+
+
+## 2026-10-13 — corrective local acceptance complete
+
+- Final `npm run check`: **90/90 tests**, TypeScript and production build pass. Final `npm run test:e2e -- --workers=1`: **48 passed / two expected Firefox native-clipboard skips** across five browser/viewport projects. Dependency tree and diff whitespace checks pass; dependencies were reused unchanged.
+- A capture-heavy intermediate run hit Firefox lifecycle timeouts after the end/PDF state. Reduced duplicate capture work outside selected Chromium desktop/mobile evidence and extended the lifecycle capture allowance. The final full run passes; failures were not counted as passes.
+- Inspected actual rc.2 first use, baseline setup/status/edit/confirmed end, three U.S. visits, same-record mobile correction, actionable empty and upper-bound failure results, projected comparison, import review and validation focus. Visual review caught missing mobile date spacing and unnecessary empty-note rows; both corrected before final verification.
+- Downloaded ordinary, projected and two-support reports are one page, with summary-first ordering, reconciled counts, retained sources/normalized evidence and live PDF reference links. Inspected desktop rasters and a representative large report's final page. Local before/after gallery, 30 selected screenshots plus viewport details, three native recordings and standalone archives are under `output/playwright/corrective-review/`; originals in `output/release-review/` are unchanged.
+- Candidate/version: **0.2.0-rc.2 / physical-presence-2.1**. Ordinary calculation arithmetic unchanged. Qualified tax interpretation, real-device/assistive coverage, remote CI and hosting remain explicit limits. No push, deployment or publication.
+
+## 2026-10-13 — rc.2 preservation checkpoint
+
+- Reviewed all 26 changed/new source, test and documentation files before refinement. The only untracked nonignored files are the new baseline component and corrective browser test. No unrelated changes, credentials, generated browser files or synthetic review packages are included.
+- Reverified `npm run check`: **90/90 tests**, TypeScript and production build pass. Browser verification used an isolated exact source/build copy to preserve accepted visual artifacts: **46 passed / two expected Firefox clipboard skips** initially; two Chromium cases failed at navigation with `ERR_NETWORK_CHANGED` before application loading. Both pass on the `--last-failed` rerun, completing coverage of all **48** runnable cases. No application assertions were changed.
+- `git diff --check` passes. This local checkpoint preserves the accepted ongoing workflow, C01–C04, mobile history, tax-home wording and scenario report foundation before narrowly scoped cutoff, PDF, example-label and documentation refinements. No push, deployment or publication.

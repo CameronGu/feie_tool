@@ -4,13 +4,13 @@ A static React/TypeScript application built with Vite. No server, database, acco
 
 ## Source of truth and data flow
 
-`TravelHistory` in `domain/history.ts` is the sole record model. Versioned records contain inclusive dates, type, completed/proposed status, id and note. Declared foreign-presence ranges supply a bounded assumption. Explicit U.S., nonqualifying or unknown records override that assumption. Proposals form a separate scenario layer. Conflicting overlaps in a layer are rejected.
+`TravelHistory` in `domain/history.ts` is the sole record model. Versioned records contain inclusive dates, type, completed/proposed status, id and note. Declared foreign-presence ranges supply an assumption; ongoing declarations use a validated optional flag and the supported date ceiling in the same version-1 source model. Ending one atomically stores its final covered day without removing exceptions. Explicit U.S., nonqualifying or unknown records override that assumption. Proposals form a separate scenario layer. Conflicting overlaps in a layer are rejected.
 
 `useTravelHistory` owns history and independent year/view/scenario preferences. `historyStorage` handles versioned local storage and recoverable errors. Record editing is an atomic save from a form draft; incomplete drafts never affect results. Year/view changes never reinterpret or clamp source records. Portable JSON is validated before merge/replacement. Unreadable stored data is preserved until explicit reset/replacement, and can be downloaded for recovery.
 
 `normalizeHistory` derives daily evidence segments only for the selected evaluation horizon. Every segment retains recorded/assumed/unrecorded provenance, proposal/future status and source record ids. Unrecorded dates stay unknown. Completed evaluation excludes today's UTC date and later; scenario evaluation includes those dates as projected.
 
-`assessTravel` passes the foreign segments to `evaluateFeie` and assigns an evidence-aware result status. `buildReport` consumes that exact normalized evidence and calculation. Results, clipboard and PDF all use this shared structured report. They never reconstruct travel from independent mutable lists.
+`assessTravel` passes the foreign segments to `evaluateFeie` and assigns an evidence-aware result status. Candidate upper bounds treat unresolved elapsed days as potentially foreign; a maximum below 330 proves ordinary threshold failure despite missing evidence. `buildReport` consumes that exact normalized evidence and calculation. Results, clipboard and PDF all use this shared structured report. They never reconstruct travel from independent mutable lists.
 
 ## Calculation
 
@@ -22,9 +22,9 @@ The lower-level `calculateFeie` adapter remains for source reuse and legacy inte
 
 ## Presentation and reporting
 
-Direct interval entry precedes results, followed by the all-years history and backup controls. U.S./foreign entry choices are form conveniences, not history conversions. Native controls, explicit labels, focus styles, keyboard-accessible disclosures and local table scrolling replace the large calendar/modal flow. The example uses a separate in-memory dataset; proposed travel overlays completed history only during comparison.
+Direct interval entry precedes results, followed by the all-years history and backup controls. U.S./foreign entry choices are form conveniences, not history conversions. Native controls, explicit labels, focus styles, keyboard-accessible disclosures and stacked mobile records and a desktop history table replace the large calendar/modal flow. The example uses a separate in-memory dataset; proposed travel overlays completed history only during comparison.
 
-Reports include period evidence, union coverage, exact fraction, source records, all normalized horizon segments, assumptions, as-of/generated dates and application/calculation versions. PDF pagination repeats context and numbering on every page. Export errors have visible fallback instructions. Unsuccessful/incomplete reports remain exportable. JSON backups serve restoration; PDFs do not.
+Reports begin with the conclusion, exact fraction, supporting periods and case assumptions, followed by source/normalized details, provenance and linked references. Same-history/year completed-versus-scenario values live in the report model. Reports include period evidence, union coverage, exact fraction, source records, all normalized horizon segments, assumptions, as-of/generated dates and application/calculation versions. PDF pagination repeats context and numbering on every page. Export errors have visible fallback instructions. Unsuccessful/incomplete reports remain exportable. JSON backups serve restoration; PDFs do not.
 
 ## Verification and constraints
 

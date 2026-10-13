@@ -39,3 +39,35 @@ describe('evidence-aware physical-presence assessment', () => {
       .map(({ start_date, end_date }) => ({ start_date, end_date })));
   });
 });
+
+it('C01: proves failure despite one unresolved date, using candidate upper bounds', () => {
+  const data: TravelHistory = { schema_version: 1, records: [
+    { id: 'a', kind: 'us', status: 'completed', start_date: '2023-01-02', end_date: '2024-01-01', note: '' },
+    { id: 'b', kind: 'us', status: 'completed', start_date: '2024-01-03', end_date: '2025-12-30', note: '' }
+  ] };
+  const result = assessTravel(data, 2024, '2026-10-13');
+  expect(result.status).toBe('not-met');
+  expect(result.calculation.maxForeignDays).toBe(0);
+  expect(result.maxPossibleForeignDays).toBe(1);
+});
+
+it('C01: excludes future dates from the completed upper bound but allows them in comparison', () => {
+  const data: TravelHistory = { schema_version: 1, records: [
+    { id: 'us-before', kind: 'us', status: 'completed', start_date: '2024-01-02', end_date: '2024-12-31', note: '' },
+    { id: 'foreign', kind: 'foreign', status: 'completed', start_date: '2025-01-01', end_date: '2025-11-25', note: '' },
+    { id: 'us-after', kind: 'us', status: 'completed', start_date: '2025-11-26', end_date: '2026-10-12', note: '' }
+  ] };
+  const result = assessTravel(data, 2025, '2026-10-13');
+  expect(result.calculation.maxForeignDays).toBe(329);
+  expect(result.maxPossibleForeignDays).toBe(329);
+  expect(result.status).toBe('not-met');
+  expect(assessTravel(data, 2025, '2026-10-13', true).maxPossibleForeignDays).toBeGreaterThanOrEqual(329);
+});
+
+it('keeps failure inconclusive when unresolved elapsed days could reach 330', () => {
+  const data: TravelHistory = { schema_version: 1, records: [{ id: 'f', kind: 'foreign', status: 'completed',
+    start_date: '2025-01-01', end_date: '2025-11-25', note: '' }] };
+  const result = assessTravel(data, 2025, '2026-10-13');
+  expect(result.status).toBe('incomplete');
+  expect(result.maxPossibleForeignDays).toBeGreaterThanOrEqual(330);
+});

@@ -26,6 +26,10 @@ export interface PeriodEvidence extends QualifiedWindow {
   unknown_days: number;
 }
 
+export const TAX_HOME_NOTE = 'The 330 supporting full foreign days must also satisfy the foreign tax-home requirement. This tool has no tax-home timeline: its raw period coverage is not an established exclusion-limit numerator. Ask your preparer to verify these facts before using the fraction.';
+
+export const TAX_HOME_EXAMPLE = 'Tax-home example: Jan 1-Nov 26, 2025 supplies 330 physical days. A foreign tax home beginning Apr 1 covers only 240 of them; without other support, these facts do not establish the joint 330-day requirement. Preparer review is required.';
+
 export interface TravelReport {
   title: 'FEIE Window Optimizer';
   app_version: string;
@@ -48,10 +52,20 @@ export interface TravelReport {
   segments: PresenceSegment[];
   records: TravelRecord[];
   notes: string[];
+  references: { text: string; url: string }[];
+  has_evidence: boolean;
+  max_possible_foreign_days: number;
+  possible_period: QualifiedWindow;
+  comparison?: { tax_year: number; completed_days: number; scenario_days: number; denominator: number; delta_days: number; completed_status: string };
   leap_day_review: TravelAssessment['calculation']['leapDayReview'];
 }
 
-export function buildReport(assessment: TravelAssessment, generatedAt = new Date().toISOString()): TravelReport {
+export function buildReport(assessment: TravelAssessment, generatedAt = new Date().toISOString(), baseline?: TravelAssessment): TravelReport {
+  if (baseline && (!assessment.normalized.includes_proposals || baseline.normalized.includes_proposals ||
+    baseline.normalized.as_of !== assessment.normalized.as_of || baseline.normalized.input.taxYearStart !== assessment.normalized.input.taxYearStart ||
+    JSON.stringify(baseline.normalized.records) !== JSON.stringify(assessment.normalized.records.filter(record => record.status === 'completed')))) {
+    throw new Error('A scenario comparison requires completed evidence from the same history, tax year and reference date.');
+  }
   const { normalized, calculation } = assessment;
   const evidence = (window: QualifiedWindow): PeriodEvidence => {
     const interval = { start_date: window.window_start, end_date: window.window_end };
@@ -75,52 +89,86 @@ export function buildReport(assessment: TravelAssessment, generatedAt = new Date
     closest_period: evidence(calculation.closestWindow), qualifying_period_count: calculation.qualifyingWindowCount,
     horizon: normalized.horizon, segments: normalized.segments, records: normalized.records,
     leap_day_review: calculation.leapDayReview,
+    has_evidence: assessment.hasEvidence, max_possible_foreign_days: assessment.maxPossibleForeignDays, possible_period: assessment.possibleWindow,
+    ...(baseline ? { comparison: { tax_year: Number(normalized.input.taxYearStart.slice(0, 4)), completed_days: baseline.calculation.qualifyingDays,
+      scenario_days: calculation.qualifyingDays, denominator: calculation.totalTaxYearDays,
+      delta_days: calculation.qualifyingDays - baseline.calculation.qualifyingDays, completed_status: STATUS_LABELS[baseline.status] } } : {}),
     notes: [
-      'This report evaluates the ordinary physical-presence day test, not complete FEIE eligibility, actual foreign earned income or tax savings. Foreign tax home, citizenship/residency, elections and other eligibility rules require independent review.',
-      'Foreign ranges use first and last FULL foreign days, inclusive. Arrival/departure, U.S. territories, extended international-water travel and uncertain days do not automatically count. Short transit between foreign countries requires checking IRS rules.',
-      'Unrecorded dates remain unknown and count as zero foreign days. U.S. visits do not imply foreign presence on other dates. Declared foreign ranges are assumptions, overridden by explicit exceptions.',
-      'Tax-year coverage is the union of all supported qualifying periods intersecting this calendar year. Overlapping days count once. Coverage may include U.S. days; it is different from days physically abroad and from eligible foreign income.',
-      'Coverage is based on supplied evidence and can increase when missing records are supplied. The displayed fraction is conditional physical-presence coverage divided by calendar-year days, not a dollar exclusion.',
-      `Completed calculation excludes proposed records and dates on or after ${normalized.as_of} (UTC reference date). Scenario calculations include those dates as projected; neither scenario records nor changing years replace completed history.`,
-      'Supporting periods are chosen deterministically: cover the first uncovered day with the passing period ending latest, then repeat. This compact set covers the same union as every passing ordinary-date period.',
-      'February 29 starts have an unresolved endpoint convention. Ordinary-date periods supply the baseline. A separate longer-convention sensitivity result is shown whenever it adds coverage.',
-      'Form 2555 line 16 requests a single twelve-month period. Multiple supporting periods in this working report require preparer review of filing/attachment treatment. Do not enter the combined span as one twelve-month period.',
-      'Sources: 26 CFR 1.911-2(d) and 1.911-3(d)(3); IRM 21.8.1.3.2(9)(d); IRS physical-presence guidance; 2025 Form 2555 instructions. Waivers, bona fide residence, special relief and monetary calculations are outside this tool.',
-      'https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test',
-      'https://www.irs.gov/irm/part21/irm_21-008-001r',
-      'https://www.irs.gov/instructions/i2555',
-      'https://www.ecfr.gov/current/title-26/section-1.911-3'
+      TAX_HOME_NOTE,
+      'This is the ordinary physical-presence day test, not complete FEIE eligibility, eligible income or tax savings. Citizenship/residency, elections and other requirements need independent review.',
+      'Coverage is the union of supported periods in the tax year, counting overlapping dates once. It may include U.S. days and differs from days physically abroad.',
+      ...(assessment.assumedForeignDays > 0 ? ['Declared foreign presence is assumed, overridden by explicit U.S., nonqualifying and unknown exceptions.'] : []),
+      ...(normalized.includes_proposals ? ['Scenario includes proposals and future continuation as projected evidence; saved completed history is retained.'] : []),
+      ...(calculation.supportingWindows.length > 1 ? ['Form 2555 line 16 requests a single twelve-month period. Multiple supporting periods require preparer review of filing/attachment treatment; do not enter their combined span as one period.'] : []),
+      ...(assessment.relevantUnknownDays > 0 || !calculation.qualified ? ['Unknown dates count zero toward the supported result. The possible upper bound treats unresolved elapsed dates as foreign, not as evidence.'] : []),
+      ...(calculation.leapDayReview ? ['The longer February 29 endpoint convention adds possible coverage requiring preparer review; it is not established coverage.'] : [])
+    ],
+    references: [
+      { text: '26 CFR 1.911-2(a), (d): tax home and full foreign days', url: 'https://www.ecfr.gov/current/title-26/section-1.911-2' },
+      { text: '26 CFR 1.911-3(d)(3): qualifying periods and computation', url: 'https://www.ecfr.gov/current/title-26/section-1.911-3' },
+      { text: 'IRM 21.8.1.3.2(9)(d): union of qualifying periods', url: 'https://www.irs.gov/irm/part21/irm_21-008-001r' },
+      { text: 'IRS physical-presence guidance', url: 'https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test' },
+      { text: '2025 Form 2555 instructions (line 16)', url: 'https://www.irs.gov/instructions/i2555' }
     ]
   };
 }
 
-export function reportText(report: TravelReport): string {
+export interface ReportSection { title: string; lines: { text: string; url?: string }[] }
+
+/** One ordered document for clipboard and PDF. References carry clickable destinations. */
+export function reportSections(report: TravelReport): ReportSection[] {
+  const section = (title: string, lines: string[]): ReportSection => ({ title, lines: lines.map(text => ({ text })) });
   const period = (window: PeriodEvidence) => [
-    `${window.window_start} to ${window.window_end} (${window.calendar_days} calendar days)`,
-    `Full foreign days: ${window.foreign_days} / 330 required; recorded completed: ${window.recorded_foreign_days}; assumed: ${window.assumed_foreign_days}; projected foreign: ${window.projected_foreign_days}; unknown: ${window.unknown_days}. Assumed and projected counts can overlap.`,
-    `Tax-year intersection: ${window.overlap_days} days.`
-  ].join('\n');
-  return [report.title, 'by Cameron Guthrie',
-    ...(report.example ? ['EXAMPLE REPORT: demonstration data, not your saved travel history.'] : []),
-    `Calendar tax year: ${report.tax_year}`, `Assessment: ${report.status_label}`,
-    `Input: ${report.scenario ? 'Scenario including proposed/future travel' : 'Completed travel only'}`,
-    `As of: ${report.as_of} (UTC date); generated: ${report.generated_at}`,
-    `Application ${report.app_version}; calculation ${report.calculation_version}`,
-    '', 'PHYSICAL-PRESENCE COVERAGE',
-    `${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)} (display rounded; exact fraction shown).`,
-    `Passing ordinary-date periods: ${report.qualifying_period_count}. Supporting periods: ${report.supporting_periods.length}.`,
-    ...report.coverage.map(segment => `Covered: ${segment.start_date} to ${segment.end_date} (${diffDaysInclusive(segment.start_date, segment.end_date)} days).`),
-    '', report.supporting_periods.length ? 'SUPPORTING TWELVE-MONTH PERIODS' : 'CLOSEST EVALUATED PERIOD (NOT QUALIFYING)',
-    ...(report.supporting_periods.length ? report.supporting_periods : [report.closest_period]).map(period),
-    ...(report.leap_day_review ? ['', 'LEAP-DAY REVIEW REQUIRED',
+    `${window.window_start} to ${window.window_end} (${window.calendar_days} calendar days; ${window.overlap_days} days in tax year).`,
+    `Full foreign days: ${window.foreign_days} / 330 required; recorded completed: ${window.recorded_foreign_days}; assumed: ${window.assumed_foreign_days}; projected foreign: ${window.projected_foreign_days}; unknown: ${window.unknown_days}.`
+  ];
+  const comparison = report.comparison;
+  const sourceRef = (id: string) => `R${report.records.findIndex(record => record.id === id) + 1}`;
+  return [
+    section('SUMMARY', [
+      ...(report.example ? ['EXAMPLE REPORT: demonstration data, not your saved travel history.'] : []),
+      `Calendar tax year: ${report.tax_year} | Assessment: ${report.status_label}`,
+      `Input: ${report.scenario ? 'Scenario including proposed/future travel' : 'Completed travel only'} | As of: ${report.as_of} (UTC).`,
+      ...(!report.has_evidence ? ['No relevant travel evidence. Add full foreign days, or establish default foreign presence and record exceptions.'] : []),
+      `PHYSICAL-PRESENCE COVERAGE: ${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)} (display rounded; exact fraction shown).`,
+      ...(comparison ? [`COMPLETED / SCENARIO COMPARISON - tax year ${comparison.tax_year}`,
+        `Completed-record coverage: ${comparison.completed_days} / ${comparison.denominator} (${comparison.completed_status}).`,
+        `Scenario coverage: ${comparison.scenario_days} / ${comparison.denominator}; change: ${comparison.delta_days >= 0 ? '+' : ''}${comparison.delta_days} days.`] : []),
+      `Passing ordinary-date periods: ${report.qualifying_period_count}. Supporting periods: ${report.supporting_periods.length}.`,
+      ...report.coverage.map(segment => `Covered: ${segment.start_date} to ${segment.end_date} (${diffDaysInclusive(segment.start_date, segment.end_date)} days).`)
+    ]),
+    ...(report.has_evidence ? [section(report.supporting_periods.length ? 'SUPPORTING TWELVE-MONTH PERIODS' : 'STRONGEST SUPPORTED PERIOD (NOT QUALIFYING)', [
+      ...(report.supporting_periods.length ? report.supporting_periods : [report.closest_period]).flatMap(period),
+      'Recorded completed excludes projected days. Assumed and projected counts can overlap.',
+      ...(!report.supporting_periods.length ? [
+        `Maximum possible full foreign days in any ordinary period: ${report.max_possible_foreign_days} / 330; upper-bound period ${report.possible_period.window_start} to ${report.possible_period.window_end}.`,
+        report.max_possible_foreign_days < 330 ? 'Even the upper bound is below 330: ordinary threshold failure is conclusive despite missing dates.' : 'Unknown dates could change the threshold conclusion; the upper bound is not completed evidence.'
+      ] : [])
+    ])] : []),
+    section('CASE ASSUMPTIONS AND LIMITATIONS', report.notes),
+    ...(report.leap_day_review ? [section('LEAP-DAY REVIEW REQUIRED', [
       `Longer February 29 convention could cover ${report.leap_day_review.alternative_coverage_days} tax-year days; baseline covers ${report.qualifying_days}. This alternative is not established coverage.`,
-      ...report.leap_day_review.additional_windows.map(window => `${window.window_start} to ${window.window_end}: ${window.foreign_days} full foreign days.`)] : []),
-    '', 'SOURCE RECORDS RELEVANT TO THE EVALUATION HORIZON',
-    ...report.records.map(record => `${record.id} | ${record.start_date} to ${record.end_date} | ${KIND_LABELS[record.kind]} | ${record.status} | ${record.note || '(no note)'}`),
-    ...(report.records.length ? [] : ['No recorded travel.']),
-    '', `NORMALIZED DAYS ACTUALLY EVALUATED: ${report.horizon.start_date} to ${report.horizon.end_date}`,
-    ...report.segments.map(segment => `${segment.start_date} to ${segment.end_date} | ${segment.kind} | ${segment.basis} | ${segment.projected ? 'projected' : 'completed/unknown'} | source ${segment.record_ids.join(', ') || 'unrecorded'}`),
-    '', 'ASSUMPTIONS AND PREPARER NOTES', ...report.notes.map((note, index) => `${index + 1}. ${note}`),
-    '', 'For informational use only. Not legal or tax advice.'
-  ].join('\n');
+      ...report.leap_day_review.additional_windows.map(window => `${window.window_start} to ${window.window_end}: ${window.foreign_days} full foreign days.`)
+    ])] : []),
+    section('SUPPORTING DETAILS - SOURCE RECORDS', report.records.length ? report.records.map(record =>
+      `${sourceRef(record.id)} | ${record.start_date} to ${record.ongoing ? 'ongoing' : record.end_date} | ${KIND_LABELS[record.kind]} | ${record.status} | ${record.note || '(no note)'} | id: ${record.id}`) : ['No recorded travel relevant to this horizon.']),
+    section(`NORMALIZED EVIDENCE: ${report.horizon.start_date} to ${report.horizon.end_date}`, [
+      'Legend: foreign = full foreign day; assumed = declaration; unrecorded = unknown. R references identify source records above.',
+      ...report.segments.map(segment => `${segment.start_date} to ${segment.end_date} | ${segment.kind} | ${segment.basis} | ${segment.projected ? 'projected' : 'completed/unknown'} | ${segment.record_ids.map(sourceRef).join(', ') || 'unrecorded'}`)
+    ]),
+    section('CALCULATION PROVENANCE', [
+      `Application ${report.app_version}; calculation ${report.calculation_version}; generated: ${report.generated_at}`,
+      `Completed evidence excludes dates on/after ${report.as_of} (UTC). Full foreign ranges are inclusive; exclude partial arrival/departure days. Check short-transit exceptions; territories and international waters do not automatically count.`,
+      'Supporting periods deterministically cover the first uncovered tax-year day with the passing period ending latest. February 29 endpoints remain a separate sensitivity. Rules anchored to 2025 guidance; waivers, bona fide residence, special relief and monetary calculations are outside scope.',
+      ...(report.records.some(record => record.ongoing) ? ['Ongoing declarations retain an open endpoint through the supported date ceiling (2100-12-31); normalization clips only evaluated evidence.'] : []),
+      TAX_HOME_EXAMPLE,
+      'For informational use only. Not legal or tax advice.'
+    ]),
+    { title: 'TECHNICAL REFERENCES', lines: report.references }
+  ];
+}
+
+export function reportText(report: TravelReport): string {
+  return [report.title, 'by Cameron Guthrie', ...reportSections(report).flatMap(section =>
+    ['', section.title, ...section.lines.map(line => line.url ? `${line.text}: ${line.url}` : line.text)])].join('\n');
 }
