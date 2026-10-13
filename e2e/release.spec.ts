@@ -70,7 +70,7 @@ test('bounded U.S. workflow, shared copy/PDF evidence and portable backup restor
   await add(page, 'us', '2024-12-01', '2024-12-31');
   await expect(page.getByRole('heading', { name: 'Threshold met under declared assumptions' })).toBeVisible();
   const text = await page.getByLabel('Preparer report text').inputValue();
-  expect(text).toContain('2024-12-01 to 2024-12-31 | us | recorded');
+  expect(text).toContain('December 1, 2024 to December 31, 2024');
   expect(text).toContain('366 / 366');
   await page.getByRole('button', { name: 'Copy preparer report' }).click();
   expect(await page.evaluate(() => (window as unknown as { copiedReport: string }).copiedReport)).toBe(text);

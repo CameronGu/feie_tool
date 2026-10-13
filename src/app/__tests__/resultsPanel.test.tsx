@@ -25,12 +25,22 @@ describe('report export fallbacks', () => {
     expect((await screen.findByRole('alert')).textContent).toContain('PDF export failed');
     expect((screen.getByRole('button', { name: 'Download PDF report' }) as HTMLButtonElement).disabled).toBe(false);
   });
+  it('adds the detailed appendix only when selected', async () => {
+    const save = vi.fn(); pdfFactory.mockResolvedValue({ save });
+    render(<ResultsPanel report={report} />);
+    const option = screen.getByLabelText('Include detailed supporting records') as HTMLInputElement;
+    expect(option.checked).toBe(false);
+    fireEvent.click(option);
+    fireEvent.click(screen.getByRole('button', { name: 'Download PDF report' }));
+    await screen.findByText('PDF report downloaded.');
+    expect(pdfFactory).toHaveBeenCalledWith(report, { includeAppendix: true });
+  });
   it('exports an incomplete result using the same report model', async () => {
     const save = vi.fn(); pdfFactory.mockResolvedValue({ save });
     render(<ResultsPanel report={report} />);
     fireEvent.click(screen.getByRole('button', { name: 'Download PDF report' }));
     await screen.findByText('PDF report downloaded.');
-    expect(pdfFactory).toHaveBeenCalledWith(report);
+    expect(pdfFactory).toHaveBeenCalledWith(report, { includeAppendix: false });
     expect(save).toHaveBeenCalledWith('feie-physical-presence-2024.pdf');
   });
 });

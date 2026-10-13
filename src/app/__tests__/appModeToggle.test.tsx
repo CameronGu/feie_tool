@@ -48,8 +48,8 @@ describe('primary travel workflows', { timeout: 15000 }, () => {
     fireEvent.click(screen.getByRole('button', { name: 'Enter foreign stays' }));
     expect(screen.getByRole('heading', { name: 'Threshold met under declared assumptions' })).toBeTruthy();
     const report = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
-    expect(report).toContain('335 / 330 required');
-    expect(report).toContain('2024-12-01 to 2024-12-31 | us | recorded');
+    expect(report).toContain('335 full foreign days');
+    expect(report).toContain('December 1, 2024 to December 31, 2024');
     expect(report).toContain('366 / 366');
     fireEvent.click(screen.getByRole('button', { name: 'Copy preparer report' }));
     await waitFor(() => expect(copy).toHaveBeenCalledWith(report));
@@ -140,8 +140,8 @@ it('C02: never mixes saved 2024 coverage with the 2025 example', () => {
   open(); add('foreign', '2024-01-01', '2024-12-31');
   fireEvent.click(screen.getByRole('button', { name: 'Preview an example' }));
   const text = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
-  expect(text).toContain('Calendar tax year: 2025');
-  expect(text).not.toContain('COMPLETED / SCENARIO COMPARISON');
+  expect(text).toContain('Foreign Earned Income Exclusion | Tax Year 2025');
+  expect(text).not.toContain('Completed and projected comparison');
   expect(screen.queryByText(/Completed-record coverage:/)).toBeNull();
 });
 
@@ -164,10 +164,10 @@ it('adjusts the cutoff without changing history and isolates all saved settings 
   expect((screen.getByLabelText('Saved calendar tax year') as HTMLInputElement).value).toBe('2024');
   expect(screen.getByText(/Your saved calculation for 2024 is paused/)).toBeTruthy();
   const demo = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
-  expect(demo).toContain('334 / 330 required');
-  expect(demo).toContain('Cutoff basis: demonstration');
+  expect(demo).toContain('334 full foreign days');
+  expect(demo).toContain('Demonstration data; this report does not describe your saved travel history.');
   expect(demo).toContain('Completed through: 2025-12-31');
-  expect(demo).not.toContain('COMPLETED / SCENARIO COMPARISON');
+  expect(demo).not.toContain('Completed and projected comparison');
   fireEvent.click(screen.getByRole('button', { name: 'Close example' }));
   expect((screen.getByLabelText('Compare proposed and future travel') as HTMLInputElement).checked).toBe(true);
   expect(screen.getByText('Completed through 2024-01-01 · Manual')).toBeTruthy();

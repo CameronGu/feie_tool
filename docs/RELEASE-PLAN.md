@@ -59,3 +59,9 @@ Final refinement acceptance is complete: **101 unit/integration tests**, TypeScr
 Final refinements are preserved at `f4e8d9d`; prototype work started from a clean tree. The isolated artifacts under `output/report-prototype/` replace the visual template only for review: one-page standard 2025 PDF/PNG, matching clipboard text, multiple-period/incomplete/unsuccessful/proposed layouts and an optional detailed appendix. The approved counts remain 330 full foreign, 35 U.S. and 351/365 covered days. Production calculation and report implementations remain unchanged.
 
 Acceptance: render and visually inspect every prototype page, reconcile inclusive counts and principal PDF/text content, run `npm run check` and relevant existing browser workflows. **Stop for design approval before production integration.** No push, publication or deployment. Layout decisions and reproduction commands are in [DESIGN-NOTES.md](../output/report-prototype/DESIGN-NOTES.md).
+
+## Approved production report redesign — rc.3
+
+The visual prototype was approved; checkpoint `3ecac30` preserves it and the final-refinement baseline remains `f4e8d9d`. Implement the shared concise standard PDF/clipboard, actual ongoing assumptions/cutoff/proposals, same-context optional appendix, deterministic lazy fonts and all assessment formats. Calculation version remains `physical-presence-2.2`; application candidate is `0.2.0-rc.3`.
+
+Acceptance: complete unit/integration, TypeScript/build and five-project browser suite; actual PDFs/clipboard samples for approved 2025, ongoing cross-year, full year, multiple periods, incomplete/failure, signed comparisons, Unicode and long histories; inspect raster/text/bounds/hyperlinks/footer/pagination and mobile controls. Evidence is isolated under `output/playwright/report-redesign/`; earlier capture directories and approved prototype remain preserved. Stop at final user acceptance; no push, deployment or publication.

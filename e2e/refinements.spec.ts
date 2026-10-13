@@ -24,20 +24,20 @@ test('local completed day, adjustment and isolated demonstration survive the UTC
   }
   await page.getByLabel('Compare proposed and future travel').check();
   const text = await page.getByLabel('Preparer report text').inputValue();
-  expect(text).toContain('recorded completed: 329');
-  expect(text).toContain('projected foreign: 1');
+  expect(text).toContain('329 recorded completed');
+  expect(text).toContain('1 projected');
   expect(text).toContain('Completed through: 2026-11-25');
   await page.getByText('Completed through 2026-11-25 · Device calendar').click();
   await page.getByLabel('Last completed calendar day').fill('2026-11-24');
   await page.getByRole('button', { name: 'Apply completed-day cutoff' }).click();
   await expect(page.getByText('Completed through 2026-11-24 · Manual')).toBeVisible();
-  expect(await page.getByLabel('Preparer report text').inputValue()).toContain('Cutoff basis: manual; device time zone: America/Managua');
+  expect(await page.getByLabel('Preparer report text').inputValue()).toContain('cutoff was manually selected');
   await page.getByRole('button', { name: 'Preview an example' }).click();
   await expect(page.getByLabel('Saved calendar tax year')).toHaveValue('2026');
   await expect(page.getByLabel('Saved calendar tax year')).toBeDisabled();
   await expect(page.getByText(/Your saved calculation for 2026 is paused/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Physical presence · 2025' })).toBeVisible();
-  expect(await page.getByLabel('Preparer report text').inputValue()).not.toContain('COMPLETED / SCENARIO COMPARISON');
+  expect(await page.getByLabel('Preparer report text').inputValue()).not.toContain('Completed and projected comparison');
   if (info.project.name === 'chromium-mobile' || info.project.name === 'chromium-desktop') {
     await page.evaluate(() => scrollTo(0, 0));
     await page.screenshot({ path: join(directory, '02-demonstration.png'), fullPage: true });
@@ -56,8 +56,8 @@ test('local completed day, adjustment and isolated demonstration survive the UTC
   await page.getByLabel('Compare proposed and future travel').uncheck();
   await expect(page.getByText('330 / 330 required', { exact: true })).toBeVisible();
   const completed = await page.getByLabel('Preparer report text').inputValue();
-  expect(completed).toContain('recorded completed: 330');
-  expect(completed).toContain('projected foreign: 0');
+  expect(completed).toContain('330 recorded completed');
+  expect(completed).not.toContain('1 projected');
   // The containing period still ends in the future; preserve its projected assessment.
   await expect(page.getByRole('heading', { name: 'Projected physical-presence coverage', exact: true })).toBeVisible();
   expect(await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'))).toBe(saved);

@@ -104,7 +104,7 @@ test('C01 definitive upper bound and C02 independent example context', async ({ 
   await page.getByRole('button', { name: 'Preview an example' }).click();
   await expect(page.getByRole('heading', { name: 'Physical presence · 2025' })).toBeVisible();
   await expect(page.getByText(/Completed-record coverage:/)).toHaveCount(0);
-  expect(await page.getByLabel('Preparer report text').inputValue()).not.toContain('COMPLETED / SCENARIO COMPARISON');
+  expect(await page.getByLabel('Preparer report text').inputValue()).not.toContain('Completed and projected comparison');
   await capture(page, info, '09-example-context');
 });
 

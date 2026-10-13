@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { TAX_HOME_EXAMPLE, TAX_HOME_NOTE, reportText, type TravelReport } from '../../services/report';
+import { KIND_LABELS, TAX_HOME_EXAMPLE, TAX_HOME_NOTE, basisLines, dateLabel, displayPeriods, projectedForeignLines, relevantExceptions, reportText, type TravelReport } from '../../services/report';
 
 export function ResultsPanel({ report, example = false }: { report: TravelReport; example?: boolean }) {
   const [feedback, setFeedback] = useState('');
   const [failed, setFailed] = useState(false);
   const [exporting, setExporting] = useState(false);
-  const periods = report.has_evidence ? report.supporting_periods.length ? report.supporting_periods : [report.closest_period] : [];
+  const [includeAppendix, setIncludeAppendix] = useState(false);
+  const periods = displayPeriods(report);
+  const exceptions = relevantExceptions(report);
   const comparison = report.comparison;
   async function copy() {
     try {
@@ -16,7 +18,7 @@ export function ResultsPanel({ report, example = false }: { report: TravelReport
     setExporting(true);
     try {
       const { createReportPdf } = await import('../../services/reportPdf');
-      const pdf = await createReportPdf(report);
+      const pdf = await createReportPdf(report, { includeAppendix });
       pdf.save(`feie-physical-presence-${report.tax_year}${report.scenario ? '-scenario' : ''}.pdf`);
       setFailed(false); setFeedback('PDF report downloaded.');
     } catch { setFailed(true); setFeedback('PDF export failed. Copy the preparer report or select its text below.'); }
@@ -46,22 +48,34 @@ export function ResultsPanel({ report, example = false }: { report: TravelReport
         `This period has ${report.closest_period.foreign_days} full foreign days; ${Math.max(0, 330 - report.closest_period.foreign_days)} more would be needed inside this same period. This is a count deficit, not a recommended itinerary.`}</p>
       {periods.map(window => <article className="period-card" key={window.window_start}>
         <h4>{window.window_start} to {window.window_end}</h4>
-        <dl><div><dt>Full foreign days</dt><dd>{window.foreign_days} / 330 required</dd></div>
+        <dl><div><dt>Full foreign days in period</dt><dd>{window.foreign_days} / 330 required</dd></div>
           <div><dt>Calendar period</dt><dd>{window.calendar_days} days</dd></div>
-          <div><dt>Days in selected year</dt><dd>{window.overlap_days}</dd></div>
+          <div><dt>{report.supporting_periods.length ? `${report.tax_year} qualifying-period days` : `Candidate days in ${report.tax_year}`}</dt><dd>{window.overlap_days}</dd></div>
           <div><dt>Recorded completed foreign</dt><dd>{window.recorded_foreign_days}</dd></div>
-          <div><dt>Assumed foreign</dt><dd>{window.assumed_foreign_days}</dd></div>
+          <div><dt>Assumed completed foreign</dt><dd>{window.completed_assumed_foreign_days}</dd></div>
           <div><dt>Projected foreign</dt><dd>{window.projected_foreign_days}</dd></div>
-          <div><dt>Unknown days</dt><dd>{window.unknown_days}</dd></div></dl>
+          <div><dt>U.S. / other nonforeign days</dt><dd>{window.us_days} / {window.other_nonforeign_days}</dd></div>
+          <div><dt>Unknown days</dt><dd>{window.unknown_days}</dd></div>
+          {report.supporting_periods.length > 1 && <div><dt>Distinct days added</dt><dd>{window.distinct_tax_year_days}</dd></div>}</dl>
       </article>)}
-      {report.has_evidence && <p className="help">Assumed and projected counts can overlap. Period dates describe the containing test period, not a recommendation to stay abroad continuously.</p>}
+      {report.has_evidence && <p className="help">Recorded completed, assumed completed and projected foreign days are separate counts. Period dates describe the containing test period, not a recommendation to stay abroad continuously.</p>}
       {report.has_evidence && !report.supporting_periods.length && <p className="help">Upper-bound period: {report.possible_period.window_start} to {report.possible_period.window_end}. This can differ from the strongest supported period; it is a possibility, not evidence.</p>}
       {report.coverage.length > 0 && <details><summary>Tax-year dates covered</summary><ul>{report.coverage.map(segment => <li key={segment.start_date}>{segment.start_date} to {segment.end_date}</li>)}</ul></details>}
+      {comparison && comparison.completed_report.supporting_periods.length > 0 && <details><summary>Completed supporting periods</summary>
+        <ul>{comparison.completed_report.supporting_periods.map(period => <li key={period.window_start}>{period.window_start} to {period.window_end}: {period.foreign_days} full foreign days; {period.distinct_tax_year_days} distinct {report.tax_year} days.</li>)}</ul>
+      </details>}
+      {report.scenario && <details><summary>Projected foreign presence</summary><ul>{projectedForeignLines(report).map(line => <li key={line}>{line}</li>)}</ul></details>}
+      {exceptions.length > 0 && <details><summary>Relevant travel exceptions</summary><ul>{exceptions.map(item => <li key={item.record.id}>
+        {KIND_LABELS[item.record.kind]}: {dateLabel(item.record.start_date)} to {dateLabel(item.record.end_date)}: {item.days} days within supporting periods{item.projected_days ? ` (${item.projected_days} projected)` : ''}.
+      </li>)}</ul></details>}
+      <details><summary>Source assumptions and limitations</summary><ul>{basisLines(report).map(line => <li key={line}>{line}</li>)}</ul></details>
+      <label className="check-row"><input type="checkbox" checked={includeAppendix} onChange={event => setIncludeAppendix(event.target.checked)} disabled={exporting} />Include detailed supporting records</label>
+      <p className="help">Optional PDF appendix with source records, evidence classifications and provenance. JSON backup is separate.</p>
       <div className="actions"><button className="secondary" onClick={copy}>Copy preparer report</button>
         <button onClick={exportPdf} disabled={exporting}>{exporting ? 'Preparing PDF...' : 'Download PDF report'}</button></div>
       <p role={failed ? 'alert' : 'status'} className={failed ? 'error' : 'feedback'}>{feedback}</p>
-      <details><summary>Review normalized evidence and assumptions</summary>
-        <p className="help">The report includes exactly the normalized days supplied to the engine, with record identifiers and assumptions. This text is also available for manual copying.</p>
+      <details><summary>Review preparer report text</summary>
+        <p className="help">Concise report text for email or workpapers. Detailed evidence and source identifiers are available in the optional PDF appendix.</p>
         <textarea className="report-text" aria-label="Preparer report text" readOnly value={reportText(report)} />
       </details>
       <p className="help">Completed through {report.last_completed_day}. Later dates are projected when included. Calculation {report.calculation_version}. <a href="https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test" target="_blank" rel="noreferrer">IRS physical-presence rules</a>.</p>

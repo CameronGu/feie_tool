@@ -4,6 +4,7 @@ import { deviceCutoff, latestCompletedDay, manualCutoff } from '../completedDayC
 import { assessTravel } from '../travelCalculator';
 import { buildReport, reportText } from '../report';
 import { createReportPdf } from '../reportPdf';
+import { pdfPageText } from './pdfText';
 import type { TravelHistory } from '../../domain/history';
 
 describe('completed calendar-day boundary', () => {
@@ -48,9 +49,9 @@ describe('completed calendar-day boundary', () => {
     expect(report).toMatchObject({ as_of: '2026-11-26', last_completed_day: '2026-11-25', cutoff: { basis: 'manual' } });
     const text = reportText(report);
     expect(text).toContain('Completed through: 2026-11-25');
-    expect(text).toContain('Exclusive as-of date: 2026-11-26');
-    const doc = await createReportPdf(report);
-    const commands = (doc.internal.pages as unknown as string[][]).flat().join(' ');
+    expect(text).toContain('cutoff was manually selected');
+    const doc = await createReportPdf(report, { includeAppendix: true });
+    const commands = pdfPageText(doc).join(' ');
     expect(commands).toContain('Completed through: 2026-11-25');
     expect(commands).toContain('Cutoff basis: manual');
     expect(commands).toContain('Exclusive as-of date: 2026-11-26');
