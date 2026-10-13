@@ -19,3 +19,12 @@ This log records completed actions and evidence; pending verification is never a
 - Service rejects partial calendar years, accepts older reusable history, and requires explicit foreign coverage for U.S. mode. The current UI has not yet been migrated to that safer contract.
 - Verification: targeted domain/service suite **27/27 pass** (3 files), including independent daily oracle and union counterexample. Production build/type check passes. Baseline UI failures are still scheduled for B/C; this checkpoint is not a release.
 - Next: persistent travel records with bounded foreign assumptions, explicit exceptions, unknown and proposed days; shared input normalization feeding calculation and reporting.
+
+## 2026-10-12 — milestone B core
+
+- Added a validated version-1 travel history, bounded foreign declarations with explicit U.S./other/unknown exceptions, and a separate proposal overlay. Source history is independent of selected year and entry view.
+- One normalized daily-segment source supplies the engine and future reports, including source record ids, assumed/recorded basis and projected flags. Today's UTC date and later cannot masquerade as completed full days.
+- Added JSON parsing/serialization and merge validation, browser storage with visible failure messages, preservation of unreadable storage until explicit reset/replacement, atomic record correction/deletion, undo, and year/view changes without source mutation.
+- Targeted domain/service/new-hook suite: **56/56 tests pass** (7 files), including StrictMode, reload, old-year retention, malformed/versioned import, conflicting merge, proposal isolation and unavailable storage. Build/type check passes.
+- One test initially included 2023 completed foreign history while expecting no 2024 qualifying period; corrected the fixture to start in 2024 because prior-year qualifying periods correctly intersect 2024. No calculation behavior was weakened to satisfy the fixture.
+- Next: expose the new state through direct accessible interval entry and safe import/reset controls, then verify actual browser workflows. Shared report model is being built for the new result view; it is not yet wired into the application.

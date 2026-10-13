@@ -46,3 +46,11 @@ Reviewed live on 2026-10-12:
 | Partial-year bounds | Explicit unsupported-input error |
 
 Core verification: 27 domain/service tests pass, including both reproduced audit regressions, 329/330 threshold, a union of two supporting periods covering all 366 days where every single period covers less, disjoint coverage, exhaustive start boundaries, exact fractions, and an independent daily enumeration oracle over four sparse/dense histories. The February 29 sensitivity fixture has 329 ordinary-period days but 330 under the longer leap-start convention; the result retains zero established coverage and exposes 307 alternative days for review. Input status and report disclosure tests remain part of B/D.
+
+## Implemented travel evidence model
+
+Version-1 JSON stores records with an id, inclusive dates, kind, completed/proposed status, and note. Kinds are full foreign days, bounded foreign-presence assumption, U.S. visit, other nonqualifying days, and unknown days. Explicit records override foreign assumptions. Proposed records form a separate overlay used only in the scenario calculation; completed records are retained. Conflicting overlaps in each explicit/declaration and completed/proposed layer are rejected, not silently resolved. Stored dates support 1900–2100; evaluated calendar years support 1901–2099 so their adjacent horizons remain representable. This technical date range is not certification of every year's tax law.
+
+The completed calculation excludes the current UTC reference date (not yet a full day) and all later days, even if a record was mistakenly marked completed. Scenario calculations retain them with projected provenance. All normalization is limited to the derived approximately three-year horizon; stored source records are never clipped or erased. Unrecorded dates remain unknown, never implied U.S. or foreign facts.
+
+Assessment states distinguish recorded threshold success, success conditional on declared assumptions, projection, incomplete evidence, fully evidenced failure, and leap-convention review. A supported period ending on/after the reference date is projected. Unknown days count zero toward 330; positive coverage is a lower bound from supplied evidence and may grow when missing records are supplied. Tax-home and broader eligibility are always outside the assessment.
