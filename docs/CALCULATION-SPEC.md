@@ -1,6 +1,6 @@
 # Physical-presence calculation contract
 
-Status: corrective implementation, 2026-10-13. Calculation/assessment version: `physical-presence-2.2`; application candidate: `0.2.0-rc.2`. Ordinary counting arithmetic is unchanged; assessment upper bounds and report interpretation are versioned. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
+Status: corrective implementation, 2026-10-13. Calculation/assessment version: `physical-presence-2.2`; application candidate: `0.2.0-rc.3` (report presentation redesign; calculation unchanged). Ordinary counting arithmetic is unchanged; assessment upper bounds and report interpretation are versioned. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
 
 ## Primary authorities
 

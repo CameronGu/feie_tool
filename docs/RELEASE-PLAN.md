@@ -1,6 +1,6 @@
 # First release plan
 
-Current work: corrective candidate **0.2.0-rc.2**, assessment **physical-presence-2.2**; ordinary counting engine unchanged. Initial rc.1 milestones below are historical; current acceptance is recorded in the corrective-pass section.
+Current candidate: **0.2.0-rc.3**, assessment **physical-presence-2.2**. Approved production report redesign is locally verified and ready for final user acceptance; ordinary counting engine is unchanged. Initial rc.1/rc.2 milestones below are historical; current acceptance is in the rc.3 section and RELEASE-READINESS.md.
 
 Branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
 No push, deployment, publication, backend, accounts, or external travel-data submission is authorized.
@@ -65,3 +65,5 @@ Acceptance: render and visually inspect every prototype page, reconcile inclusiv
 The visual prototype was approved; checkpoint `3ecac30` preserves it and the final-refinement baseline remains `f4e8d9d`. Implement the shared concise standard PDF/clipboard, actual ongoing assumptions/cutoff/proposals, same-context optional appendix, deterministic lazy fonts and all assessment formats. Calculation version remains `physical-presence-2.2`; application candidate is `0.2.0-rc.3`.
 
 Acceptance: complete unit/integration, TypeScript/build and five-project browser suite; actual PDFs/clipboard samples for approved 2025, ongoing cross-year, full year, multiple periods, incomplete/failure, signed comparisons, Unicode and long histories; inspect raster/text/bounds/hyperlinks/footer/pagination and mobile controls. Evidence is isolated under `output/playwright/report-redesign/`; earlier capture directories and approved prototype remain preserved. Stop at final user acceptance; no push, deployment or publication.
+
+Final rc.3 acceptance: **106/106 unit/integration tests**, TypeScript/build and **59 browser passes / six expected skips** across all five projects in one uninterrupted final invocation. Native standard/appendix samples, text/raster/bounds/URI/font/footer checks and desktop/mobile export controls inspected. Implementation checkpoints: `6a126fb`, `be90c92`; final verification checkpoint follows. User acceptance remains the final gate; no push, publication or deployment.

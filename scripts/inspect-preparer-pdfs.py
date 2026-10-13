@@ -3,6 +3,8 @@ Run after e2e/reports.spec.ts: python3 scripts/inspect-preparer-pdfs.py
 """
 from pathlib import Path
 import json
+from datetime import date
+import calendar
 import subprocess
 import xml.etree.ElementTree as ET
 from PIL import Image, ImageOps, ImageDraw
@@ -16,13 +18,13 @@ def run(*args):
 
 inspections = []
 rasters = []
-for pdf in sorted(NATIVE.glob('*.pdf')):
+for pdf in sorted(OUT.glob('*/*.pdf')):
+    directory = pdf.parent
     stem = pdf.stem
     text = run('pdftotext', '-layout', str(pdf), '-')
-    (NATIVE / f'{stem}.pdf-text.txt').write_text(text)
+    (directory / f'{stem}.pdf-text.txt').write_text(text)
     document = ET.fromstring(run('pdftotext', '-bbox-layout', str(pdf), '-'))
     pages = document.findall('.//p:page', NS)
-    collision_count = 0
     for index, page in enumerate(pages):
         assert abs(float(page.attrib['width']) - 595.28) < .1
         assert abs(float(page.attrib['height']) - 841.89) < .1
@@ -35,16 +37,19 @@ for pdf in sorted(NATIVE.glob('*.pdf')):
             box = [float(word.attrib[k]) for k in ['xMin', 'yMin', 'xMax', 'yMax']]
             assert 47 < box[0] < box[2] < 548.5, (pdf.name, index + 1, word.text, box)
             assert 32 < box[1] < box[3] < 826, (pdf.name, index + 1, word.text, box)
-        for i, a in enumerate(words):
-            for b in words[i + 1:]:
+        ordered = sorted(words, key=lambda word: float(word.attrib['yMin']))
+        for i, a in enumerate(ordered):
+            for b in ordered[i + 1:]:
+                if float(b.attrib['yMin']) >= float(a.attrib['yMax']):
+                    break
                 overlap_x = min(float(a.attrib['xMax']), float(b.attrib['xMax'])) - max(float(a.attrib['xMin']), float(b.attrib['xMin']))
                 overlap_y = min(float(a.attrib['yMax']), float(b.attrib['yMax'])) - max(float(a.attrib['yMin']), float(b.attrib['yMin']))
                 assert not (overlap_x > .8 and overlap_y > 1), (pdf.name, index + 1, a.text, b.text, overlap_x, overlap_y)
     # Inspect every actual page; use a representative subset only in the compact contact sheet.
-    run('pdftoppm', '-scale-to', '1500', '-png', str(pdf), str(NATIVE / stem))
+    run('pdftoppm', '-scale-to', '1500', '-png', str(pdf), str(directory / stem))
     for index in range(1, len(pages) + 1):
-        raster = NATIVE / f'{stem}-{index:0{len(str(len(pages)))}d}.png'
-        if index in {1, len(pages)}:
+        raster = directory / f'{stem}-{index:0{len(str(len(pages)))}d}.png'
+        if directory == NATIVE and index in {1, len(pages)}:
             rasters.append((f'{stem} / {index}', raster))
     if stem == 'standard-2025':
         assert len(pages) == 1
@@ -71,7 +76,11 @@ for pdf in sorted(NATIVE.glob('*.pdf')):
         assert len(pages) > 1
         assert 'Record 23:' in text
         assert text.count('U.S. visit (original dates)') > 1
-    inspections.append({'file': pdf.name, 'pages': len(pages), 'a4': True, 'bounds_and_collisions': 'pass', 'every_footer': 'pass'})
+    links = run('pdfinfo', '-url', str(pdf))
+    urls = {line.split()[-1] for line in links.splitlines() if 'Annotation' in line}
+    assert len(urls) == (7 if '-appendix' in stem else 2 if stem in {'failure', 'incomplete', 'negative-comparison'} else 3), (stem, urls)
+    assert all(url.startswith(('https://www.irs.gov/', 'https://www.ecfr.gov/')) for url in urls)
+    inspections.append({'hyperlinks': len(urls), 'file': str(pdf.relative_to(OUT)), 'pages': len(pages), 'a4': True, 'bounds_and_collisions': 'pass', 'every_footer': 'pass'})
 
 manifest = json.loads((NATIVE / 'engine-reconciliation.json').read_text())
 for case in manifest:
@@ -79,6 +88,17 @@ for case in manifest:
     clipboard = (NATIVE / f'{case["name"]}.clipboard.txt').read_text()
     fraction = f'{case["numerator"]} / {case["denominator"]} = {case["numerator"]/case["denominator"]:.6f}'
     assert fraction in text and fraction in clipboard, (case['name'], fraction)
+    def label(value):
+        parsed = date.fromisoformat(value)
+        return f'{calendar.month_name[parsed.month]} {parsed.day}, {parsed.year}'
+    for period in case['periods']:
+        dates = f'{label(period["window_start"])} to {label(period["window_end"])}'
+        assert dates in ' '.join(text.split()) and dates in ' '.join(clipboard.split()), (case['name'], dates)
+        assert f'{period["foreign_days"]} full foreign days' in text and f'{period["foreign_days"]} full foreign days' in clipboard
+        assert period['recorded_foreign_days'] + period['completed_assumed_foreign_days'] + period['projected_foreign_days'] == period['foreign_days']
+        assert period['foreign_days'] + period['us_days'] + period['other_nonforeign_days'] + period['unknown_days'] == period['calendar_days']
+        assert (date.fromisoformat(period['window_end']) - date.fromisoformat(period['window_start'])).days + 1 == period['calendar_days']
+    assert sum(period['distinct_tax_year_days'] for period in case['periods']) == case['numerator']
     if 'delta' in case:
         delta = f'{case["delta"]:+d} days'
         assert delta in text and delta in clipboard
