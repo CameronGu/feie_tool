@@ -61,7 +61,7 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
       <div className="actions backup-actions">
         <button className="secondary" onClick={() => downloadText(serializeHistory(history), 'feie-travel-history-v1.json')}>Export JSON backup</button>
         <button className="secondary" onClick={() => fileRef.current?.click()}>Import JSON backup</button>
-        <input ref={fileRef} className="sr-only" type="file" accept=".json,application/json" aria-label="Choose travel-history backup" onChange={readFile} />
+        <input ref={fileRef} className="sr-only" tabIndex={-1} type="file" accept=".json,application/json" aria-label="Choose travel-history backup" onChange={readFile} />
         {recoveryData !== undefined && <button className="secondary" onClick={() => downloadText(recoveryData, 'feie-unreadable-history.txt')}>Download unreadable saved data</button>}
       </div>
       {pending && <div className="notice" aria-label="Review backup import">

@@ -1,93 +1,65 @@
-**FEIE Window Optimizer** - a calculator that identifies the most tax-advantageous 12-month Foreign Earned Income Exclusion window.
-
 # FEIE Window Optimizer
 
-A modular Foreign Earned Income Exclusion (FEIE) planner that evaluates every possible 12-month window spanning a U.S. tax year and the required "+/- 1 year" coverage to surface the period(s) with the strongest tax benefit. The tool is designed for static deployment (Vite + React) with reusable TypeScript domain logic suitable for serverless or SSR integrations.
+A private, account-free utility for evaluating the Foreign Earned Income Exclusion's ordinary physical-presence test. Maintain travel history, compare proposed travel, and prepare a supporting report for a tax preparer.
 
-## Why it exists
-- **FEIE qualification clarity** – Translates complex IRS residency rules into day-level insights, highlighting the windows that deliver at least 330 qualifying foreign days.
-- **Planning assistance** – Shows how many days abroad are still required when a traveler is short of the threshold and suggests optimal start dates.
-- **Extensible architecture** – Pure TypeScript domain layer, validation utilities, and UI separation enable reuse across channels (web, API, CLI).
+The application counts full foreign days in intersecting twelve-calendar-month periods and combines qualifying-period coverage within a selected calendar year without double counting. It does **not** determine complete FEIE eligibility, foreign tax home, eligible income, actual exclusion dollars, or tax savings.
 
-## Features
-- Tax year selector with smart defaults (previous year until October 15) and +/- 7 year range.
-- Automatic expansion of the evaluation window to one year before and after the chosen tax year.
-- Dual input modes (U.S. presence or Foreign travel) with live validation and explicit error codes.
-- Quick-add calendar planner for both modes, supporting multi-year travel selection with visual feedback.
-- Optimized-window storytelling – clearly communicates the best FEIE window(s) and why they matter.
-- Planning insights that reveal remaining qualifying days when the threshold is not yet met.
-- Results panel with timeline visualization, PDF export, and clipboard sharing for client-ready summaries.
-- Sample data presets covering qualifying, borderline, and disqualifying travel histories for instant demos.
+## Run locally
 
-## Getting started
-```bash
-npm install
+Use Node 20.19+ within the 20.x line, or Node 22.12+ (Node 22 recommended).
+
+```sh
+npm ci
 npm run dev
 ```
 
-The development server runs on Vite. Start the UI, select the appropriate tax year, and enter either U.S. or foreign intervals using the calendar or manual fields. Validation feedback appears inline.
+Open the local URL printed by Vite. Production bundle: `npm run build`, then `npm run preview`. Nothing is deployed by these commands.
 
-While running locally you can load pre-built travel scenarios from the **Sample data presets** menu to explore qualifying, borderline, and disqualifying cases without manual entry.
+## Travel workflow
 
-### Testing
-```bash
-npm test
+1. Select a calendar tax year. Changing years preserves all records.
+2. Enter the first and last **full** foreign days, inclusive. Ordinary arrival/departure dates are partial; record transit and other nonqualifying days separately. Check IRS short-transit exceptions before counting them.
+3. For U.S.-visit entry, add a bounded **Declared foreign presence** record and explicitly confirm its assumption. Add U.S., nonqualifying and unknown exceptions within that range. U.S. visits alone do not imply foreign presence on other dates.
+4. Mark proposed records as a scenario. Enable comparison to include them and future dates; completed history remains unchanged.
+5. Review supporting periods, combined coverage, the exact day-count fraction and assumptions. Copy/download the preparer report, including incomplete or unsuccessful cases.
+6. Export a JSON backup to restore records or transfer devices. Import first previews records; merging preserves existing records and rejects conflicts, while replacement requires explicit acknowledgment. Reset requires a deliberate choice; the last change can be undone in the current session.
+
+The initial year is the previous UTC calendar year. Choose your filing year directly; the tool does not infer your filing situation from a deadline.
+
+Records persist in this browser's local storage. Clearing browser data, private sessions or storage restrictions can remove/prevent persistence. Keep backups. Browser data is plaintext within the browser profile. There are no accounts, analytics, external travel-data submissions or cloud synchronization. Use one editing tab at a time. Example preview never replaces saved records.
+
+## Interpretation limits
+
+Results distinguish recorded, assumed, projected, incomplete, unsuccessful and leap-boundary review cases. Missing dates remain unknown and contribute zero full foreign days; supported coverage can increase when evidence is added. Today's UTC reference date and later are excluded from completed-day evidence. A supporting period extending into the future is projected.
+
+Coverage can combine several passing periods and can include U.S. days. It is conditional physical-presence coverage, distinct from actual foreign income. Foreign tax home and other eligibility requirements need independent review. February 29 starts have an explicit sensitivity calculation because reviewed guidance does not settle the absent corresponding-date convention. Form 2555 asks for a single period; multiple supporting periods require preparer review of filing treatment. Reports are working documentation, not completed tax forms. Waivers, bona fide residence, special relief, unlawful-presence rules and monetary calculations are outside this tool.
+
+PDFs include normalized evidence, source records and assumptions, repeated page context and page numbers. Core PDF fonts render unsupported Unicode as `[U+codepoint]`; clipboard and JSON preserve the original text. PDF tagging/screen-reader reading order is not certified; the accessible webpage and copyable text are alternatives.
+
+## Verification
+
+```sh
+npm run check             # type check, unit/integration tests, production build
+npx playwright install chromium firefox
+npm run test:e2e          # production preview; desktop, tablet and narrow mobile
 ```
 
-Vitest covers domain logic (interval normalization, inversion, FEIE evaluation), the calculator service, and critical UI flows. Extend the suite when adding new validation scenarios or traversal rules.
+Browser tests exercise primary workflows, reload and JSON restore, scenario/example isolation, clipboard/PDF downloads, keyboard labels/focus, page width and automated accessibility. CI runs these checks on Node 22. Browser installation on Linux CI also needs `npx playwright install --with-deps chromium firefox`. Mobile tests emulate viewport size; they do not certify native iOS/Android behavior or a complete assistive-technology audit.
 
-### Programmatic usage
-The FEIE calculator can be reused outside the React app by importing `calculateFeie` from the package entry point.
+## Design and release records
 
-```ts
-import { calculateFeie } from 'feie-tool';
+- [Calculation specification and sources](docs/CALCULATION-SPEC.md)
+- [Milestone plan](docs/RELEASE-PLAN.md)
+- [Progress log](docs/PROGRESS.md)
+- [Release-readiness evidence](docs/RELEASE-READINESS.md)
+- [Architecture](docs/architecture.md)
 
-const result = calculateFeie({
-  tax_year_start: '2024-01-01',
-  tax_year_end: '2024-12-31',
-  mode: 'FOREIGN_PERIODS',
-  foreign_periods: [
-    { start_date: '2024-01-01', end_date: '2024-11-30' }
-  ],
-  planning_mode: true
-});
+`PROJECT-STATE.md` and `PRODUCT-REVIEW.md` describe the historical 2025 alpha, not the current candidate. The application and report version comes from `package.json`; the calculation has a separate version identifier.
 
-if (result.error) {
-  // Inspect error.code / error.message for remediation guidance.
-}
-```
+## Source reuse
 
-## Project structure
-```
-src/
-  app/        # React components, hooks, and styles
-  domain/     # Pure calculation + validation utilities
-  services/   # Calculator service wiring domain logic to I/O contracts
-  index.ts    # Library entry point exporting types + calculator
-```
+The pure domain and service modules are reusable within this repository. `src/index.ts` exposes `assessTravel`, versioned history helpers and the lower-level `calculateFeie` adapter. Only complete calendar tax years are supported. This private application is not configured as a published npm package.
 
-Key docs:
-- `docs/architecture.md` – High-level layering and deployment notes.
+No license has been granted for redistribution; choose licensing before public source distribution. No publishing or hosting changes are part of this release work.
 
-## Deployment
-The app ships as a static bundle via `npm run build`. Deploy to any static host (Vercel, Netlify, S3) or embed the `calculateFeie` function into serverless handlers.
-
-## Contributing
-1. Fork or branch from `main`.
-2. Install dependencies and run the Vitest suite.
-3. Follow the existing TypeScript style and keep helpers pure when possible.
-4. Submit changes with meaningful commit prefixes (e.g., `feat`, `fix`, `chore`).
-5. Document new behaviors in README or docs as needed.
-
-Please open issues for feature requests, validation edge cases, or FEIE policy clarifications.
-
-## License
-Specify licensing before publishing (e.g., MIT, Apache 2.0). Add the chosen license file at the repo root.
-
-## Suggested GitHub metadata
-- **Description**: "Plan optimized FEIE 12-month windows with smart validation, calendar inputs, and planning insights."
-- **Topics**: `feie`, `tax-planning`, `react`, `typescript`, `financial-tools`, `vite`
-
----
-Developed by Cameron Guthrie  
-https://cameronjguthrie.com/tools/feie-window-optimizer
+by Cameron Guthrie

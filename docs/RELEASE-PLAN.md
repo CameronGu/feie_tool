@@ -9,18 +9,20 @@ No push, deployment, publication, backend, accounts, or external travel-data sub
 | --- | --- | --- | --- |
 | 0. Baseline and research | None | Inspect historical assessments and current code; reproduce checks; establish sourced calculation contract and persistent log | Complete |
 | A. Calculation | 0 | Reproduce/fix both audit boundaries; exact calendar periods, 330 threshold, union without double counting, deterministic supporting periods, 365/366 denominator, precision, explicit legal limits; permanent counterexamples | Complete; legal limitations explicit |
-| B. Travel history | A | One versioned source; foreign declarations plus exceptions; unknown/completed/proposed distinctions; history survives year/view changes; local persistence; validated backup/import with explicit merge/replace; deliberate reset | Implemented and integration-tested; browser restore gate in E |
-| C. Primary workflow | B | Direct labeled interval entry; visible year selection; safe example/scenario flows; keyboard access; usable desktop/tablet/390px layout; no giant calendar/tab sequence or unsafe mode conversion | Implemented; initial desktop/mobile inspected; browser gates in E |
-| D. Results and reports | A, B, C | Shared structured report for page/copy/PDF; union evidence, exact fraction, assumptions, dates and versions; unsuccessful/incomplete exports; actual versus scenario comparison; ordinary and multipage PDF checks | Implemented; real PDF tests pass; download/visual gate in E |
-| E. Verification and readiness | A–D | Compatible dependency tree; unit/integration/browser tests, type check and production build pass; CI; real browser/accessibility inspection; current README/architecture/readiness; coherent local commits | In progress |
+| B. Travel history | A | One versioned source; foreign declarations plus exceptions; unknown/completed/proposed distinctions; history survives year/view changes; local persistence; validated backup/import with explicit merge/replace; deliberate reset | Complete; unit/integration and browser restore pass |
+| C. Primary workflow | B | Direct labeled interval entry; visible year selection; safe example/scenario flows; keyboard access; usable desktop/tablet/390px layout; no giant calendar/tab sequence or unsafe mode conversion | Complete; five browser/viewport projects pass; real screenshots inspected |
+| D. Results and reports | A, B, C | Shared structured report for page/copy/PDF; union evidence, exact fraction, assumptions, dates and versions; unsuccessful/incomplete exports; actual versus scenario comparison; ordinary and multipage PDF checks | Complete; actual 1-page/10-page downloads, text/raster checks and fallback tests pass |
+| E. Verification and readiness | A–D | Compatible dependency tree; unit/integration/browser tests, type check and production build pass; CI; real browser/accessibility inspection; current README/architecture/readiness; coherent local commits | Complete locally; 79 tests, 28 browser passes/2 platform skips; remote CI and publication remain unauthorized |
 
 Each milestone receives targeted regression tests, relevant browser verification, log updates, and a local commit. Correct regressions before advancement. Domain-only work need not wait for the scheduled replacement of stale UI fixtures. Final completion requires **all** milestones and an evidence-based readiness audit, not merely a passing build.
+
+Candidate: `0.2.0-rc.1`; calculation version `physical-presence-2`. All requested local milestones are complete. See [RELEASE-READINESS.md](RELEASE-READINESS.md) for the requirement-by-requirement audit and explicit remaining limits. No known blocker remains in the scoped ordinary physical-presence planning product. No deployment, push or publication occurred.
 
 ## Verification commands
 
 - Baseline: `git status --short`, `npm run build`, `npm test -- --run`.
 - Calculation: `npm test -- --run src/domain/__tests__ src/services/__tests__ --environment node`.
-- Final: `npm ci`, `npm ls --depth=0`, `npm run typecheck`, `npm test -- --run`, `npm run build`, plus checked-in browser test command to be established in E.
+- Final: `npm ci`, `npm ls --depth=0`, `npm run check` (type check, unit/integration tests and build), `npm run test:e2e` (production bundle across five browser/viewport configurations).
 - Browser: production preview; primary workflows at desktop, tablet and narrow mobile; keyboard and accessible names; clipboard/download, backup restore, reload and year changes; PDF page/text inspection.
 
 ## Baseline

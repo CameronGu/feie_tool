@@ -1,6 +1,6 @@
 # Physical-presence calculation contract
 
-Status: core implemented and regression-tested, 2026-10-12; input evidence/status integration follows in milestone B. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
+Status: implemented with evidence-aware inputs, shared reporting and regression coverage, 2026-10-12. Calculation version: `physical-presence-2`; application candidate: `0.2.0-rc.1`. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
 
 ## Primary authorities
 
@@ -25,6 +25,8 @@ Reviewed live on 2026-10-12:
 - Preserve integer numerator/denominator and unrounded ratio in outputs. Round only display values; always show the exact fraction alongside the decimal.
 - Completed records, explicit assumptions, unknown dates and future/proposed records must remain distinguishable. A projected calculation cannot establish completed presence. A failed lower-bound calculation with unknown dates is incomplete, not conclusive failure.
 
+Formally, for each ordinary candidate start `s`, let `E(s)` be the inclusive twelve-calendar-month endpoint and `F(s)` the count of normalized full foreign days in `[s, E(s)]`. Passing periods have `F(s) >= 330` and intersect the selected year `Y`. The modeled covered day set is `Q = Y ∩ union([s, E(s)] for passing s)`. The numerator is `n = |Q|`; denominator `d = |Y|` is 365 or 366; the conditional coverage fraction is `n / d`. This set operation counts each date once, including dates outside foreign stays that fall within supported periods. The leap-start alternative is evaluated separately and never silently added to `Q`.
+
 ## Questions requiring explicit treatment
 
 1. **February 29 starts:** the corresponding date does not exist the following year. Reviewed IRS/regulatory text does not explicitly choose between February 27 and February 28 as the inclusive endpoint (365 versus 366 days). Do not silently apply generic year-clamping. Implement a sensitivity calculation and report when this ambiguity changes coverage; use independently supported ordinary-date periods for the defensible baseline. A February 29 start ending February 27 is dominated by the ordinary February 28 start one day earlier; the longer alternative may add coverage and requires preparer review. No general 365-day shortcut.
@@ -37,6 +39,7 @@ Reviewed live on 2026-10-12:
 | Example | Expected behavior |
 | --- | --- |
 | 2023-01-02–2023-11-27 full foreign days, tax year 2024 | 330; supporting 2023-01-02–2024-01-01; one day of 2024 covered |
+| 2024-01-02–2024-11-26 full foreign days, tax year 2025 | 330; 366-day supporting period; exact fraction 1/365 for 2025 |
 | 2025-02-05–2025-12-31 full foreign days, tax year 2024 | No intersecting qualifying period; no positive result from a 2025-only period |
 | 329 versus 330 foreign days | Threshold exact, inclusive |
 | 2023-03-01 start | Ends 2024-02-29, 366 days |
@@ -45,7 +48,7 @@ Reviewed live on 2026-10-12:
 | Foreign days separated by U.S./nonqualifying/unknown days | Only modeled full foreign days count toward 330 |
 | Partial-year bounds | Explicit unsupported-input error |
 
-Core verification: 27 domain/service tests pass, including both reproduced audit regressions, 329/330 threshold, a union of two supporting periods covering all 366 days where every single period covers less, disjoint coverage, exhaustive start boundaries, exact fractions, and an independent daily enumeration oracle over four sparse/dense histories. The February 29 sensitivity fixture has 329 ordinary-period days but 330 under the longer leap-start convention; the result retains zero established coverage and exposes 307 alternative days for review. Input status and report disclosure tests remain part of B/D.
+Initial core checkpoint: 27 domain/service tests passed, including both reproduced audit regressions, 329/330 threshold, a union of two supporting periods covering all 366 days where every single period covers less, disjoint coverage, exhaustive start boundaries, exact fractions, and an independent daily enumeration oracle over four sparse/dense histories. The February 29 sensitivity fixture has 329 ordinary-period days but 330 under the longer leap-start convention; zero established coverage is retained, with 307 alternative days in 2024 and 59 in 2025 exposed for review. The completed 79-test suite adds evidence/status, 2025 denominator, persistence, import/restore, interface and reporting coverage; production browser evidence is in [RELEASE-READINESS.md](RELEASE-READINESS.md).
 
 ## Implemented travel evidence model
 
