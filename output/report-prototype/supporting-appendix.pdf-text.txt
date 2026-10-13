@@ -1,0 +1,126 @@
+Optional appendix • standard 2025 synthetic evidence                                         Generated October 13, 2026
+
+
+
+Physical Presence Test
+Foreign Earned Income Exclusion | Tax Year 2025
+
+
+
+Detailed evidence and provenance
+Companion to standard-2025.pdf. The standard report is independently readable. Source identifiers
+below are synthetic review labels.
+
+Full relevant source history
+
+ Source / classification                                  Original inclusive source dates
+
+
+ SYN-A01 / assumed foreign                                January 1, 2015 to December 31, 2025
+
+ SYN-U01 / recorded U.S.                                  May 31 to June 29, 2025
+
+ SYN-U02 / recorded U.S.                                  December 13, 2025 to January 13, 2026
+
+All three supplied source records are retained with original endpoints. SYN-A01 is a bounded synthetic
+declaration, not independent evidence of each full foreign day. Explicit exceptions override it.
+
+Normalized evidence within the selected period
+
+ Inclusive normalized range                                  Basis / source                              Days
+
+
+ 2024-12-18                                                  Assumed foreign                                     164
+ to 2025-05-30                                               SYN-A01
+
+
+ 2025-05-31                                                  Recorded U.S.                                        30
+ to 2025-06-29                                               SYN-U01
+
+
+ 2025-06-30                                                  Assumed foreign                                     166
+ to 2025-12-12                                               SYN-A01
+
+
+ 2025-12-13                                                  Recorded U.S.                                         5
+ to 2025-12-17                                               SYN-U02
+
+
+ Total                                                       330 foreign + 35 U.S.                               365
+
+
+
+
+No projected or unknown days occur within this supporting period. Normalized rows are derived and
+clipped; source dates above are preserved. Unrecorded dates elsewhere remain unknown.
+
+This appendix is documentation, not a restorable backup. Travel-history JSON backup remains a separate
+application function.
+
+
+
+
+FEIE Window Optimizer | by Cameron Guthrie                                                                      A1 / A2
+
+Generated October 13, 2026 | App 0.2.0-rc.2 | Calculation physical-presence-2.2
+Optional appendix • classifications and references
+
+
+
+Review details
+
+Calculation and source provenance
+Application 0.2.0-rc.2; calculation physical-presence-2.2; history schema 1. Generation: October 13, 2026,
+12:00 UTC. Reference date: October 13, 2026 (exclusive); last completed day: October 12, 2026.
+
+Prototype arithmetic is checked against the unchanged calculator from local commit f4e8d9d. Supporting
+period: 2024-12-18 to 2025-12-17. Intersection: 2025-01-01 to 2025-12-17. Exact fraction: 351/365; decimal
+and percentage are rounded for display.
+
+
+Evidence classifications
+Recorded: user-entered full foreign or nonforeign facts. Assumed: foreign presence supplied by an
+explicit declaration, subject to recorded exceptions. Projected: proposed or unfinished dates, excluded
+from completed evidence. Unknown: unrecorded or unresolved dates, counted as zero foreign days.
+
+Scenario provenance — proposed-comparison.pdf only
+Separate synthetic comparison of the same history at January 14, 2026 (exclusive), completed through
+January 13. Source SYN-P01 adds proposed full foreign days January 14 to June 29, 2026; no completed
+source record is altered.
+
+Projected period: July 3, 2025 to July 2, 2026.
+
+
+ Inclusive normalized range                                  Basis / source                      Days
+
+
+ 2025-07-03                                                  Assumed foreign                             163
+ to 2025-12-12                                               SYN-A01
+
+ 2025-12-13                                                  Recorded U.S.                                   32
+ to 2026-01-13                                               SYN-U02
+
+ 2026-01-14                                                  Projected foreign                           167
+ to 2026-06-29                                               SYN-P01
+
+ 2026-06-30                                                  Unknown / zero foreign                           3
+ to 2026-07-02                                               Unrecorded
+
+
+
+Additional primary references
+IRS physical-presence guidance
+IRS exclusion computation
+IRM 21.8.1.3.2(9)(d)
+IRS foreign earned income
+26 CFR §1.911-2
+26 CFR §1.911-3(d)(3)
+2025 Form 2555 instructions, Part III / line 16
+
+
+
+
+FEIE Window Optimizer | by Cameron Guthrie                                                               A2 / A2
+
+Generated October 13, 2026 | App 0.2.0-rc.2 | Calculation physical-presence-2.2
+

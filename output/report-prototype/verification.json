@@ -1,0 +1,48 @@
+{
+  "independent_day_checks": "pass",
+  "pdf_clipboard_principal_content": "match",
+  "pdf_inspections": [
+    {
+      "file": "standard-2025.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_in_bounds": true,
+      "no_text_collisions": true
+    },
+    {
+      "file": "multiple-periods.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_in_bounds": true,
+      "no_text_collisions": true
+    },
+    {
+      "file": "incomplete-result.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_in_bounds": true,
+      "no_text_collisions": true
+    },
+    {
+      "file": "unsuccessful-result.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_in_bounds": true,
+      "no_text_collisions": true
+    },
+    {
+      "file": "proposed-comparison.pdf",
+      "pages": 1,
+      "a4": true,
+      "text_in_bounds": true,
+      "no_text_collisions": true
+    },
+    {
+      "file": "supporting-appendix.pdf",
+      "pages": 2,
+      "a4": true,
+      "text_in_bounds": true,
+      "no_text_collisions": true
+    }
+  ]
+}

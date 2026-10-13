@@ -2,6 +2,12 @@
 
 Primary candidate: **0.2.0-rc.2**, calculation/assessment **physical-presence-2.2**. Branch: `refactor/project-update`. Accepted corrective foundation: local commit `d2c5151`. **Locally verified for scoped private planning and preparer-evidence use**. The completed rc.2 foundation below remains preserved. No push, deployment or publication is authorized.
 
+## Pending design approval — isolated preparer report prototype
+
+The final rc.2 refinements are preserved in local commit `f4e8d9d`. The proposed replacement presentation is now available under [output/report-prototype](../output/report-prototype/DESIGN-NOTES.md): one-page standard 2025 report, plain text, secondary scenarios and optional technical appendix. All seven A4 pages were rendered and visually inspected; independent calendar/PDF checks reconcile the approved 330 + 35 = 365 and 351/365 = 0.961644 (96.16%). `npm run check` passes 101 tests, TypeScript and build. Three scoped existing Chromium desktop workflows pass (one navigation-only retry); details are recorded in PROGRESS.md.
+
+**This is a visual prototype awaiting user review, not an integrated production report or a new release candidate.** Existing production PDF/clipboard code, application source and calculation version `physical-presence-2.2` are unchanged. No push, publication or deployment. Tax-home, eligibility and multi-period filing review remain outside this visual approval.
+
 ## Final refinement status
 
 The changes are confined to a device-local completed-day default and explicit manual/export boundary, PDF hierarchy and whitespace, saved-year/example distinction, and this status document. Ordinary arithmetic and the accepted ongoing-presence/history/scenario foundation are retained. Reports may use a second page for readability, with all evidence, source identifiers, caveats and references retained. All final gates and actual production visual checks below are complete.

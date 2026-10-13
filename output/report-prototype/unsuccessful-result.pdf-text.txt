@@ -1,0 +1,56 @@
+Synthetic example • unsuccessful ordinary assessment                               Generated October 13, 2026
+
+
+
+Physical Presence Test
+Foreign Earned Income Exclusion | Tax Year 2025
+
+
+
+330-day threshold not met on supplied evidence
+
+
+329 / 330
+Maximum full foreign days in any relevant ordinary 12-month period
+
+All dates in the evaluation horizon are classified. Even the possible upper bound is 329 days, so no
+ordinary candidate reaches the threshold.
+
+Strongest candidate — not a qualifying period
+January 1, 2025 to December 31, 2025
+
+ Classification                                                                   Within candidate
+
+
+ Recorded full foreign days                                                                            329
+
+ Recorded nonforeign days                                                                               36
+
+ Unresolved days                                                                                         0
+
+
+Tax-year coverage
+
+0 / 365
+0/365 = 0.000000 (0.00%). No supporting qualifying period is established by this evidence.
+
+Basis and review
+Synthetic recorded foreign presence: January 1 to November 25, 2025. All other dates from January
+2, 2024 through December 30, 2026 are explicitly recorded as nonforeign; no foreign-presence
+assumption is used.
+
+Evidence reference date: January 1, 2027 (synthetic). This ordinary-test result does not assess bona
+fide residence, special relief or a waiver.
+
+Foreign tax home and broader FEIE eligibility are unverified. Eligible income and exclusion amounts are
+not calculated.
+
+IRS physical-presence guidance
+
+
+
+
+FEIE Window Optimizer | by Cameron Guthrie                                                               1/1
+
+Generated October 13, 2026 | App 0.2.0-rc.2 | Calculation physical-presence-2.2
+

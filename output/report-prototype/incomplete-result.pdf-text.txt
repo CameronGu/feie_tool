@@ -1,0 +1,55 @@
+Synthetic example • incomplete evidence                                                     Generated October 13, 2026
+
+
+
+Physical Presence Test
+Foreign Earned Income Exclusion | Tax Year 2025
+
+
+
+Insufficient evidence to establish the threshold
+
+
+329
+Recorded full foreign days in the strongest supported candidate
+
+330 full foreign days are required. Unresolved dates could change this result; a failed
+supported count does not establish conclusive failure.
+
+Strongest supported candidate — not a qualifying period
+January 1, 2025 to December 31, 2025
+365 calendar days: 329 recorded full foreign days and 36 unresolved days. Unknown days count
+zero toward the threshold.
+
+Evidence to resolve
+
+ Classification                                              Dates / count
+
+
+ Recorded full foreign days                                  January 1 to November 25, 2025 / 329
+
+ Unresolved within candidate                                 November 26 to December 31, 2025 / 36
+
+No U.S. visits or other exceptions were supplied. Their absence is not evidence of foreign presence.
+
+Tax-year coverage
+No qualifying-period coverage established
+The supported coverage is 0/365. A percentage is omitted here because the evidence is
+incomplete; this result does not establish ineligibility.
+
+Preparer next step
+Confirm the unresolved full foreign days, arrival/departure dates and transit facts before
+reassessment. One additional supported day in this candidate would reach 330.
+
+Foreign tax home and broader FEIE eligibility remain unverified. Eligible income and exclusion amounts
+are not calculated.
+
+IRS physical-presence guidance
+
+
+
+
+FEIE Window Optimizer | by Cameron Guthrie                                                                        1/1
+
+Generated October 13, 2026 | App 0.2.0-rc.2 | Calculation physical-presence-2.2
+
