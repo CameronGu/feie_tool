@@ -4,6 +4,7 @@ import type { Interval, NormalizedInput } from './types';
 
 export const HISTORY_VERSION = 1;
 export const MAX_RECORDS = 5000;
+export const MAX_BACKUP_BYTES = 2_000_000;
 export const RECORD_KINDS = ['foreign', 'foreign_assumption', 'us', 'nonqualifying', 'unknown'] as const;
 export type RecordKind = typeof RECORD_KINDS[number];
 export type RecordStatus = 'completed' | 'proposed';
@@ -78,11 +79,15 @@ export function validateHistory(value: unknown): TravelHistory {
       }
     }
   }
-  return { schema_version: HISTORY_VERSION, records };
+  const result: TravelHistory = { schema_version: HISTORY_VERSION, records };
+  if (new TextEncoder().encode(JSON.stringify(result, null, 2)).byteLength > MAX_BACKUP_BYTES) {
+    throw new Error('Travel history exceeds the 2 MB backup limit. Export your existing history and reduce records or notes before adding more.');
+  }
+  return result;
 }
 
 export function parseHistory(text: string): TravelHistory {
-  if (text.length > 2_000_000) throw new Error('Backup is too large (maximum 2 MB).');
+  if (new TextEncoder().encode(text).byteLength > MAX_BACKUP_BYTES) throw new Error('Backup is too large (maximum 2 MB).');
   let value: unknown;
   try { value = JSON.parse(text); } catch { throw new Error('This file is not valid JSON. Choose an FEIE travel-history backup.'); }
   return validateHistory(value);

@@ -53,6 +53,14 @@ describe('single structured preparer report', () => {
 });
 
 describe('real PDF generation', () => {
+  it('keeps an ordinary bounded-declaration report to one page', async () => {
+    const ordinary: TravelHistory = { schema_version: 1, records: [
+      { ...source.records[0], start_date: '2024-01-01', end_date: '2024-12-31' },
+      { ...source.records[1], start_date: '2024-12-01', end_date: '2024-12-31' }
+    ] };
+    const doc = await createReportPdf(buildReport(assessTravel(ordinary, 2024, '2026-10-12')));
+    expect(doc.getNumberOfPages()).toBe(1);
+  });
   it('generates a valid PDF for an incomplete report with header and footer', async () => {
     const doc = await createReportPdf(buildReport(assessTravel(EMPTY_HISTORY, 2024, '2026-10-12')));
     expect(new TextDecoder().decode(doc.output('arraybuffer').slice(0, 8))).toContain('%PDF-');

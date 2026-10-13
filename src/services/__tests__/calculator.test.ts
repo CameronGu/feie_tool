@@ -2,6 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { calculateFeie } from '../calculator';
 
 describe('calculateFeie', () => {
+  it('uses a 365-day denominator for the ordinary 2025 calendar year', () => {
+    const result = calculateFeie({ tax_year_start: '2025-01-01', tax_year_end: '2025-12-31', mode: 'FOREIGN_PERIODS',
+      foreign_periods: [{ start_date: '2025-01-01', end_date: '2025-11-30' }] });
+    expect(result.total_tax_year_days).toBe(365);
+    expect(result.qualifying_days).toBe(365);
+    expect(result.coverage_fraction).toBe(1);
+    expect(result.closest_window?.foreign_days).toBe(334);
+  });
   it('requires explicit foreign coverage in U.S. mode, including an empty visits list', () => {
     const result = calculateFeie({ tax_year_start: '2024-01-01', tax_year_end: '2024-12-31',
       mode: 'US_PERIODS', us_periods: [] });

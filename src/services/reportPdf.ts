@@ -25,8 +25,11 @@ export async function createReportPdf(report: TravelReport): Promise<jsPDF> {
     doc.setFontSize(9); y = 32;
   };
   header();
-  const body = reportText(report) + '\n\nPDF text note: characters outside the core font are written as [U+codepoint]. Copy text and JSON preserve the original Unicode.';
-  const lines = doc.splitTextToSize(pdfSafeText(body), width - 2 * margin) as string[];
+  // Product title and attribution already appear in the repeated page header.
+  const body = reportText(report).split('\n').slice(2).join('\n');
+  const safeBody = pdfSafeText(body);
+  const text = safeBody === body ? body : safeBody + '\n\nPDF text note: unsupported characters use [U+codepoint]. Copy text and JSON preserve the original Unicode.';
+  const lines = doc.splitTextToSize(text, width - 2 * margin) as string[];
   for (const line of lines) {
     if (y > height - 24) { doc.addPage(); header(); }
     doc.text(line, margin, y); y += 4.3;

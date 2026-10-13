@@ -46,7 +46,7 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
   return (
     <section className="panel history-panel" aria-labelledby="history-heading">
       <div className="section-heading"><div><h2 id="history-heading">Your travel history</h2>
-        <p className="help">{history.records.length} {history.records.length === 1 ? 'record' : 'records'} across all years. Saved in this browser; export a backup to move devices.</p></div>
+        <p className="help">{history.records.length} {history.records.length === 1 ? 'record' : 'records'} across all years. Stored locally when browser storage is available; export a backup to move devices.</p></div>
         <button className="secondary" onClick={onUndo} disabled={!canUndo}>Undo last history change</button></div>
       {history.records.length ? <div className="table-scroll" tabIndex={0} role="region" aria-label="Travel history table">
         <table><caption className="sr-only">Recorded and proposed travel across all years</caption><thead><tr>

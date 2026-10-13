@@ -96,4 +96,13 @@ describe('backup integrity', () => {
     expect(validateHistory({ schema_version: 1, records: [{ ...record('unknown', '2024-01-01'), extra: 'discard' }] }).records[0])
       .not.toHaveProperty('extra');
   });
+  it('never accepts an in-memory history too large to export and restore, including UTF-8 notes', () => {
+    const records = Array.from({ length: 1500 }, (_, index) => {
+      const date = new Date(Date.UTC(2000, 0, index + 1)).toISOString().slice(0, 10);
+      return { ...record('unknown', date, date, `r-${index}`), note: '界'.repeat(500) };
+    });
+    expect(() => validateHistory(history(...records))).toThrow('2 MB backup limit');
+    const small = history(...records.slice(0, 20));
+    expect(parseHistory(serializeHistory(small))).toEqual(small);
+  });
 });

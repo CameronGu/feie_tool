@@ -109,6 +109,27 @@ describe('evaluateFeie', () => {
     expect(result.bestWindows).toEqual([]);
   });
 
+  it('handles the earliest intersecting period after a leap year with a 365-day denominator', () => {
+    const result = evaluateFeie({ ...baseInput, taxYearStart: '2025-01-01', taxYearEnd: '2025-12-31', taxYearDays: 365,
+      foreignPeriods: [{ start_date: '2024-01-02', end_date: '2024-11-26' }] });
+    expect(result.supportingWindows[0]).toMatchObject({
+      window_start: '2024-01-02', window_end: '2025-01-01', foreign_days: 330, overlap_days: 1
+    });
+    expect(result.qualifyingDays).toBe(1);
+    expect(result.totalTaxYearDays).toBe(365);
+    expect(result.coverageFraction).toBe(1 / 365);
+  });
+
+  it('exposes leap-start sensitivity in the following calendar year as well', () => {
+    const result = evaluateFeie({ ...baseInput, taxYearStart: '2025-01-01', taxYearEnd: '2025-12-31', taxYearDays: 365,
+      foreignPeriods: [
+        { start_date: '2024-02-29', end_date: '2025-01-22' },
+        { start_date: '2025-02-28', end_date: '2025-02-28' }
+      ] });
+    expect(result.qualifyingDays).toBe(0);
+    expect(result.leapDayReview?.alternative_coverage_days).toBe(59);
+  });
+
   it('identifies qualifying windows', () => {
     const result = evaluateFeie(baseInput);
     expect(result.qualified).toBe(true);
