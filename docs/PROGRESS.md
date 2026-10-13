@@ -9,3 +9,13 @@
 - Next: finish sourced calculation contract, reproduce boundary failures in permanent tests, implement union and supporting-period selection. Then replace contradictory travel state with a persistent record model.
 
 This log records completed actions and evidence; pending verification is never a pass.
+
+## 2026-10-12 — milestone A core
+
+- Added both audit boundary cases as permanent tests and observed both fail against alpha before changing the engine.
+- Engine now enumerates only intersecting ordinary calendar periods, including January 2 of the prior year, computes merged union coverage, selects a compact deterministic supporting-period cover, and retains exact integer counts and unrounded ratios. Single-best fields remain temporarily for the old interface and will be retired from reporting in D.
+- Confirmed the union interpretation against IRM 21.8.1.3.2(9)(d) and 26 CFR §1.911-3(d)(3). Form 2555's single range is a documented filing question; reports will list supporting ranges rather than invent a form entry.
+- Leap-start ambiguity is handled by a separate sensitivity result. Ordinary-period support remains the baseline; alternate coverage is explicitly marked for review only when it adds days.
+- Service rejects partial calendar years, accepts older reusable history, and requires explicit foreign coverage for U.S. mode. The current UI has not yet been migrated to that safer contract.
+- Verification: targeted domain/service suite **27/27 pass** (3 files), including independent daily oracle and union counterexample. Production build/type check passes. Baseline UI failures are still scheduled for B/C; this checkpoint is not a release.
+- Next: persistent travel records with bounded foreign assumptions, explicit exceptions, unknown and proposed days; shared input normalization feeding calculation and reporting.

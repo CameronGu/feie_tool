@@ -11,6 +11,8 @@ export const errorMessages: Record<CalculatorErrorCode, string> = {
   INVALID_MODE: 'Mode must be set to either US or Foreign periods.',
   TAX_YEAR_ORDER: 'Tax year start must be on or before tax year end.',
   WINDOW_TOO_SHORT: 'Tax year window must be at least one day.',
+  UNSUPPORTED_TAX_YEAR: 'Select a complete calendar tax year (January 1 through December 31).',
+  MISSING_COVERAGE: 'U.S. visits require an explicit foreign-presence coverage declaration.',
   UNKNOWN_ERROR: 'An unknown error occurred.'
 };
 

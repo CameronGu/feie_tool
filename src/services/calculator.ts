@@ -1,4 +1,4 @@
-import { assertIsoDate, compareDate, diffDaysInclusive, shiftYears } from '../domain/dates';
+import { assertIsoDate, compareDate, diffDaysInclusive } from '../domain/dates';
 import { createError } from '../domain/errors';
 import { invertPeriods, normalizeIntervals } from '../domain/intervals';
 import { evaluateFeie, summarizePlanning } from '../domain/feie';
@@ -20,17 +20,14 @@ function normalizeInput(input: CalculatorInput): NormalizedInput {
   }
 
   const taxYearDays = diffDaysInclusive(tax_year_start, tax_year_end);
-  if (taxYearDays < 1) {
-    throw createError('WINDOW_TOO_SHORT', 'Tax year window must be at least one day.');
+  if (!tax_year_start.endsWith('-01-01') || !tax_year_end.endsWith('-12-31') ||
+    tax_year_start.slice(0, 4) !== tax_year_end.slice(0, 4)) {
+    throw createError('UNSUPPORTED_TAX_YEAR');
   }
 
   if (mode !== 'US_PERIODS' && mode !== 'FOREIGN_PERIODS') {
     throw createError('INVALID_MODE', 'Mode must be either US or Foreign periods.');
   }
-
-  const boundsMin = shiftYears(tax_year_start, -1);
-  const boundsMax = shiftYears(tax_year_end, 1);
-  const bounds = { min: boundsMin, max: boundsMax } as const;
 
   const hasUs = Array.isArray(input.us_periods) && input.us_periods.length > 0;
   const hasForeign = Array.isArray(input.foreign_periods) && input.foreign_periods.length > 0;
@@ -42,11 +39,14 @@ function normalizeInput(input: CalculatorInput): NormalizedInput {
     if (hasForeign) {
       throw createError('UNEXPECTED_PERIODS', 'Foreign periods must be omitted when mode is US.');
     }
-    const usPeriods = normalizeIntervals(input.us_periods, {
-      fieldName: 'us_periods',
-      bounds
-    });
-    const foreignPeriods = invertPeriods(usPeriods, bounds.min, bounds.max);
+    if (!input.foreign_coverage) throw createError('MISSING_COVERAGE');
+    const [coverage] = normalizeIntervals([input.foreign_coverage], { fieldName: 'foreign_coverage' });
+    const usPeriods = normalizeIntervals(input.us_periods, { fieldName: 'us_periods' });
+    const relevantUs = usPeriods.map(period => ({
+      start_date: period.start_date < coverage.start_date ? coverage.start_date : period.start_date,
+      end_date: period.end_date > coverage.end_date ? coverage.end_date : period.end_date
+    })).filter(period => period.start_date <= period.end_date);
+    const foreignPeriods = invertPeriods(relevantUs, coverage.start_date, coverage.end_date);
 
     return {
       taxYearStart: tax_year_start,
@@ -65,16 +65,14 @@ function normalizeInput(input: CalculatorInput): NormalizedInput {
   }
 
   const foreignPeriods = normalizeIntervals(input.foreign_periods, {
-    fieldName: 'foreign_periods',
-    bounds
+    fieldName: 'foreign_periods'
   });
-  const usPeriods = invertPeriods(foreignPeriods, bounds.min, bounds.max);
 
   return {
     taxYearStart: tax_year_start,
     taxYearEnd: tax_year_end,
     taxYearDays,
-    usPeriods,
+    usPeriods: [],
     foreignPeriods
   };
 }
@@ -83,7 +81,14 @@ function toOutput(result: ReturnType<typeof evaluateFeie>): CalculatorOutput {
   return {
     qualified: result.qualified,
     best_windows: result.bestWindows.length > 0 ? result.bestWindows : undefined,
-    total_tax_year_days: result.totalTaxYearDays
+    total_tax_year_days: result.totalTaxYearDays,
+    supporting_windows: result.supportingWindows,
+    qualifying_coverage: result.qualifyingCoverage,
+    qualifying_days: result.qualifyingDays,
+    coverage_fraction: result.coverageFraction,
+    qualifying_window_count: result.qualifyingWindowCount,
+    closest_window: result.closestWindow,
+    leap_day_review: result.leapDayReview
   };
 }
 

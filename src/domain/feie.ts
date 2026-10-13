@@ -1,146 +1,127 @@
-import { addDays, compareDate, diffDaysInclusive, maxDate, minDate, shiftYears } from './dates';
+import { addDays, calendarWindowEnd, diffDaysInclusive, maxDate, minDate, shiftYears } from './dates';
+import { mergeIntervals } from './intervals';
 import { buildForeignOccupancy, rangeSum } from './occupancy';
-import type { NormalizedInput, QualifiedWindow } from './types';
+import type { Interval, LeapDayReview, NormalizedInput, QualifiedWindow } from './types';
 
-interface WindowComputation {
-  windowStart: string;
-  windowEnd: string;
-  foreignDays: number;
-  overlapDays: number;
+export const REQUIRED_FOREIGN_DAYS = 330;
+
+export function computeCoverageBounds(taxYearStart: string, taxYearEnd: string) {
+  return {
+    coverageStart: addDays(shiftYears(taxYearStart, -1), 1),
+    coverageEnd: calendarWindowEnd(taxYearEnd)
+  };
 }
 
-const REQUIRED_FOREIGN_DAYS = 330;
-
-function computeCoverageBounds(taxYearStart: string, taxYearEnd: string) {
-  const coverageStart = addDays(shiftYears(taxYearStart, -1), 2);
-  const coverageEnd = shiftYears(taxYearEnd, 1);
-  return { coverageStart, coverageEnd };
+function overlap(start: string, end: string, input: NormalizedInput): Interval | null {
+  const start_date = maxDate(start, input.taxYearStart);
+  const end_date = minDate(end, input.taxYearEnd);
+  return start_date <= end_date ? { start_date, end_date } : null;
 }
 
-function computeOverlap(aStart: string, aEnd: string, bStart: string, bEnd: string): number {
-  const start = maxDate(aStart, bStart);
-  const end = minDate(aEnd, bEnd);
-  if (compareDate(start, end) > 0) {
-    return 0;
-  }
-  return diffDaysInclusive(start, end);
-}
-
-function enumerateWindows(input: NormalizedInput): WindowComputation[] {
-  const { taxYearStart, taxYearEnd, foreignPeriods } = input;
-  const { coverageStart, coverageEnd } = computeCoverageBounds(taxYearStart, taxYearEnd);
-  const occupancy = buildForeignOccupancy(foreignPeriods, coverageStart, coverageEnd);
-  const windows: WindowComputation[] = [];
-  const totalDays = occupancy.days.length;
-
-  for (let startIndex = 0; startIndex < totalDays; startIndex += 1) {
-    const startDate = occupancy.dateAt(startIndex);
-    const windowEndDate = addDays(shiftYears(startDate, 1), -1);
-
-    if (compareDate(windowEndDate, coverageEnd) > 0) {
-      break;
-    }
-
-    const endIndex = occupancy.indexOf(windowEndDate);
-    if (endIndex >= totalDays) {
-      break;
-    }
-
-    const foreignDays = rangeSum(occupancy.prefix, startIndex, endIndex);
-    const overlapDays = computeOverlap(startDate, windowEndDate, taxYearStart, taxYearEnd);
-
+/** Exhaustive ordinary-date periods. Ambiguous leap-day starts are evaluated separately. */
+export function enumerateWindows(input: NormalizedInput, leapStartsOnly = false): QualifiedWindow[] {
+  const { coverageStart, coverageEnd } = computeCoverageBounds(input.taxYearStart, input.taxYearEnd);
+  const occupancy = buildForeignOccupancy(input.foreignPeriods, coverageStart, coverageEnd);
+  const windows: QualifiedWindow[] = [];
+  for (let start = coverageStart; start <= input.taxYearEnd; start = addDays(start, 1)) {
+    if (start.endsWith('-02-29') !== leapStartsOnly) continue;
+    const end = calendarWindowEnd(start, leapStartsOnly ? 'long' : 'short');
+    const intersection = overlap(start, end, input);
+    if (!intersection) continue;
+    const overlapDays = diffDaysInclusive(intersection.start_date, intersection.end_date);
     windows.push({
-      windowStart: startDate,
-      windowEnd: windowEndDate,
-      foreignDays,
-      overlapDays
+      window_start: start,
+      window_end: end,
+      foreign_days: rangeSum(occupancy.prefix, occupancy.indexOf(start), occupancy.indexOf(end)),
+      overlap_days: overlapDays,
+      pro_rata_fraction: overlapDays / diffDaysInclusive(input.taxYearStart, input.taxYearEnd)
     });
   }
-
   return windows;
+}
+
+function coverageOf(windows: QualifiedWindow[], input: NormalizedInput): Interval[] {
+  const intersections = windows.map(window => overlap(window.window_start, window.window_end, input))
+    .filter((value): value is Interval => value !== null)
+    .sort((a, b) => a.start_date.localeCompare(b.start_date) || a.end_date.localeCompare(b.end_date));
+  return mergeIntervals(intersections);
+}
+
+function countCoverage(coverage: Interval[]): number {
+  return coverage.reduce((total, interval) => total + diffDaysInclusive(interval.start_date, interval.end_date), 0);
+}
+
+/** Minimum interval cover: farthest end covering the first still-uncovered day. */
+function supportingPeriods(windows: QualifiedWindow[], coverage: Interval[]): QualifiedWindow[] {
+  const selected: QualifiedWindow[] = [];
+  for (const segment of coverage) {
+    let cursor = segment.start_date;
+    while (cursor <= segment.end_date) {
+      let best: QualifiedWindow | undefined;
+      for (const window of windows) {
+        if (window.window_start > cursor || window.window_end < cursor) continue;
+        if (!best || window.window_end > best.window_end ||
+          (window.window_end === best.window_end && window.window_start < best.window_start)) best = window;
+      }
+      if (!best) throw new Error('Qualifying coverage has no supporting period.');
+      selected.push(best);
+      cursor = addDays(best.window_end, 1);
+    }
+  }
+  return selected;
 }
 
 export interface FeieComputationResult {
   qualified: boolean;
+  /** Transitional single-period view; reports must use supportingWindows and qualifyingDays. */
   bestWindows: QualifiedWindow[];
+  supportingWindows: QualifiedWindow[];
+  qualifyingCoverage: Interval[];
+  qualifyingDays: number;
+  coverageFraction: number;
+  qualifyingWindowCount: number;
   totalTaxYearDays: number;
   maxForeignDays: number;
+  closestWindow: QualifiedWindow;
+  leapDayReview?: LeapDayReview;
 }
 
 export function evaluateFeie(input: NormalizedInput): FeieComputationResult {
   const windows = enumerateWindows(input);
-  const taxYearDays = diffDaysInclusive(input.taxYearStart, input.taxYearEnd);
-
-  let qualified = false;
-  let maxOverlap = 0;
-  let maxForeignDays = 0;
-  const best: QualifiedWindow[] = [];
-
-  for (const window of windows) {
-    if (window.foreignDays >= REQUIRED_FOREIGN_DAYS) {
-      qualified = true;
-    }
-
-    if (window.foreignDays > maxForeignDays) {
-      maxForeignDays = window.foreignDays;
-    }
-
-    if (!qualified || window.foreignDays < REQUIRED_FOREIGN_DAYS) {
-      continue;
-    }
-
-    if (window.overlapDays > maxOverlap) {
-      maxOverlap = window.overlapDays;
-      best.length = 0;
-    }
-
-    if (window.overlapDays === maxOverlap) {
-      best.push({
-        window_start: window.windowStart,
-        window_end: window.windowEnd,
-        foreign_days: window.foreignDays,
-        overlap_days: window.overlapDays,
-        pro_rata_fraction: Number((window.overlapDays / taxYearDays).toFixed(4))
-      });
-    }
-  }
-
-  best.sort((a, b) => (a.window_start < b.window_start ? -1 : a.window_start > b.window_start ? 1 : 0));
-
+  const qualifying = windows.filter(window => window.foreign_days >= REQUIRED_FOREIGN_DAYS);
+  const coverage = coverageOf(qualifying, input);
+  const qualifyingDays = countCoverage(coverage);
+  const totalTaxYearDays = diffDaysInclusive(input.taxYearStart, input.taxYearEnd);
+  const ranked = [...windows].sort((a, b) => b.foreign_days - a.foreign_days ||
+    b.overlap_days - a.overlap_days || a.window_start.localeCompare(b.window_start));
+  const maxOverlap = qualifying.reduce((max, window) => Math.max(max, window.overlap_days), 0);
+  const leapQualifying = enumerateWindows(input, true).filter(window => window.foreign_days >= REQUIRED_FOREIGN_DAYS);
+  const alternativeCoverage = coverageOf([...qualifying, ...leapQualifying], input);
+  const alternativeDays = countCoverage(alternativeCoverage);
   return {
-    qualified,
-    bestWindows: best,
-    totalTaxYearDays: taxYearDays,
-    maxForeignDays
+    qualified: qualifyingDays > 0,
+    bestWindows: qualifying.filter(window => window.overlap_days === maxOverlap),
+    supportingWindows: supportingPeriods(qualifying, coverage),
+    qualifyingCoverage: coverage,
+    qualifyingDays,
+    coverageFraction: qualifyingDays / totalTaxYearDays,
+    qualifyingWindowCount: qualifying.length,
+    totalTaxYearDays,
+    maxForeignDays: ranked[0].foreign_days,
+    closestWindow: ranked[0],
+    leapDayReview: alternativeDays > qualifyingDays ? {
+      alternative_coverage_days: alternativeDays,
+      alternative_coverage: alternativeCoverage,
+      additional_windows: leapQualifying
+    } : undefined
   };
-}
-
-export function computePlanningStarts(windows: WindowComputation[]): string[] {
-  if (windows.length === 0) {
-    return [];
-  }
-  let maxForeign = 0;
-  for (const window of windows) {
-    if (window.foreignDays > maxForeign) {
-      maxForeign = window.foreignDays;
-    }
-  }
-  const bestStarts = windows
-    .filter(window => window.foreignDays === maxForeign)
-    .map(window => window.windowStart);
-  bestStarts.sort();
-  return Array.from(new Set(bestStarts));
 }
 
 export function summarizePlanning(input: NormalizedInput): { remaining: number; optimalStarts: string[] } {
   const windows = enumerateWindows(input);
-  let maxForeign = 0;
-  for (const window of windows) {
-    if (window.foreignDays > maxForeign) {
-      maxForeign = window.foreignDays;
-    }
-  }
-  const remaining = Math.max(0, REQUIRED_FOREIGN_DAYS - maxForeign);
-  const optimalStarts = computePlanningStarts(windows);
-  return { remaining, optimalStarts };
+  const maxForeign = windows.reduce((max, window) => Math.max(max, window.foreign_days), 0);
+  return {
+    remaining: Math.max(0, REQUIRED_FOREIGN_DAYS - maxForeign),
+    optimalStarts: windows.filter(window => window.foreign_days === maxForeign).map(window => window.window_start)
+  };
 }

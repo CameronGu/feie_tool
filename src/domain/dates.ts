@@ -62,6 +62,14 @@ export function diffDaysInclusive(start: DateISO, end: DateISO): number {
   return Math.floor((toEpoch(end) - toEpoch(start)) / MS_PER_DAY) + 1;
 }
 
+/** Ordinary corresponding-date rule. February 29 needs an explicit review policy. */
+export function calendarWindowEnd(start: DateISO, leapPolicy: 'short' | 'long' = 'short'): DateISO {
+  if (start.endsWith('-02-29') && leapPolicy === 'long') {
+    return shiftYears(start, 1);
+  }
+  return addDays(shiftYears(start, 1), -1);
+}
+
 export function diffDaysExclusive(start: DateISO, end: DateISO): number {
   return Math.floor((toEpoch(end) - toEpoch(start)) / MS_PER_DAY);
 }

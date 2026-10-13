@@ -11,6 +11,8 @@ export interface CalculatorInput {
   mode: 'US_PERIODS' | 'FOREIGN_PERIODS';
   us_periods?: Interval[];
   foreign_periods?: Interval[];
+  /** Explicit foreign-presence declaration, with U.S. periods as exceptions. */
+  foreign_coverage?: Interval;
   planning_mode?: boolean;
 }
 
@@ -33,6 +35,19 @@ export interface CalculatorOutput {
   total_tax_year_days?: number;
   planning_info?: PlanningInfo;
   error?: CalculatorError;
+  supporting_windows?: QualifiedWindow[];
+  qualifying_coverage?: Interval[];
+  qualifying_days?: number;
+  coverage_fraction?: number;
+  qualifying_window_count?: number;
+  closest_window?: QualifiedWindow;
+  leap_day_review?: LeapDayReview;
+}
+
+export interface LeapDayReview {
+  alternative_coverage_days: number;
+  alternative_coverage: Interval[];
+  additional_windows: QualifiedWindow[];
 }
 
 export type CalculatorErrorCode =
@@ -46,6 +61,8 @@ export type CalculatorErrorCode =
   | 'INVALID_MODE'
   | 'TAX_YEAR_ORDER'
   | 'WINDOW_TOO_SHORT'
+  | 'UNSUPPORTED_TAX_YEAR'
+  | 'MISSING_COVERAGE'
   | 'UNKNOWN_ERROR';
 
 export interface CalculatorError {

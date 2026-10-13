@@ -1,6 +1,6 @@
 # Physical-presence calculation contract
 
-Status: research draft, 2026-10-12. Calculation version will change when this contract is implemented. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
+Status: core implemented and regression-tested, 2026-10-12; input evidence/status integration follows in milestone B. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
 
 ## Primary authorities
 
@@ -32,7 +32,7 @@ Reviewed live on 2026-10-12:
 3. **Travel exceptions:** a date-only utility cannot independently establish sub-24-hour transit treatment or time-zone flight facts. Users may mark full foreign days only after checking the referenced rule; otherwise record nonqualifying/unknown. Waivers, combat-zone rules, unlawful presence and bona fide residence are outside the implemented ordinary physical-presence test.
 4. **Year scope:** research is anchored to the 2025 form and currently published rules, including the 2026 IRM. No monetary limits are hard-coded. Historical/future special relief and rule changes are not certified by a successful day count.
 
-## Permanent test examples to implement
+## Permanent regression examples
 
 | Example | Expected behavior |
 | --- | --- |
@@ -44,3 +44,5 @@ Reviewed live on 2026-10-12:
 | Two qualifying periods covering more of a year than either alone | Union coverage exceeds best single overlap, without double counting |
 | Foreign days separated by U.S./nonqualifying/unknown days | Only modeled full foreign days count toward 330 |
 | Partial-year bounds | Explicit unsupported-input error |
+
+Core verification: 27 domain/service tests pass, including both reproduced audit regressions, 329/330 threshold, a union of two supporting periods covering all 366 days where every single period covers less, disjoint coverage, exhaustive start boundaries, exact fractions, and an independent daily enumeration oracle over four sparse/dense histories. The February 29 sensitivity fixture has 329 ordinary-period days but 330 under the longer leap-start convention; the result retains zero established coverage and exposes 307 alternative days for review. Input status and report disclosure tests remain part of B/D.
