@@ -1,0 +1,170 @@
+{
+  "title": "FEIE independent release review",
+  "images": [
+    {
+      "file": "screenshots/01-first-use-desktop.png",
+      "width": 1440,
+      "height": 2105
+    },
+    {
+      "file": "screenshots/02-first-use-mobile.png",
+      "width": 390,
+      "height": 4005
+    },
+    {
+      "file": "screenshots/03-ordinary-foreign-desktop.png",
+      "width": 1440,
+      "height": 2144
+    },
+    {
+      "file": "screenshots/04-threshold-329-desktop.png",
+      "width": 1440,
+      "height": 2231
+    },
+    {
+      "file": "screenshots/05-threshold-330-mobile.png",
+      "width": 390,
+      "height": 4029
+    },
+    {
+      "file": "screenshots/06-partial-year-desktop.png",
+      "width": 1440,
+      "height": 2207
+    },
+    {
+      "file": "screenshots/07-nonqualifying-desktop.png",
+      "width": 1440,
+      "height": 2409
+    },
+    {
+      "file": "screenshots/08-incomplete-evidence-mobile.png",
+      "width": 390,
+      "height": 4292
+    },
+    {
+      "file": "screenshots/09-future-scenario-desktop.png",
+      "width": 1440,
+      "height": 2365
+    },
+    {
+      "file": "screenshots/10-multiple-periods-desktop.png",
+      "width": 1440,
+      "height": 2558
+    },
+    {
+      "file": "screenshots/11-example-context-mismatch-desktop.png",
+      "width": 1440,
+      "height": 2439
+    },
+    {
+      "file": "screenshots/12-bounded-declaration-desktop.png",
+      "width": 1440,
+      "height": 2427
+    },
+    {
+      "file": "screenshots/13-overlap-error-desktop.png",
+      "width": 1440,
+      "height": 2427
+    },
+    {
+      "file": "screenshots/14-backup-import-review-mobile.png",
+      "width": 390,
+      "height": 4603
+    },
+    {
+      "file": "screenshots/15-restored-history-mobile.png",
+      "width": 390,
+      "height": 4387
+    },
+    {
+      "file": "screenshots/16-mobile-history-actions.png",
+      "width": 324,
+      "height": 531
+    },
+    {
+      "file": "screenshots/17-confirmed-nonqualifying-desktop.png",
+      "width": 1440,
+      "height": 2270
+    },
+    {
+      "file": "screenshots/18-one-unknown-day-status-desktop.png",
+      "width": 1440,
+      "height": 2335
+    },
+    {
+      "file": "screenshots/19-long-note-table-mobile.png",
+      "width": 324,
+      "height": 934
+    },
+    {
+      "file": "screenshots/20-declaration-entry-mobile.png",
+      "width": 362,
+      "height": 1041
+    },
+    {
+      "file": "screenshots/21-first-viewport-mobile.png",
+      "width": 390,
+      "height": 844
+    },
+    {
+      "file": "screenshots/22-result-detail-mobile.png",
+      "width": 362,
+      "height": 1362
+    }
+  ],
+  "links": [
+    "SCREENSHOT-INDEX.md",
+    "data/screenshot-manifest.json",
+    "contact-sheet.png",
+    "pdf-contact-sheet.png",
+    "reports/declared-with-us-visits.pdf",
+    "reports/declared-with-us-visits.txt",
+    "reports/declared-with-us-visits.pdf-text.txt",
+    "reports/incomplete.pdf",
+    "reports/incomplete.txt",
+    "reports/incomplete.pdf-text.txt",
+    "reports/multiple-periods.pdf",
+    "reports/multiple-periods.txt",
+    "reports/multiple-periods.pdf-text.txt",
+    "reports/nonqualifying-confirmed.pdf",
+    "reports/nonqualifying-confirmed.txt",
+    "reports/nonqualifying-confirmed.pdf-text.txt",
+    "reports/nonqualifying.pdf",
+    "reports/nonqualifying.txt",
+    "reports/nonqualifying.pdf-text.txt",
+    "reports/ordinary-recorded.pdf",
+    "reports/ordinary-recorded.txt",
+    "reports/ordinary-recorded.pdf-text.txt",
+    "reports/partial-year.pdf",
+    "reports/partial-year.txt",
+    "reports/partial-year.pdf-text.txt",
+    "reports/projected-scenario.pdf",
+    "reports/projected-scenario.txt",
+    "reports/projected-scenario.pdf-text.txt",
+    "reports/threshold-330.pdf",
+    "reports/threshold-330.txt",
+    "reports/threshold-330.pdf-text.txt",
+    "screenshots/01-first-use-desktop.png",
+    "screenshots/02-first-use-mobile.png",
+    "screenshots/03-ordinary-foreign-desktop.png",
+    "screenshots/04-threshold-329-desktop.png",
+    "screenshots/05-threshold-330-mobile.png",
+    "screenshots/06-partial-year-desktop.png",
+    "screenshots/07-nonqualifying-desktop.png",
+    "screenshots/08-incomplete-evidence-mobile.png",
+    "screenshots/09-future-scenario-desktop.png",
+    "screenshots/10-multiple-periods-desktop.png",
+    "screenshots/11-example-context-mismatch-desktop.png",
+    "screenshots/12-bounded-declaration-desktop.png",
+    "screenshots/13-overlap-error-desktop.png",
+    "screenshots/14-backup-import-review-mobile.png",
+    "screenshots/15-restored-history-mobile.png",
+    "screenshots/16-mobile-history-actions.png",
+    "screenshots/17-confirmed-nonqualifying-desktop.png",
+    "screenshots/18-one-unknown-day-status-desktop.png",
+    "screenshots/19-long-note-table-mobile.png",
+    "screenshots/20-declaration-entry-mobile.png",
+    "screenshots/21-first-viewport-mobile.png",
+    "screenshots/22-result-detail-mobile.png"
+  ]
+}

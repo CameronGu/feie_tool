@@ -1,0 +1,74 @@
+[
+  {
+    "report": "declared-with-us-visits",
+    "days": 365,
+    "denominator": 365,
+    "passing": 685,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 365,
+    "issues": []
+  },
+  {
+    "report": "incomplete",
+    "days": 0,
+    "denominator": 365,
+    "passing": 0,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 366,
+    "issues": []
+  },
+  {
+    "report": "multiple-periods",
+    "days": 366,
+    "denominator": 366,
+    "passing": 375,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 366,
+    "issues": []
+  },
+  {
+    "report": "nonqualifying-confirmed",
+    "days": 0,
+    "denominator": 366,
+    "passing": 0,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 329,
+    "issues": []
+  },
+  {
+    "report": "nonqualifying",
+    "days": 0,
+    "denominator": 365,
+    "passing": 0,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 329,
+    "issues": []
+  },
+  {
+    "report": "ordinary-recorded",
+    "days": 365,
+    "denominator": 365,
+    "passing": 71,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 366,
+    "issues": []
+  },
+  {
+    "report": "partial-year",
+    "days": 219,
+    "denominator": 365,
+    "passing": 36,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 366,
+    "issues": []
+  },
+  {
+    "report": "projected-scenario",
+    "days": 365,
+    "denominator": 365,
+    "passing": 71,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 365,
+    "issues": []
+  },
+  {
+    "report": "threshold-330",
+    "days": 365,
+    "denominator": 365,
+    "passing": 36,
+    "maximum_possible_foreign_days_if_all_unknown_were_foreign": 366,
+    "issues": []
+  }
+]

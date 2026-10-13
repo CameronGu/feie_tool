@@ -1,0 +1,1989 @@
+{
+  "seed": 911,
+  "cases": 77,
+  "mismatches": 0,
+  "results": [
+    {
+      "name": "earliest-nonleap",
+      "year": 2024,
+      "input_ranges": [
+        [
+          "2023-01-02",
+          "2023-11-27"
+        ]
+      ],
+      "expected_days": 1,
+      "actual_days": 1,
+      "denominator": 366,
+      "passing": 1,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-01-02",
+          "window_end": "2024-01-01",
+          "foreign_days": 330,
+          "overlap_days": 1,
+          "pro_rata_fraction": 0.00273224043715847
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-01-01"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "earliest-leap",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2024-01-02",
+          "2024-11-26"
+        ]
+      ],
+      "expected_days": 1,
+      "actual_days": 1,
+      "denominator": 365,
+      "passing": 1,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-01-02",
+          "window_end": "2025-01-01",
+          "foreign_days": 330,
+          "overlap_days": 1,
+          "pro_rata_fraction": 0.0027397260273972603
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-01-01"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "zero-overlap",
+      "year": 2024,
+      "input_ranges": [
+        [
+          "2025-02-05",
+          "2025-12-31"
+        ]
+      ],
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 329,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "latest-start",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2025-12-31",
+          "2026-11-25"
+        ]
+      ],
+      "expected_days": 36,
+      "actual_days": 36,
+      "denominator": 365,
+      "passing": 36,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-11-26",
+          "window_end": "2026-11-25",
+          "foreign_days": 330,
+          "overlap_days": 36,
+          "pro_rata_fraction": 0.09863013698630137
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-11-26",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "latest-start-only",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2026-02-04",
+          "2026-12-30"
+        ]
+      ],
+      "expected_days": 1,
+      "actual_days": 1,
+      "denominator": 365,
+      "passing": 1,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-12-31",
+          "window_end": "2026-12-30",
+          "foreign_days": 330,
+          "overlap_days": 1,
+          "pro_rata_fraction": 0.0027397260273972603
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-12-31",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "regulation-travel-example",
+      "year": 1983,
+      "input_ranges": [
+        [
+          "1982-03-07",
+          "1982-06-24"
+        ],
+        [
+          "1982-07-25",
+          "1983-08-21"
+        ],
+        [
+          "1983-09-06",
+          "1983-12-31"
+        ]
+      ],
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 326,
+      "max_foreign": 365,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1983-01-01",
+          "window_end": "1983-12-31",
+          "foreign_days": 350,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1983-01-01",
+          "end_date": "1983-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "threshold-329",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2025-01-01",
+          "2025-11-25"
+        ]
+      ],
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 329,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "threshold-330",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2025-01-01",
+          "2025-11-26"
+        ]
+      ],
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 36,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-01-01",
+          "window_end": "2025-12-31",
+          "foreign_days": 330,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "multiple-overlap",
+      "year": 2024,
+      "input_ranges": [
+        [
+          "2023-01-01",
+          "2024-05-31"
+        ],
+        [
+          "2024-08-01",
+          "2025-12-31"
+        ]
+      ],
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 375,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-07-07",
+          "window_end": "2024-07-06",
+          "foreign_days": 330,
+          "overlap_days": 188,
+          "pro_rata_fraction": 0.5136612021857924
+        },
+        {
+          "window_start": "2024-07-07",
+          "window_end": "2025-07-06",
+          "foreign_days": 340,
+          "overlap_days": 178,
+          "pro_rata_fraction": 0.48633879781420764
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "multiple-disjoint",
+      "year": 2024,
+      "input_ranges": [
+        [
+          "2023-01-01",
+          "2024-03-31"
+        ],
+        [
+          "2024-10-01",
+          "2025-12-31"
+        ]
+      ],
+      "expected_days": 254,
+      "actual_days": 254,
+      "denominator": 366,
+      "passing": 253,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-05-07",
+          "window_end": "2024-05-06",
+          "foreign_days": 330,
+          "overlap_days": 127,
+          "pro_rata_fraction": 0.3469945355191257
+        },
+        {
+          "window_start": "2024-08-27",
+          "window_end": "2025-08-26",
+          "foreign_days": 330,
+          "overlap_days": 127,
+          "pro_rata_fraction": 0.3469945355191257
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-05-06"
+        },
+        {
+          "start_date": "2024-08-27",
+          "end_date": "2024-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "leap-sensitivity",
+      "year": 2024,
+      "input_ranges": [
+        [
+          "2024-02-29",
+          "2025-01-22"
+        ],
+        [
+          "2025-02-28",
+          "2025-02-28"
+        ]
+      ],
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 329,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": {
+        "alternative_coverage_days": 307,
+        "alternative_coverage": [
+          {
+            "start_date": "2024-02-29",
+            "end_date": "2024-12-31"
+          }
+        ],
+        "additional_windows": [
+          {
+            "window_start": "2024-02-29",
+            "window_end": "2025-02-28",
+            "foreign_days": 330,
+            "overlap_days": 307,
+            "pro_rata_fraction": 0.8387978142076503
+          }
+        ]
+      },
+      "mismatches": []
+    },
+    {
+      "name": "duplicate-raw-occupancy",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2025-01-01",
+          "2025-11-26"
+        ],
+        [
+          "2025-01-01",
+          "2025-11-26"
+        ]
+      ],
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 36,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-01-01",
+          "window_end": "2025-12-31",
+          "foreign_days": 330,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "ordinary-fully-recorded",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2025-01-01",
+          "2025-12-31"
+        ]
+      ],
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 71,
+      "max_foreign": 365,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-01-01",
+          "window_end": "2025-12-31",
+          "foreign_days": 365,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "partial-midyear",
+      "year": 2025,
+      "input_ranges": [
+        [
+          "2025-07-01",
+          "2026-05-26"
+        ]
+      ],
+      "expected_days": 219,
+      "actual_days": 219,
+      "denominator": 365,
+      "passing": 36,
+      "max_foreign": 330,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-05-27",
+          "window_end": "2026-05-26",
+          "foreign_days": 330,
+          "overlap_days": 219,
+          "pro_rata_fraction": 0.6
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-05-27",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-0",
+      "year": 1901,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-0.25",
+      "year": 1901,
+      "input_ranges": "seed 911; 297 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 119,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-0.88",
+      "year": 1901,
+      "input_ranges": "seed 911; 960 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 323,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-0.9",
+      "year": 1901,
+      "input_ranges": "seed 911; 990 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 183,
+      "max_foreign": 333,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1901-01-01",
+          "window_end": "1901-12-31",
+          "foreign_days": 330,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1901-01-01",
+          "end_date": "1901-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-0.92",
+      "year": 1901,
+      "input_ranges": "seed 911; 1010 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 344,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1901-01-01",
+          "window_end": "1901-12-31",
+          "foreign_days": 339,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1901-01-01",
+          "end_date": "1901-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-0.97",
+      "year": 1901,
+      "input_ranges": "seed 911; 1062 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 358,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1901-01-01",
+          "window_end": "1901-12-31",
+          "foreign_days": 352,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1901-01-01",
+          "end_date": "1901-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1901-1",
+      "year": 1901,
+      "input_ranges": "seed 911; 1095 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 365,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1901-01-01",
+          "window_end": "1901-12-31",
+          "foreign_days": 365,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1901-01-01",
+          "end_date": "1901-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-0",
+      "year": 1904,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-0.25",
+      "year": 1904,
+      "input_ranges": "seed 911; 249 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 98,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-0.88",
+      "year": 1904,
+      "input_ranges": "seed 911; 956 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 328,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-0.9",
+      "year": 1904,
+      "input_ranges": "seed 911; 978 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 185,
+      "max_foreign": 333,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1903-10-25",
+          "window_end": "1904-10-24",
+          "foreign_days": 330,
+          "overlap_days": 298,
+          "pro_rata_fraction": 0.8142076502732241
+        },
+        {
+          "window_start": "1904-10-25",
+          "window_end": "1905-10-24",
+          "foreign_days": 330,
+          "overlap_days": 68,
+          "pro_rata_fraction": 0.18579234972677597
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1904-01-01",
+          "end_date": "1904-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-0.92",
+      "year": 1904,
+      "input_ranges": "seed 911; 1008 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 693,
+      "max_foreign": 344,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1904-01-01",
+          "window_end": "1904-12-31",
+          "foreign_days": 341,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1904-01-01",
+          "end_date": "1904-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-0.97",
+      "year": 1904,
+      "input_ranges": "seed 911; 1067 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 358,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1904-01-01",
+          "window_end": "1904-12-31",
+          "foreign_days": 351,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1904-01-01",
+          "end_date": "1904-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1904-1",
+      "year": 1904,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1904-01-01",
+          "window_end": "1904-12-31",
+          "foreign_days": 366,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1904-01-01",
+          "end_date": "1904-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-0",
+      "year": 1999,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-0.25",
+      "year": 1999,
+      "input_ranges": "seed 911; 273 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 103,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-0.88",
+      "year": 1999,
+      "input_ranges": "seed 911; 957 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 327,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-0.9",
+      "year": 1999,
+      "input_ranges": "seed 911; 972 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 96,
+      "max_foreign": 333,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1998-12-28",
+          "window_end": "1999-12-27",
+          "foreign_days": 330,
+          "overlap_days": 361,
+          "pro_rata_fraction": 0.989041095890411
+        },
+        {
+          "window_start": "1999-07-04",
+          "window_end": "2000-07-03",
+          "foreign_days": 330,
+          "overlap_days": 181,
+          "pro_rata_fraction": 0.4958904109589041
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1999-01-01",
+          "end_date": "1999-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-0.92",
+      "year": 1999,
+      "input_ranges": "seed 911; 1017 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 343,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1999-01-01",
+          "window_end": "1999-12-31",
+          "foreign_days": 342,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1999-01-01",
+          "end_date": "1999-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-0.97",
+      "year": 1999,
+      "input_ranges": "seed 911; 1063 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 358,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1999-01-01",
+          "window_end": "1999-12-31",
+          "foreign_days": 355,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1999-01-01",
+          "end_date": "1999-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-1999-1",
+      "year": 1999,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1999-01-01",
+          "window_end": "1999-12-31",
+          "foreign_days": 365,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "1999-01-01",
+          "end_date": "1999-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-0",
+      "year": 2000,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-0.25",
+      "year": 2000,
+      "input_ranges": "seed 911; 299 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 105,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-0.88",
+      "year": 2000,
+      "input_ranges": "seed 911; 963 daily foreign records",
+      "expected_days": 209,
+      "actual_days": 209,
+      "denominator": 366,
+      "passing": 190,
+      "max_foreign": 335,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1999-07-28",
+          "window_end": "2000-07-27",
+          "foreign_days": 330,
+          "overlap_days": 209,
+          "pro_rata_fraction": 0.5710382513661202
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2000-01-01",
+          "end_date": "2000-07-27"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-0.9",
+      "year": 2000,
+      "input_ranges": "seed 911; 988 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 166,
+      "max_foreign": 336,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "1999-10-03",
+          "window_end": "2000-10-02",
+          "foreign_days": 330,
+          "overlap_days": 276,
+          "pro_rata_fraction": 0.7540983606557377
+        },
+        {
+          "window_start": "2000-10-03",
+          "window_end": "2001-10-02",
+          "foreign_days": 330,
+          "overlap_days": 90,
+          "pro_rata_fraction": 0.2459016393442623
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2000-01-01",
+          "end_date": "2000-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-0.92",
+      "year": 2000,
+      "input_ranges": "seed 911; 1027 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 693,
+      "max_foreign": 353,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2000-01-01",
+          "window_end": "2000-12-31",
+          "foreign_days": 341,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2000-01-01",
+          "end_date": "2000-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-0.97",
+      "year": 2000,
+      "input_ranges": "seed 911; 1063 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 358,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2000-01-01",
+          "window_end": "2000-12-31",
+          "foreign_days": 353,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2000-01-01",
+          "end_date": "2000-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2000-1",
+      "year": 2000,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2000-01-01",
+          "window_end": "2000-12-31",
+          "foreign_days": 366,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2000-01-01",
+          "end_date": "2000-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-0",
+      "year": 2023,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-0.25",
+      "year": 2023,
+      "input_ranges": "seed 911; 279 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 99,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-0.88",
+      "year": 2023,
+      "input_ranges": "seed 911; 981 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 282,
+      "max_foreign": 333,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2022-08-26",
+          "window_end": "2023-08-25",
+          "foreign_days": 330,
+          "overlap_days": 237,
+          "pro_rata_fraction": 0.6493150684931507
+        },
+        {
+          "window_start": "2023-06-17",
+          "window_end": "2024-06-16",
+          "foreign_days": 330,
+          "overlap_days": 198,
+          "pro_rata_fraction": 0.5424657534246575
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2023-01-01",
+          "end_date": "2023-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-0.9",
+      "year": 2023,
+      "input_ranges": "seed 911; 998 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 539,
+      "max_foreign": 341,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-01-01",
+          "window_end": "2023-12-31",
+          "foreign_days": 338,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2023-01-01",
+          "end_date": "2023-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-0.92",
+      "year": 2023,
+      "input_ranges": "seed 911; 1018 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 348,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-01-01",
+          "window_end": "2023-12-31",
+          "foreign_days": 345,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2023-01-01",
+          "end_date": "2023-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-0.97",
+      "year": 2023,
+      "input_ranges": "seed 911; 1069 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 362,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-01-01",
+          "window_end": "2023-12-31",
+          "foreign_days": 360,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2023-01-01",
+          "end_date": "2023-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2023-1",
+      "year": 2023,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-01-01",
+          "window_end": "2023-12-31",
+          "foreign_days": 365,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2023-01-01",
+          "end_date": "2023-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-0",
+      "year": 2024,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-0.25",
+      "year": 2024,
+      "input_ranges": "seed 911; 255 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 94,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-0.88",
+      "year": 2024,
+      "input_ranges": "seed 911; 954 daily foreign records",
+      "expected_days": 170,
+      "actual_days": 170,
+      "denominator": 366,
+      "passing": 141,
+      "max_foreign": 334,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-07-15",
+          "window_end": "2025-07-14",
+          "foreign_days": 330,
+          "overlap_days": 170,
+          "pro_rata_fraction": 0.4644808743169399
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-07-15",
+          "end_date": "2024-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-0.9",
+      "year": 2024,
+      "input_ranges": "seed 911; 973 daily foreign records",
+      "expected_days": 75,
+      "actual_days": 75,
+      "denominator": 366,
+      "passing": 72,
+      "max_foreign": 333,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2023-03-16",
+          "window_end": "2024-03-15",
+          "foreign_days": 330,
+          "overlap_days": 75,
+          "pro_rata_fraction": 0.20491803278688525
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-03-15"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-0.92",
+      "year": 2024,
+      "input_ranges": "seed 911; 1010 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 654,
+      "max_foreign": 351,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-01-01",
+          "window_end": "2024-12-31",
+          "foreign_days": 341,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-0.97",
+      "year": 2024,
+      "input_ranges": "seed 911; 1066 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 358,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-01-01",
+          "window_end": "2024-12-31",
+          "foreign_days": 353,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2024-1",
+      "year": 2024,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-01-01",
+          "window_end": "2024-12-31",
+          "foreign_days": 366,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2024-01-01",
+          "end_date": "2024-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-0",
+      "year": 2025,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-0.25",
+      "year": 2025,
+      "input_ranges": "seed 911; 282 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 103,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-0.88",
+      "year": 2025,
+      "input_ranges": "seed 911; 962 daily foreign records",
+      "expected_days": 96,
+      "actual_days": 96,
+      "denominator": 365,
+      "passing": 85,
+      "max_foreign": 337,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-04-07",
+          "window_end": "2025-04-06",
+          "foreign_days": 330,
+          "overlap_days": 96,
+          "pro_rata_fraction": 0.26301369863013696
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-04-06"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-0.9",
+      "year": 2025,
+      "input_ranges": "seed 911; 991 daily foreign records",
+      "expected_days": 238,
+      "actual_days": 238,
+      "denominator": 365,
+      "passing": 228,
+      "max_foreign": 341,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2024-08-27",
+          "window_end": "2025-08-26",
+          "foreign_days": 330,
+          "overlap_days": 238,
+          "pro_rata_fraction": 0.6520547945205479
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-08-26"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-0.92",
+      "year": 2025,
+      "input_ranges": "seed 911; 1013 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 343,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-01-01",
+          "window_end": "2025-12-31",
+          "foreign_days": 338,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-0.97",
+      "year": 2025,
+      "input_ranges": "seed 911; 1063 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 361,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-01-01",
+          "window_end": "2025-12-31",
+          "foreign_days": 352,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2025-1",
+      "year": 2025,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2025-01-01",
+          "window_end": "2025-12-31",
+          "foreign_days": 365,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2025-01-01",
+          "end_date": "2025-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-0",
+      "year": 2096,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-0.25",
+      "year": 2096,
+      "input_ranges": "seed 911; 293 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 111,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-0.88",
+      "year": 2096,
+      "input_ranges": "seed 911; 955 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 366,
+      "passing": 0,
+      "max_foreign": 325,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-0.9",
+      "year": 2096,
+      "input_ranges": "seed 911; 989 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 541,
+      "max_foreign": 335,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2096-01-01",
+          "window_end": "2096-12-31",
+          "foreign_days": 331,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2096-01-01",
+          "end_date": "2096-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-0.92",
+      "year": 2096,
+      "input_ranges": "seed 911; 1012 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 344,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2096-01-01",
+          "window_end": "2096-12-31",
+          "foreign_days": 342,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2096-01-01",
+          "end_date": "2096-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-0.97",
+      "year": 2096,
+      "input_ranges": "seed 911; 1069 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 364,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2096-01-01",
+          "window_end": "2096-12-31",
+          "foreign_days": 353,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2096-01-01",
+          "end_date": "2096-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2096-1",
+      "year": 2096,
+      "input_ranges": "seed 911; 1096 daily foreign records",
+      "expected_days": 366,
+      "actual_days": 366,
+      "denominator": 366,
+      "passing": 729,
+      "max_foreign": 366,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2096-01-01",
+          "window_end": "2096-12-31",
+          "foreign_days": 366,
+          "overlap_days": 366,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2096-01-01",
+          "end_date": "2096-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-0",
+      "year": 2099,
+      "input_ranges": "seed 911; 0 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 0,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-0.25",
+      "year": 2099,
+      "input_ranges": "seed 911; 274 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 104,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-0.88",
+      "year": 2099,
+      "input_ranges": "seed 911; 953 daily foreign records",
+      "expected_days": 0,
+      "actual_days": 0,
+      "denominator": 365,
+      "passing": 0,
+      "max_foreign": 325,
+      "candidate_count": 729,
+      "support": [],
+      "coverage": [],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-0.9",
+      "year": 2099,
+      "input_ranges": "seed 911; 992 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 392,
+      "max_foreign": 336,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2099-01-01",
+          "window_end": "2099-12-31",
+          "foreign_days": 330,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2099-01-01",
+          "end_date": "2099-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-0.92",
+      "year": 2099,
+      "input_ranges": "seed 911; 1007 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 552,
+      "max_foreign": 347,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2098-12-12",
+          "window_end": "2099-12-11",
+          "foreign_days": 330,
+          "overlap_days": 345,
+          "pro_rata_fraction": 0.9452054794520548
+        },
+        {
+          "window_start": "2099-12-12",
+          "window_end": "2100-12-11",
+          "foreign_days": 335,
+          "overlap_days": 20,
+          "pro_rata_fraction": 0.0547945205479452
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2099-01-01",
+          "end_date": "2099-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-0.97",
+      "year": 2099,
+      "input_ranges": "seed 911; 1060 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 359,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2099-01-01",
+          "window_end": "2099-12-31",
+          "foreign_days": 351,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2099-01-01",
+          "end_date": "2099-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    },
+    {
+      "name": "random-2099-1",
+      "year": 2099,
+      "input_ranges": "seed 911; 1095 daily foreign records",
+      "expected_days": 365,
+      "actual_days": 365,
+      "denominator": 365,
+      "passing": 729,
+      "max_foreign": 365,
+      "candidate_count": 729,
+      "support": [
+        {
+          "window_start": "2099-01-01",
+          "window_end": "2099-12-31",
+          "foreign_days": 365,
+          "overlap_days": 365,
+          "pro_rata_fraction": 1
+        }
+      ],
+      "coverage": [
+        {
+          "start_date": "2099-01-01",
+          "end_date": "2099-12-31"
+        }
+      ],
+      "leap": null,
+      "mismatches": []
+    }
+  ]
+}

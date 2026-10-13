@@ -1,0 +1,29 @@
+{
+  "commit": "18677df",
+  "baseline": "2025-alpha.1 (9df6883)",
+  "candidate": "0.2.0-rc.1",
+  "node": "20.19.0",
+  "check": {
+    "typecheck": "pass",
+    "tests": 79,
+    "files": 10,
+    "build": "pass"
+  },
+  "e2e": {
+    "passed": 28,
+    "skipped": 2,
+    "projects": [
+      "chromium-desktop",
+      "chromium-mobile",
+      "chromium-tablet",
+      "firefox-desktop",
+      "firefox-mobile"
+    ]
+  },
+  "independent_oracle": {
+    "cases": 77,
+    "mismatches": 0
+  },
+  "implementation_changes": false,
+  "deployed": false
+}

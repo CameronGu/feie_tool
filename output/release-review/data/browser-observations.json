@@ -1,0 +1,48 @@
+[
+  {
+    "name": "ordinary-recorded",
+    "clipboardMatches": true
+  },
+  {
+    "name": "threshold-330",
+    "clipboardMatches": true
+  },
+  {
+    "name": "partial-year",
+    "clipboardMatches": true
+  },
+  {
+    "name": "nonqualifying",
+    "clipboardMatches": true
+  },
+  {
+    "name": "incomplete",
+    "clipboardMatches": true
+  },
+  {
+    "name": "projected-scenario",
+    "clipboardMatches": true
+  },
+  {
+    "name": "multiple-periods",
+    "clipboardMatches": true
+  },
+  {
+    "name": "example-context",
+    "text": "EXAMPLE PREVIEW\nPhysical presence \u00b7 2025\nPhysical-presence threshold met\n\n365 of 365 tax-year days covered by supported qualifying periods.\n\nCompleted-record coverage: 366 days. Scenario coverage: 365 days (-1). Saved completed records are preserved.\n\nCoverage fraction: 365 / 365 = 1.000000 (rounded display)\n\nPhysical-presence coverage is conditional on foreign tax home and other eligibility requirements. It is not the amount of your exclusion or tax savings. Missing dates count as zero foreign days; adding evidence may increase coverage.\n\nSupporting 12-month periods\n\n40 periods pass. This compact supporting set covers their combined tax-year dates; overlapping days count once.\n\n2025-01-01 to 2025-12-31\nFull foreign days\n334 / 330 required\nCalendar period\n365 days\nDays in selected year\n365\nRecorded completed foreign\n334\nAssumed foreign\n0\nProjected foreign\n0\nUnknown days\n31\n\nAssumed and projected counts can overlap. Period dates describe the containing test period, not a recommendation to stay abroad continuously.\n\nTax-year dates covered\nCopy preparer report\nDownload PDF report\n\nPDF report downloaded.\n\nReview normalized evidence and assumptions\n\nAs of 2026-10-13 (UTC). Calculation physical-presence-2. IRS physical-presence rules.",
+    "yearField": "2024"
+  },
+  {
+    "name": "declared-with-us-visits",
+    "clipboardMatches": true
+  },
+  {
+    "name": "restored",
+    "records": 4,
+    "widths": {
+      "viewport": 390,
+      "document": 390
+    },
+    "fieldTop": 884.921875
+  }
+]
