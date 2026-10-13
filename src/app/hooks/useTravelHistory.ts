@@ -50,7 +50,7 @@ export function useTravelHistory() {
     },
     reset() { commit(EMPTY_HISTORY, true); },
     undo() {
-      if (previous) { setHistory(previous); setPrevious(history); }
+      if (previous) { setHistory(previous); setPrevious(null); }
     }
   };
 }

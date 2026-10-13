@@ -8,7 +8,7 @@ export function AppFooter() {
     <footer className="site-footer">
       <div className="footer-meta">
         <span className="footer-credit">
-          Developed by{' '}
+          by{' '}
           <a className="footer-link" href={AUTHOR_URL} target="_blank" rel="noreferrer">
             {AUTHOR_NAME}
           </a>
