@@ -24,7 +24,7 @@ export function ResultsPanel({ report, example = false }: { report: TravelReport
   }
   return (
     <section className="panel results-panel" aria-labelledby="results-heading">
-      <div className="eyebrow">{example ? 'Example preview' : report.scenario ? 'Scenario comparison' : 'Completed travel assessment'}</div>
+      <div className="eyebrow">{example ? 'Demonstration · tax year 2025' : report.scenario ? 'Scenario comparison' : 'Completed travel assessment'}</div>
       <h2 id="results-heading">Physical presence · {report.tax_year}</h2>
       <div className={`assessment assessment-${report.status}`} role="status" aria-live="polite">
         <h3>{report.has_evidence ? report.status_label : 'Add travel evidence to begin'}</h3>
@@ -64,7 +64,7 @@ export function ResultsPanel({ report, example = false }: { report: TravelReport
         <p className="help">The report includes exactly the normalized days supplied to the engine, with record identifiers and assumptions. This text is also available for manual copying.</p>
         <textarea className="report-text" aria-label="Preparer report text" readOnly value={reportText(report)} />
       </details>
-      <p className="help">As of {report.as_of} (UTC). Calculation {report.calculation_version}. <a href="https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test" target="_blank" rel="noreferrer">IRS physical-presence rules</a>.</p>
+      <p className="help">Completed through {report.last_completed_day}. Later dates are projected when included. Calculation {report.calculation_version}. <a href="https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test" target="_blank" rel="noreferrer">IRS physical-presence rules</a>.</p>
     </section>
   );
 }

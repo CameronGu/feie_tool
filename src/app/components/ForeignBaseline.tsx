@@ -40,7 +40,7 @@ export function ForeignBaseline({ editing, ending, onSave, onCancel }: {
     {!ongoing && <><label htmlFor="baseline-end">Final covered full foreign day</label>
       <input ref={endRef} id="baseline-end" type="date" required min={start || '1900-01-01'} max={ONGOING_END} value={end}
         onChange={event => { setEnd(event.target.value); setConfirmed(false); }} aria-describedby="baseline-error" /></>}
-    <p id="baseline-help" className="help">Exclude partial arrival/departure days and record transit separately. Today and future continuation count only as projected evidence when comparison is enabled.</p>
+    <p id="baseline-help" className="help">Exclude partial arrival/departure days and record transit separately. Continuation after the completed-day cutoff is projected when comparison is enabled.</p>
     <label htmlFor="baseline-note">Supporting note (optional)</label>
     <input id="baseline-note" maxLength={500} value={note} onChange={event => setNote(event.target.value)} />
     <label className="check-row"><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />

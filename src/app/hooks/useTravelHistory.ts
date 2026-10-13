@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { EMPTY_HISTORY, mergeHistory, validateHistory, type TravelHistory, type TravelRecord } from '../../domain/history';
 import { loadHistory, saveHistory } from '../../services/historyStorage';
 import { assessTravel } from '../../services/travelCalculator';
+import { deviceCutoff, manualCutoff } from '../../services/completedDayCutoff';
 
 export type EntryView = 'foreign' | 'us';
 const browserStorage = {
@@ -18,7 +19,8 @@ export function useTravelHistory() {
   const [year, setYear] = useState(() => new Date().getUTCFullYear() - 1);
   const [entryView, setEntryView] = useState<EntryView>('foreign');
   const [includeProposals, setIncludeProposals] = useState(false);
-  const [asOf] = useState(() => new Date().toISOString().slice(0, 10));
+  const [cutoff, setCutoff] = useState<ReturnType<typeof deviceCutoff> | ReturnType<typeof manualCutoff>>(() => deviceCutoff());
+  const asOf = cutoff.asOf;
 
   useEffect(() => {
     if (recoveryData !== undefined) return;
@@ -37,7 +39,9 @@ export function useTravelHistory() {
   }
 
   return {
-    history, year, setYear, entryView, setEntryView, includeProposals, setIncludeProposals, asOf,
+    history, year, setYear, entryView, setEntryView, includeProposals, setIncludeProposals, asOf, cutoff,
+    setLastCompletedDay(date: string) { setCutoff(manualCutoff(date)); },
+    resetCutoff() { const next = deviceCutoff(); setCutoff(next); return next.lastCompletedDay; },
     baseline, scenario, assessment: scenario ?? baseline, storageMessage, recoveryData,
     canUndo: previous !== null,
     saveRecord(record: TravelRecord) {

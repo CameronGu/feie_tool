@@ -87,6 +87,9 @@ tbody tr:nth-child(even) { background: #f7f9fb; }
 @media print { body { background: white; } .app-shell { padding: 0; } button, form, .view-switch, .year-bar, .skip-link { display: none; } .calculator-grid { display: block; } .panel { box-shadow: none; break-inside: avoid; } a { color: inherit; } }
 
 /* Ordinary baseline status, distinct from alerts and validation. */
+.cutoff-settings { margin: -12px 0 16px; border: 0; font-size: .85rem; }
+.cutoff-settings summary { padding: 5px 0; font-weight: 500; }
+.cutoff-settings input { max-width: 240px; }
 .baseline-summary { padding: 12px 0; margin-bottom: 14px; border-bottom: 1px solid #d4dfe6; }
 .baseline-summary p { margin-bottom: 6px; }
 .baseline-intro { padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid #d4dfe6; }

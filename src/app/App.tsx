@@ -9,6 +9,7 @@ import { TravelEntry } from './components/TravelEntry';
 import { HistoryPanel } from './components/HistoryPanel';
 import { ResultsPanel } from './components/ResultsPanel';
 import { AppFooter } from './components/AppFooter';
+import { CompletedDaySettings } from './components/CompletedDaySettings';
 import './styles/app.css';
 
 const EXAMPLE: TravelHistory = { schema_version: 1, records: [{ id: 'example-2025', kind: 'foreign', status: 'completed',
@@ -23,9 +24,10 @@ export function App() {
   const [example, setExample] = useState(false);
   const [yearDraft, setYearDraft] = useState(String(travel.year));
   const [yearError, setYearError] = useState('');
-  const exampleAssessment = useMemo(() => example ? assessTravel(EXAMPLE, 2025, travel.asOf) : null, [example, travel.asOf]);
+  const exampleAssessment = useMemo(() => example ? assessTravel(EXAMPLE, 2025, '2026-01-01') : null, [example]);
   const assessment = exampleAssessment ?? travel.assessment;
-  const report = useMemo(() => ({ ...buildReport(assessment, undefined, !example && travel.includeProposals ? travel.baseline : undefined), example }), [assessment, example, travel.includeProposals, travel.baseline]);
+  const report = useMemo(() => ({ ...buildReport(assessment, undefined, !example && travel.includeProposals ? travel.baseline : undefined,
+    example ? { basis: 'demonstration' } : travel.cutoff), example }), [assessment, example, travel.includeProposals, travel.baseline, travel.cutoff]);
   function closeEditor() { setEditing(null); setSetupBaseline(false); setEndingBaseline(false); setEditorKey(value => value + 1); }
   const baselines = travel.history.records.filter(record => record.kind === 'foreign_assumption' && record.status === 'completed');
   function editRecord(record: TravelRecord) {
@@ -42,7 +44,7 @@ export function App() {
         <p className="scope-note">Private: travel stays in this browser. Physical-presence planning only; tax home and FEIE eligibility need separate review.</p>
         {travel.storageMessage && <p className="notice" role="alert">{travel.storageMessage}</p>}
         <section className="year-bar" aria-label="Calculation settings">
-          <div><label htmlFor="tax-year">Calendar tax year</label><input id="tax-year" inputMode="numeric" type="number" min={1901} max={2099} value={yearDraft}
+          <div><label htmlFor="tax-year">{example ? 'Saved calendar tax year' : 'Calendar tax year'}</label><input id="tax-year" inputMode="numeric" type="number" min={1901} max={2099} value={yearDraft} disabled={example}
             aria-describedby="year-help year-error" aria-invalid={Boolean(yearError)} onChange={event => {
               const value = event.target.value; setYearDraft(value);
               const year = Number(value);
@@ -50,10 +52,11 @@ export function App() {
               else setYearError('Choose a complete calendar year between 1901 and 2099.');
             }} /></div>
           <span id="year-help" className="sr-only">Changing years preserves travel history. Unrecorded dates remain unknown.</span>
-          <label className="check-row"><input type="checkbox" checked={travel.includeProposals} onChange={event => { travel.setIncludeProposals(event.target.checked); setExample(false); }} />Compare proposed and future travel</label>
+          <label className="check-row"><input type="checkbox" checked={travel.includeProposals} disabled={example} onChange={event => { travel.setIncludeProposals(event.target.checked); setExample(false); }} />Compare proposed and future travel</label>
           <p id="year-error" className="error" role={yearError ? 'alert' : undefined}>{yearError}</p>
         </section>
-        {example && <div className="notice" role="status">Example preview for tax year 2025. Your saved travel records are unchanged. Close the example to return to your calculation.</div>}
+        <CompletedDaySettings key={travel.cutoff.asOf + travel.cutoff.basis} cutoff={travel.cutoff} onApply={travel.setLastCompletedDay} onReset={travel.resetCutoff} disabled={example} />
+        {example && <div className="notice" role="status"><strong>Demonstration · tax year 2025</strong>. Your saved calculation for {travel.year} is paused. Your saved travel records are unchanged; saved settings resume on close. The example uses completed days through 2025-12-31. Close the example to return to your calculation.</div>}
         <div className="calculator-grid">
           <section id="travel-entry" className="panel" aria-label="Travel entry">
             <div className="view-switch" role="group" aria-label="Entry convenience">

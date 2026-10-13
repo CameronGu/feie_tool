@@ -1,4 +1,5 @@
-import { diffDaysInclusive } from '../domain/dates';
+import { addDays, diffDaysInclusive } from '../domain/dates';
+import type { CutoffContext } from './completedDayCutoff';
 import { segmentDaysWithin, type PresenceSegment, type TravelRecord } from '../domain/history';
 import type { Interval, QualifiedWindow } from '../domain/types';
 import type { TravelAssessment } from './travelCalculator';
@@ -36,6 +37,8 @@ export interface TravelReport {
   calculation_version: string;
   tax_year: number;
   as_of: string;
+  last_completed_day: string;
+  cutoff: CutoffContext;
   generated_at: string;
   scenario: boolean;
   example: boolean;
@@ -60,7 +63,8 @@ export interface TravelReport {
   leap_day_review: TravelAssessment['calculation']['leapDayReview'];
 }
 
-export function buildReport(assessment: TravelAssessment, generatedAt = new Date().toISOString(), baseline?: TravelAssessment): TravelReport {
+export function buildReport(assessment: TravelAssessment, generatedAt = new Date().toISOString(), baseline?: TravelAssessment,
+  cutoff: CutoffContext = { basis: 'provided-date' }): TravelReport {
   if (baseline && (!assessment.normalized.includes_proposals || baseline.normalized.includes_proposals ||
     baseline.normalized.as_of !== assessment.normalized.as_of || baseline.normalized.input.taxYearStart !== assessment.normalized.input.taxYearStart ||
     JSON.stringify(baseline.normalized.records) !== JSON.stringify(assessment.normalized.records.filter(record => record.status === 'completed')))) {
@@ -83,6 +87,7 @@ export function buildReport(assessment: TravelAssessment, generatedAt = new Date
   return {
     title: 'FEIE Window Optimizer', app_version: APP_VERSION, calculation_version: CALCULATION_VERSION,
     tax_year: Number(normalized.input.taxYearStart.slice(0, 4)), as_of: normalized.as_of, generated_at: generatedAt,
+    last_completed_day: addDays(normalized.as_of, -1), cutoff: { basis: cutoff.basis, device_time_zone: cutoff.device_time_zone },
     scenario: normalized.includes_proposals, example: false, status: assessment.status, status_label: STATUS_LABELS[assessment.status],
     qualifying_days: calculation.qualifyingDays, tax_year_days: calculation.totalTaxYearDays, fraction: calculation.coverageFraction,
     coverage: calculation.qualifyingCoverage, supporting_periods: calculation.supportingWindows.map(evidence),
@@ -113,13 +118,15 @@ export function buildReport(assessment: TravelAssessment, generatedAt = new Date
   };
 }
 
-export interface ReportSection { title: string; lines: { text: string; url?: string }[] }
+export interface ReportLine { text: string; url?: string; emphasis?: 'result' | 'period' }
+export interface ReportSection { title: string; lines: ReportLine[] }
 
 /** One ordered document for clipboard and PDF. References carry clickable destinations. */
 export function reportSections(report: TravelReport): ReportSection[] {
-  const section = (title: string, lines: string[]): ReportSection => ({ title, lines: lines.map(text => ({ text })) });
+  const section = (title: string, lines: (string | ReportLine)[]): ReportSection => ({ title, lines: lines.map(line => typeof line === 'string' ? { text: line } : line) });
   const period = (window: PeriodEvidence) => [
-    `${window.window_start} to ${window.window_end} (${window.calendar_days} calendar days; ${window.overlap_days} days in tax year).`,
+    { text: `${window.window_start} to ${window.window_end}`, emphasis: 'period' as const },
+    `${window.calendar_days} calendar days; ${window.overlap_days} days in tax year.`,
     `Full foreign days: ${window.foreign_days} / 330 required; recorded completed: ${window.recorded_foreign_days}; assumed: ${window.assumed_foreign_days}; projected foreign: ${window.projected_foreign_days}; unknown: ${window.unknown_days}.`
   ];
   const comparison = report.comparison;
@@ -127,10 +134,12 @@ export function reportSections(report: TravelReport): ReportSection[] {
   return [
     section('SUMMARY', [
       ...(report.example ? ['EXAMPLE REPORT: demonstration data, not your saved travel history.'] : []),
-      `Calendar tax year: ${report.tax_year} | Assessment: ${report.status_label}`,
-      `Input: ${report.scenario ? 'Scenario including proposed/future travel' : 'Completed travel only'} | As of: ${report.as_of} (UTC).`,
+      `Calendar tax year: ${report.tax_year}`,
+      { text: report.status_label, emphasis: 'period' },
+      `Input: ${report.scenario ? 'Scenario including proposed/future travel' : 'Completed travel only'} | Completed through: ${report.last_completed_day}.`,
       ...(!report.has_evidence ? ['No relevant travel evidence. Add full foreign days, or establish default foreign presence and record exceptions.'] : []),
-      `PHYSICAL-PRESENCE COVERAGE: ${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)} (display rounded; exact fraction shown).`,
+      { text: `PHYSICAL-PRESENCE COVERAGE: ${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)}`, emphasis: 'result' },
+      'Exact qualifying-day fraction; decimal display rounded. Tax-home and eligibility review remain separate.',
       ...(comparison ? [`COMPLETED / SCENARIO COMPARISON - tax year ${comparison.tax_year}`,
         `Completed-record coverage: ${comparison.completed_days} / ${comparison.denominator} (${comparison.completed_status}).`,
         `Scenario coverage: ${comparison.scenario_days} / ${comparison.denominator}; change: ${comparison.delta_days >= 0 ? '+' : ''}${comparison.delta_days} days.`] : []),
@@ -158,7 +167,8 @@ export function reportSections(report: TravelReport): ReportSection[] {
     ]),
     section('CALCULATION PROVENANCE', [
       `Application ${report.app_version}; calculation ${report.calculation_version}; generated: ${report.generated_at}`,
-      `Completed evidence excludes dates on/after ${report.as_of} (UTC). Full foreign ranges are inclusive; exclude partial arrival/departure days. Check short-transit exceptions; territories and international waters do not automatically count.`,
+      `Cutoff basis: ${report.cutoff.basis}${report.cutoff.device_time_zone ? `; device time zone: ${report.cutoff.device_time_zone}` : ''}. Exclusive as-of date: ${report.as_of}; completed through ${report.last_completed_day}. Later dates are projected when included. Date-only arithmetic uses UTC.`,
+      'Full foreign ranges are inclusive; exclude partial arrival/departure days. Check short-transit exceptions; territories and international waters do not automatically count.',
       'Supporting periods deterministically cover the first uncovered tax-year day with the passing period ending latest. February 29 endpoints remain a separate sensitivity. Rules anchored to 2025 guidance; waivers, bona fide residence, special relief and monetary calculations are outside scope.',
       ...(report.records.some(record => record.ongoing) ? ['Ongoing declarations retain an open endpoint through the supported date ceiling (2100-12-31); normalization clips only evaluated evidence.'] : []),
       TAX_HOME_EXAMPLE,

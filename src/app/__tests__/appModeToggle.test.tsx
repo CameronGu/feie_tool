@@ -3,6 +3,7 @@ import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
 import { STORAGE_KEY } from '../../services/historyStorage';
+import { deviceCutoff } from '../../services/completedDayCutoff';
 
 beforeEach(() => {
   localStorage.clear();
@@ -20,7 +21,8 @@ function add(kind: string, start: string, end: string, proposed = false) {
   fireEvent.click(screen.getByRole('button', { name: 'Save travel record' }));
 }
 
-describe('primary travel workflows', () => {
+// Full-App workflows repeatedly normalize/calculate history under StrictMode.
+describe('primary travel workflows', { timeout: 15000 }, () => {
   it('leaves an empty U.S. entry view incomplete and does not require a mode-transfer dialog', () => {
     open(); fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
     expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
@@ -149,3 +151,31 @@ it('shows an actionable empty state without an arbitrary candidate or deficit', 
   expect(screen.queryByText('Strongest supported period')).toBeNull();
   expect(screen.queryByText(/more would be needed/)).toBeNull();
 });
+
+it('adjusts the cutoff without changing history and isolates all saved settings from the demonstration', () => {
+  open(); add('foreign', '2024-01-01', '2024-12-31');
+  const saved = localStorage.getItem(STORAGE_KEY);
+  fireEvent.change(screen.getByLabelText('Last completed calendar day'), { target: { value: '2024-01-01' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Apply completed-day cutoff', hidden: true }));
+  expect(screen.getByText('Completed through 2024-01-01 · Manual')).toBeTruthy();
+  fireEvent.click(screen.getByLabelText('Compare proposed and future travel'));
+  fireEvent.click(screen.getByRole('button', { name: 'Preview an example' }));
+  expect((screen.getByLabelText('Saved calendar tax year') as HTMLInputElement).disabled).toBe(true);
+  expect((screen.getByLabelText('Saved calendar tax year') as HTMLInputElement).value).toBe('2024');
+  expect(screen.getByText(/Your saved calculation for 2024 is paused/)).toBeTruthy();
+  const demo = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
+  expect(demo).toContain('334 / 330 required');
+  expect(demo).toContain('Cutoff basis: demonstration');
+  expect(demo).toContain('Completed through: 2025-12-31');
+  expect(demo).not.toContain('COMPLETED / SCENARIO COMPARISON');
+  fireEvent.click(screen.getByRole('button', { name: 'Close example' }));
+  expect((screen.getByLabelText('Compare proposed and future travel') as HTMLInputElement).checked).toBe(true);
+  expect(screen.getByText('Completed through 2024-01-01 · Manual')).toBeTruthy();
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
+  fireEvent.click(screen.getByRole('button', { name: 'Use device default', hidden: true }));
+  expect(screen.getByText(`Completed through ${deviceCutoff().lastCompletedDay} · Device calendar`)).toBeTruthy();
+  fireEvent.change(screen.getByLabelText('Last completed calendar day'), { target: { value: '2023-01-01' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Use device default', hidden: true }));
+  expect((screen.getByLabelText('Last completed calendar day') as HTMLInputElement).value).toBe(deviceCutoff().lastCompletedDay);
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
+}, 15000);

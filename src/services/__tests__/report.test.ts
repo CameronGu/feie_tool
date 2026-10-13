@@ -54,13 +54,13 @@ describe('single structured preparer report', () => {
 });
 
 describe('real PDF generation', () => {
-  it('keeps an ordinary bounded-declaration report to one page', async () => {
+  it('keeps an ordinary bounded-declaration report within two readable pages', async () => {
     const ordinary: TravelHistory = { schema_version: 1, records: [
       { ...source.records[0], start_date: '2024-01-01', end_date: '2024-12-31' },
       { ...source.records[1], start_date: '2024-12-01', end_date: '2024-12-31' }
     ] };
     const doc = await createReportPdf(buildReport(assessTravel(ordinary, 2024, '2026-10-12')));
-    expect(doc.getNumberOfPages()).toBe(1);
+    expect(doc.getNumberOfPages()).toBeLessThanOrEqual(2);
   });
   it('generates a valid PDF for an incomplete report with header and footer', async () => {
     const doc = await createReportPdf(buildReport(assessTravel(EMPTY_HISTORY, 2024, '2026-10-12')));
@@ -107,15 +107,29 @@ it('C03: carries the completed baseline, scenario, denominator and signed delta 
   expect(() => buildReport(scenario, undefined, assessTravel(data, 2024, '2026-10-13'))).toThrow('same history');
 });
 
-it('C04: keeps the reviewed two-source/two-support PDF on one page with all evidence and references', async () => {
+it('C04: keeps the reviewed two-source/two-support PDF concise with all evidence and references', async () => {
   const report = buildReport(assessTravel(source, 2024, '2026-10-13'));
   const doc = await createReportPdf(report);
-  expect(doc.getNumberOfPages()).toBe(1);
+  expect(doc.getNumberOfPages()).toBeLessThanOrEqual(2);
+  const firstPage = (doc.internal.pages as unknown as string[][])[1].join(' ');
+  expect(firstPage).toContain('PHYSICAL-PRESENCE COVERAGE');
+  for (const period of report.supporting_periods) expect(firstPage).toContain(`${period.window_start} to ${period.window_end}`);
+  const lastPage = (doc.internal.pages as unknown as string[][]).at(-1)!.join(' ');
+  expect(lastPage).toContain('SUPPORTING DETAILS');
+  expect(lastPage).toContain('NORMALIZED EVIDENCE');
+  expect(lastPage).toContain('CALCULATION PROVENANCE');
+  expect(lastPage).toContain('TECHNICAL REFERENCES');
   const commands = (doc.internal.pages as unknown as string[][]).slice(1).flat().join(' ');
   expect(commands).toContain('NORMALIZED EVIDENCE');
   expect(commands).toContain('Foreign tax home must be checked separately');
   expect(commands).toContain('Not legal or tax advice.');
-  expect(new TextDecoder().decode(doc.output('arraybuffer'))).toContain('https://www.ecfr.gov/current/title-26/section-1.911-2');
+  for (const record of report.records) expect(commands).toContain(record.id);
+  for (const segment of report.segments) {
+    expect(commands).toContain(segment.start_date);
+    expect(commands).toContain(segment.end_date);
+  }
+  const bytes = new TextDecoder().decode(doc.output('arraybuffer'));
+  for (const reference of report.references) expect(bytes).toContain(reference.url);
 });
 
 it('retains a negative scenario delta and rejects a baseline from another history', () => {

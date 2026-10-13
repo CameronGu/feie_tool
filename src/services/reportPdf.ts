@@ -33,47 +33,50 @@ export async function createReportPdf(report: TravelReport): Promise<jsPDF> {
     });
   }
   const capacity = height - 24 - 32;
-  const layout = (fontSize: number) => {
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(fontSize);
-    return sections.map(section => ({ title: section.title, lines: section.lines.map(line => ({
-      ...line, wrapped: doc.splitTextToSize(pdfSafeText(line.text), width - 2 * margin) as string[]
-    })) }));
-  };
-  const measure = (blocks: ReturnType<typeof layout>, lineHeight: number) => blocks.reduce((sum, block) =>
-    sum + 7 + block.lines.reduce((count, line) => count + line.wrapped.length * lineHeight, 0), 0);
-  // Modest density adjustment avoids a routine second page without dropping evidence.
-  let fontSize = 9;
-  let lineHeight = 3.65;
-  let blocks = layout(fontSize);
-  if (measure(blocks, lineHeight) > capacity && measure(blocks, lineHeight) < capacity * 1.22) {
-    fontSize = 8; lineHeight = 3.2; blocks = layout(fontSize);
-  }
+  // Summary and support receive room to read; reproducibility details remain compact.
+  // Never shrink the whole document merely to hit a one-page target.
+  const blocks = sections.map(section => {
+    const technical = /SOURCE RECORDS|NORMALIZED EVIDENCE|PROVENANCE|TECHNICAL REFERENCES/.test(section.title);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+    const heading = doc.splitTextToSize(pdfSafeText(section.title), width - 2 * margin) as string[];
+    return { title: section.title, heading, lines: section.lines.map(line => {
+      const fontSize = line.emphasis === 'result' ? 14 : line.emphasis === 'period' ? 10.5 : technical ? 8.5 : 10;
+      const lineHeight = line.emphasis === 'result' ? 6 : technical ? 3.7 : 4.5;
+      const style = line.emphasis ? 'bold' : 'normal';
+      doc.setFont('helvetica', style); doc.setFontSize(fontSize);
+      const wrapped = doc.splitTextToSize(pdfSafeText(line.text), width - 2 * margin) as string[];
+      return { ...line, wrapped, fontSize, lineHeight, style, size: wrapped.length * lineHeight + (technical ? .7 : 1.4) };
+    }) };
+  });
+  const measure = (groups: typeof blocks) => groups.reduce((sum, block) =>
+    sum + block.heading.length * 4.5 + 4 + block.lines.reduce((count, line) => count + line.size, 0), 0);
   const newPage = () => { doc.addPage(); header(); };
   for (let index = 0; index < blocks.length; index += 1) {
     const block = blocks[index];
-    // Keep provenance and linked references together; never leave a URL-only tail.
-    const following = block.title === 'CALCULATION PROVENANCE' ? blocks.slice(index, index + 2) : [block];
-    const groupHeight = measure(following, lineHeight);
-    if (y + (groupHeight <= capacity ? groupHeight : 7 + lineHeight * 2) > height - 24) newPage();
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+    // If compact supporting details need another page, keep them with provenance
+    // and references instead of leaving a page containing only closing material.
+    const following = block.title.startsWith('SUPPORTING DETAILS') ? blocks.slice(index) :
+      block.title === 'CALCULATION PROVENANCE' ? blocks.slice(index, index + 2) : [block];
+    const groupHeight = measure(following);
+    if (y + (groupHeight <= capacity ? groupHeight : block.heading.length * 4.5 + 4 + (block.lines[0]?.size ?? 0)) > height - 24) newPage();
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
     doc.setTextColor(23, 47, 63);
-    const heading = doc.splitTextToSize(pdfSafeText(block.title), width - 2 * margin) as string[];
-    for (const line of heading) { doc.text(line, margin, y + 1); y += 4; }
+    for (const line of block.heading) { doc.text(line, margin, y + 1); y += 4.5; }
     y += 3;
-    doc.setFont('helvetica', 'normal'); doc.setFontSize(fontSize);
     for (const paragraph of block.lines) {
-      const paragraphHeight = paragraph.wrapped.length * lineHeight;
-      if (paragraphHeight <= capacity && y + paragraphHeight > height - 24) {
-        newPage(); doc.setFontSize(fontSize);
-      }
+      if (paragraph.size <= capacity && y + paragraph.size > height - 24) newPage();
+      doc.setFont('helvetica', paragraph.style); doc.setFontSize(paragraph.fontSize);
       for (const line of paragraph.wrapped) {
-        if (y + lineHeight > height - 24) { newPage(); doc.setFontSize(fontSize); }
+        if (y + paragraph.lineHeight > height - 24) {
+          newPage(); doc.setFont('helvetica', paragraph.style); doc.setFontSize(paragraph.fontSize);
+        }
         if (paragraph.url) doc.setTextColor(7, 95, 120);
         else doc.setTextColor(23, 47, 63);
         if (paragraph.url) doc.textWithLink(line, margin, y, { url: paragraph.url });
         else doc.text(line, margin, y);
-        y += lineHeight;
+        y += paragraph.lineHeight;
       }
+      y += paragraph.size - paragraph.wrapped.length * paragraph.lineHeight;
     }
   }
   const totalPages = doc.getNumberOfPages();

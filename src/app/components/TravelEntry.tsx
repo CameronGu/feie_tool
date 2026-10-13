@@ -65,7 +65,7 @@ export function TravelEntry({ view, editing, onSave, onCancel }: Props) {
       <select id="record-status" value={status} onChange={event => setStatus(event.target.value as RecordStatus)}>
         <option value="completed">Completed travel</option><option value="proposed">Proposed scenario</option>
       </select>
-      <p className="help">Today and future dates are projected even when entered as completed. Proposals are included only when you enable comparison.</p>
+      <p className="help">Dates after the completed-day cutoff remain projected even when entered as completed. Proposals are included only when you enable comparison.</p>
       <label htmlFor="record-note">Country or supporting note <span className="optional">(optional)</span></label>
       <input id="record-note" type="text" maxLength={500} value={note} onChange={event => setNote(event.target.value)} />
       {kind === 'foreign_assumption' && <label className="check-row">
