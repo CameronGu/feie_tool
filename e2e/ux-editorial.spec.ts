@@ -19,6 +19,10 @@ async function capture(page: Page, info: TestInfo, name: string, selector?: stri
     await page.screenshot({ path: join(directory, `${name}-viewport.png`) });
   }
 }
+async function expandIncome(page: Page) {
+  const toggle = page.getByRole('button', { name: 'Adjust income and see the calculation' });
+  if (await toggle.isVisible()) await toggle.click();
+}
 async function noOverflow(page: Page) {
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
 }
@@ -63,7 +67,7 @@ test('experienced expatriate calculates and exports without opening educational 
 
 test('new international worker explores optional help and gets a cross-year result', async ({ page }, info) => {
   await start(page);
-  const help = page.getByText('How FEIE works', { exact: true });
+  const help = page.getByRole('link', { name: 'How FEIE works', exact: true });
   await help.focus();
   await page.keyboard.press('Enter');
   await expect(page.locator('.feie-guidance')).toHaveAttribute('open');
@@ -73,7 +77,7 @@ test('new international worker explores optional help and gets a cross-year resu
   await page.getByText('What is a qualifying 12-month period?', { exact: true }).click();
   await expect(page.getByText(/It can cross tax years/)).toBeVisible();
   await capture(page, info, '04-feie-guidance', '.guidance-body');
-  await help.focus();
+  await page.locator('.feie-guidance > summary').focus();
   await page.keyboard.press('Space');
   await expect(page.locator('.feie-guidance')).not.toHaveAttribute('open');
   await page.getByLabel('Calendar tax year').fill('2025');
@@ -93,13 +97,13 @@ test('income example supports exact entry, pointer and keyboard controls without
   await start(page);
   const history = await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'));
   const report = await page.getByLabel('Preparer report text').inputValue();
-  await page.getByText('How FEIE works', { exact: true }).click();
+  await expandIncome(page);
   const example = page.locator('.income-example');
   const salary = page.getByRole('spinbutton', { name: /Annual salary/ });
   const slider = page.getByRole('slider', { name: 'Adjust annual salary' });
-  await expect(example).toContainText('Tax year 2026');
+  await expect(example).toContainText('2026 example');
   await expect(example).toContainText('Approximately $17,570');
-  await expect(example).toContainText('Potential difference: about $17,500');
+  await expect(example).toContainText('~$17,500');
   await capture(page, info, '05-income-default', '.income-example');
   await salary.fill('180000');
   await expect(example).toContainText('Approximately $31,934');
@@ -135,7 +139,7 @@ test('income example supports exact entry, pointer and keyboard controls without
   expect(await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'))).toBe(history);
   expect(await page.getByLabel('Preparer report text').inputValue()).toBe(report);
   await page.reload();
-  await page.getByText('How FEIE works', { exact: true }).click();
+  await expandIncome(page);
   await expect(salary).toHaveValue('120000');
 });
 
@@ -145,7 +149,7 @@ test('income slider responds to touch on mobile', async ({ browser }, info) => {
   try {
     const page = await context.newPage();
     await page.goto('http://127.0.0.1:4174/');
-    await page.getByText('How FEIE works', { exact: true }).tap();
+    await page.getByRole('button', { name: 'Adjust income and see the calculation' }).tap();
     const slider = page.getByRole('slider', { name: 'Adjust annual salary' });
     await slider.scrollIntoViewIfNeeded();
     const box = (await slider.boundingBox())!;
@@ -153,6 +157,10 @@ test('income slider responds to touch on mobile', async ({ browser }, info) => {
     const amount = Number(await page.getByRole('spinbutton', { name: /Annual salary/ }).inputValue());
     expect(amount).toBeGreaterThan(180000);
     expect(amount % 5000).toBe(0);
+    await page.getByRole('button', { name: 'Hide income controls and calculation' }).tap();
+    await expect(slider).not.toBeVisible();
+    await page.getByRole('button', { name: 'Adjust income and see the calculation' }).tap();
+    await expect(page.getByRole('spinbutton', { name: /Annual salary/ })).toHaveValue(String(amount));
     await noOverflow(page);
   } finally { await context.close(); }
 });

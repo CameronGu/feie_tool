@@ -2,7 +2,7 @@
 
 A private, account-free utility for evaluating the Foreign Earned Income Exclusion's ordinary physical-presence test. Maintain travel history, compare proposed travel, and prepare a supporting report for a tax preparer.
 
-Optional **How FEIE works** guidance explains physical presence, bona fide residence and foreign tax home without adding an onboarding sequence. Results distinguish full foreign days from qualifying-period coverage and explain the actual supporting-period selection. The salary illustration inside that guidance is a separate educational example; travel entry remains directly accessible.
+Optional **How FEIE works** guidance explains physical presence, bona fide residence and foreign tax home without adding an onboarding sequence. Results distinguish full foreign days from qualifying-period coverage and explain the actual supporting-period selection. A visible salary illustration is a separate educational example, with compact expandable controls on mobile. The introduction links directly to optional guidance below travel history; travel entry remains directly accessible.
 
 The application counts full foreign days in intersecting twelve-calendar-month periods and combines qualifying-period coverage within a selected calendar year without double counting. It does **not** determine complete FEIE eligibility, foreign tax home, eligible income, actual exclusion dollars, or tax savings.
 

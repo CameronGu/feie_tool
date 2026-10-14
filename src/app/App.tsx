@@ -11,6 +11,7 @@ import { ResultsPanel } from './components/ResultsPanel';
 import { AppFooter } from './components/AppFooter';
 import { CompletedDaySettings } from './components/CompletedDaySettings';
 import { FeieGuidance } from './components/FeieGuidance';
+import { IncomeIllustration } from './components/IncomeIllustration';
 import './styles/app.css';
 
 const EXAMPLE: TravelHistory = { schema_version: 1, records: [{ id: 'example-2025', kind: 'foreign', status: 'completed',
@@ -25,6 +26,7 @@ export function App() {
   const [example, setExample] = useState(false);
   const [yearDraft, setYearDraft] = useState(String(travel.year));
   const [yearError, setYearError] = useState('');
+  const [guidanceOpen, setGuidanceOpen] = useState(false);
   const exampleAssessment = useMemo(() => example ? assessTravel(EXAMPLE, 2025, '2026-01-01') : null, [example]);
   const assessment = exampleAssessment ?? travel.assessment;
   const report = useMemo(() => ({ ...buildReport(assessment, undefined, !example && travel.includeProposals ? travel.baseline : undefined,
@@ -38,13 +40,16 @@ export function App() {
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">Skip to calculator</a>
-      <header className="app-header"><div>
-        <h1>{APP_NAME}</h1><p>Check your time abroad against the IRS physical presence test.</p></div></header>
-      <section className="introduction" aria-label="About this calculator">
-        <p>If you live or work outside the U.S., your travel dates can affect how much foreign earned income you’re allowed to exclude from U.S. taxes.</p>
-        <p>Enter your U.S. visits or the dates you spent abroad. The calculator will find qualifying 12-month periods and show how they apply to the tax year you’re checking.</p>
-        <FeieGuidance />
-      </section>
+      <div className="home-intro">
+        <header className="introduction">
+          <h1>{APP_NAME}</h1>
+          <p className="intro-subtitle">Check your time abroad against the IRS physical presence test.</p>
+          <p className="intro-detail">Enter your U.S. visits or the dates you spent abroad. Find qualifying 12-month periods and see how they apply to the tax year you’re checking.</p>
+          <div className="intro-links"><a href="#feie-guidance" onClick={() => setGuidanceOpen(true)}>How FEIE works</a>
+            <span>Travel history stays in this browser.</span></div>
+        </header>
+        <IncomeIllustration />
+      </div>
       <main id="main-content" tabIndex={-1}>
         {travel.storageMessage && <p className="notice" role="alert">{travel.storageMessage}</p>}
         <section className="year-bar" aria-label="Calculation settings">
@@ -98,6 +103,7 @@ export function App() {
           onUndo={() => { travel.undo(); closeEditor(); setExample(false); }}
           onImport={(history, strategy) => { travel.importHistory(history, strategy); closeEditor(); setExample(false); }}
           onReset={() => { travel.reset(); closeEditor(); setExample(false); }} />
+        <FeieGuidance open={guidanceOpen} onToggle={setGuidanceOpen} />
       </main>
       <AppFooter />
     </div>

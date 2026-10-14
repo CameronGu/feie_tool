@@ -1,5 +1,3 @@
-import { IncomeIllustration } from './IncomeIllustration';
-
 export function DayCountsHelp() {
   return <details><summary>Why are qualifying-period days different from foreign days?</summary>
     <p><strong>Full foreign days</strong> determine whether a consecutive 12-month period reaches the 330-day threshold.</p>
@@ -10,8 +8,9 @@ export function DayCountsHelp() {
   </details>;
 }
 
-export function FeieGuidance() {
-  return <details className="feie-guidance"><summary>How FEIE works</summary>
+export function FeieGuidance({ open, onToggle }: { open: boolean; onToggle: (open: boolean) => void }) {
+  return <details id="feie-guidance" className="panel feie-guidance" tabIndex={-1} open={open}
+    onToggle={event => onToggle(event.currentTarget.open)}><summary>How FEIE works</summary>
     <div className="guidance-body">
       <p>The Foreign Earned Income Exclusion (FEIE) lets eligible U.S. citizens and resident aliens exclude some income earned from work abroad from U.S. federal income tax. If you live or work internationally, it may be relevant to your return.</p>
       <h2>Two ways to meet the time or residence requirement</h2>
@@ -29,7 +28,7 @@ export function FeieGuidance() {
         <p>It can cross tax years, so dates from the year before or after may help support your selected year. U.S. visits do not automatically prevent a passing count if enough full foreign days remain.</p>
       </details>
       <p className="help">Read the <a href="https://www.irs.gov/publications/p54" target="_blank" rel="noreferrer">IRS Publication 54</a>, <a href="https://www.irs.gov/instructions/i2555" target="_blank" rel="noreferrer">Form 2555 instructions</a> and <a href="https://www.ecfr.gov/current/title-26/section-1.911-2" target="_blank" rel="noreferrer">Treasury Regulation §1.911-2</a> for the underlying requirements.</p>
-      <IncomeIllustration />
+      <p className="help">For an illustration of regular federal income tax with and without FEIE, <a href="#income-example">adjust the salary example above</a>.</p>
     </div>
   </details>;
 }
