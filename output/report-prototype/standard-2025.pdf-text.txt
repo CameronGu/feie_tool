@@ -1,0 +1,59 @@
+Synthetic example • visual prototype                                                              Generated October 13, 2026
+
+
+
+Physical Presence Test
+Foreign Earned Income Exclusion | Tax Year 2025
+
+
+
+Threshold met under declared assumptions
+
+
+Tax-year coverage                                                                 Foreign-day threshold
+
+
+351 / 365                                                                         330
+351/365 = 0.961644                                                                assumed full foreign days
+96.16% of the tax year                                                            330 required in 12 months
+
+
+Supporting qualifying period
+December 18, 2024 to December 17, 2025
+365 calendar days: 330 assumed full foreign days + 35 recorded U.S. days.
+Tax-year intersection: January 1 to December 17, 2025 — 351 days.
+
+Relevant U.S. travel
+
+ U.S. visit                                                                                     Days within period
+
+
+ May 31 to June 29, 2025                                                                                               30
+
+ December 13, 2025 to January 13, 2026                                                                                  5
+
+ Total                                                                                                                 35
+
+Only December 13–17 of the December–January visit falls within the qualifying period.
+
+Calculation explanation
+The 12-month period contains the required 330 full foreign days under the stated assumptions. Its
+overlap with tax year 2025 covers 351 calendar days. U.S. days within a qualifying period can count
+toward conditional proration, without making U.S.-source employment income foreign earned income.
+
+Basis and limitations
+Full foreign presence is assumed from January 1, 2015 through December 31, 2025, except for recorded
+exceptions.
+Foreign tax home and broader FEIE eligibility have not been independently verified.
+Eligible foreign earned income and actual exclusion amounts are not calculated.
+IRS guidance distinguishes foreign-day counting, period coverage and income sourcing.
+IRS physical-presence guidance        IRS exclusion computation
+IRM 21.8.1.3.2(9)(d)    IRS foreign earned income
+
+
+
+
+FEIE Window Optimizer | by Cameron Guthrie                                                                              1/1
+
+Generated October 13, 2026 | App 0.2.0-rc.2 | Calculation physical-presence-2.2
+

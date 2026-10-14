@@ -1,0 +1,32 @@
+[
+  {
+    "name": "nonqualifying-confirmed"
+  },
+  {
+    "name": "one-unknown-day",
+    "text": "COMPLETED TRAVEL ASSESSMENT\nPhysical presence \u00b7 2024\nIncomplete travel evidence\n\n0 of 366 tax-year days covered by supported qualifying periods.\n\nCoverage fraction: 0 / 366 = 0.000000 (rounded display)\n\nPhysical-presence coverage is conditional on foreign tax home and other eligibility requirements. It is not the amount of your exclusion or tax savings. Missing dates count as zero foreign days; adding evidence may increase coverage.\n\nNo supported period reaches 330 full foreign days. Unrecorded or unknown dates prevent a conclusive failure assessment. Add missing travel evidence or an explicit foreign-presence declaration.\n\nClosest evaluated period\n\nThis period has 0 full foreign days; 330 more would be needed inside this same period. This is a count deficit, not a recommended itinerary.\n\n2024-01-01 to 2024-12-31\nFull foreign days\n0 / 330 required\nCalendar period\n366 days\nDays in selected year\n366\nRecorded completed foreign\n0\nAssumed foreign\n0\nProjected foreign\n0\nUnknown days\n1\n\nAssumed and projected counts can overlap. Period dates describe the containing test period, not a recommendation to stay abroad continuously.\n\nCopy preparer report\nDownload PDF report\n\nPDF report downloaded.\n\nReview normalized evidence and assumptions\n\nAs of 2026-10-13 (UTC). Calculation physical-presence-2. IRS physical-presence rules."
+  },
+  {
+    "name": "long-note",
+    "widths": {
+      "container": 322,
+      "scroll": 620,
+      "table": 620
+    },
+    "actions": {
+      "x": 261,
+      "y": 13.28125,
+      "width": 59.203125,
+      "height": 44
+    }
+  },
+  {
+    "name": "reversed-date-error",
+    "focus": {
+      "tag": "BUTTON",
+      "id": "",
+      "text": "Save travel record"
+    },
+    "error": "Record 3 needs ordered calendar dates between 1900 and 2100."
+  }
+]

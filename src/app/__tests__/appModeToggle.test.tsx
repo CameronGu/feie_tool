@@ -1,100 +1,181 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { StrictMode } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../App';
+import { STORAGE_KEY } from '../../services/historyStorage';
+import { deviceCutoff } from '../../services/completedDayCutoff';
 
-function readFilledRows() {
-  const inputs = Array.from(document.querySelectorAll('input[type="date"]')) as HTMLInputElement[];
-  const rows: Array<[string, string]> = [];
-  for (let index = 0; index < inputs.length; index += 2) {
-    const start = inputs[index];
-    const end = inputs[index + 1];
-    if (start && end && start.value && end.value) {
-      rows.push([start.value, end.value]);
-    }
-  }
-  return rows;
+beforeEach(() => {
+  localStorage.clear();
+  vi.useFakeTimers({ toFake: ['Date'] });
+  vi.setSystemTime(new Date('2026-10-12T12:00:00Z'));
+});
+afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks(); });
+function open() { render(<StrictMode><App /></StrictMode>); fireEvent.change(screen.getByLabelText('Calendar tax year'), { target: { value: '2024' } }); }
+function add(kind: string, start: string, end: string, proposed = false) {
+  fireEvent.change(screen.getByLabelText('Record type'), { target: { value: kind } });
+  fireEvent.change(screen.getByLabelText(kind.startsWith('foreign') ? 'First full foreign day' : 'Start date'), { target: { value: start } });
+  fireEvent.change(screen.getByLabelText(kind.startsWith('foreign') ? 'Last full foreign day' : 'End date'), { target: { value: end } });
+  fireEvent.change(screen.getByLabelText('Travel status'), { target: { value: proposed ? 'proposed' : 'completed' } });
+  if (kind === 'foreign_assumption') fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  fireEvent.click(screen.getByRole('button', { name: 'Save travel record' }));
 }
 
-function selectRange(start: string, end: string) {
-  const startButton = document.querySelector(`button[data-date="${start}"]`) as HTMLButtonElement | null;
-  if (!startButton) {
-    throw new Error(`start button for ${start} not found`);
-  }
-  fireEvent.click(startButton);
-
-  const endButton = document.querySelector(`button[data-date="${end}"]`) as HTMLButtonElement | null;
-  if (!endButton) {
-    throw new Error(`end button for ${end} not found`);
-  }
-  fireEvent.click(endButton);
-}
-
-describe('App mode toggling', () => {
-  it('switches modes without prompting when no intervals exist', () => {
-    render(
-      <StrictMode>
-        <App />
-      </StrictMode>
-    );
-
-    const foreignRadio = screen.getByLabelText('Foreign travel periods') as HTMLInputElement;
-    const usRadio = screen.getByLabelText('US travel periods') as HTMLInputElement;
-
-    expect(foreignRadio.checked).toBe(true);
+// Full-App workflows repeatedly normalize/calculate history under StrictMode.
+describe('primary travel workflows', { timeout: 15000 }, () => {
+  it('leaves an empty U.S. entry view incomplete and does not require a mode-transfer dialog', () => {
+    open(); fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
     expect(screen.queryByRole('dialog')).toBeNull();
-
-    fireEvent.click(usRadio);
-
-    expect(screen.queryByRole('dialog')).toBeNull();
-    expect(usRadio.checked).toBe(true);
-
-    fireEvent.click(foreignRadio);
-
-    expect(screen.queryByRole('dialog')).toBeNull();
-    expect(foreignRadio.checked).toBe(true);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toEqual([]);
   });
-
-  describe('quick add in US mode', () => {
-    beforeEach(() => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date('2024-06-01T12:00:00Z'));
-    });
-
-    afterEach(() => {
-      vi.useRealTimers();
-    });
-
-    it('allows keeping literal intervals when the user switches modes', async () => {
-      render(
-        <StrictMode>
-          <App />
-        </StrictMode>
-      );
-
-      const usRadio = screen.getByLabelText('US travel periods');
-      fireEvent.click(usRadio);
-
-      selectRange('2023-05-01', '2023-05-10');
-      selectRange('2023-06-01', '2023-06-15');
-      selectRange('2023-07-04', '2023-07-20');
-
-      const beforeToggle = readFilledRows();
-      expect(beforeToggle).toEqual([
-        ['2023-05-01', '2023-05-10'],
-        ['2023-06-01', '2023-06-15'],
-        ['2023-07-04', '2023-07-20']
-      ]);
-
-      const foreignRadio = screen.getByLabelText('Foreign travel periods');
-      fireEvent.click(foreignRadio);
-
-      const literalButton = screen.getByRole('button', { name: /keep same date ranges/i });
-      fireEvent.click(literalButton);
-
-      await vi.runAllTimersAsync();
-
-      expect(readFilledRows()).toEqual(beforeToggle);
-    });
+  it('preserves old travel dates through year and view changes and supports correction', () => {
+    open(); add('foreign', '2016-01-01', '2016-12-31');
+    fireEvent.change(screen.getByLabelText('Calendar tax year'), { target: { value: '2027' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Enter foreign stays' }));
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records[0].start_date).toBe('2016-01-01');
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Full foreign days 2016-01-01' }));
+    fireEvent.change(screen.getByLabelText('Last full foreign day'), { target: { value: '2016-11-30' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save changes' }));
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records[0].end_date).toBe('2016-11-30');
+  });
+  it('keeps report evidence consistent when switching entry views', async () => {
+    const copy = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: copy }, configurable: true });
+    open(); add('foreign_assumption', '2024-01-01', '2024-12-31'); add('us', '2024-12-01', '2024-12-31');
+    fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Enter foreign stays' }));
+    expect(screen.getByRole('heading', { name: 'Threshold met under declared assumptions' })).toBeTruthy();
+    const report = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
+    expect(report).toContain('335 full foreign days');
+    expect(report).toContain('December 1, 2024 to December 31, 2024');
+    expect(report).toContain('366 / 366');
+    fireEvent.click(screen.getByRole('button', { name: 'Copy preparer report' }));
+    await waitFor(() => expect(copy).toHaveBeenCalledWith(report));
+  });
+  it('previews the example without replacing user history', () => {
+    open(); add('unknown', '2024-01-01', '2024-01-02');
+    const saved = localStorage.getItem(STORAGE_KEY);
+    fireEvent.click(screen.getByRole('button', { name: 'Preview an example' }));
+    expect(screen.getByRole('heading', { name: 'Physical presence · 2025' })).toBeTruthy();
+    expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
+    fireEvent.click(screen.getByRole('button', { name: 'Close example' }));
+    expect(screen.getByRole('heading', { name: 'Physical presence · 2024' })).toBeTruthy();
+  });
+  it('compares a proposal without replacing the completed-record result', () => {
+    open(); add('foreign', '2024-01-01', '2024-12-31', true);
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('Compare proposed and future travel'));
+    expect(screen.getByRole('heading', { name: 'Projected physical-presence coverage' })).toBeTruthy();
+    fireEvent.click(screen.getByLabelText('Compare proposed and future travel'));
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records[0].status).toBe('proposed');
+  });
+  it('rejects conflicts and requires a deliberate reset; undo restores records', () => {
+    open(); add('foreign', '2024-01-01', '2024-12-31'); add('us', '2024-06-01', '2024-06-02');
+    expect(screen.getByRole('alert').textContent).toContain('Overlapping');
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toHaveLength(1);
+    const reset = screen.getByRole('button', { name: 'Reset saved history', hidden: true }) as HTMLButtonElement;
+    expect(reset.disabled).toBe(true);
+    fireEvent.click(screen.getByLabelText('I want to remove all saved travel records.')); fireEvent.click(reset);
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Undo last history change' }));
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toHaveLength(1);
+  });
+  it('reviews an import before merging and never silently replaces history', async () => {
+    open(); add('us', '2024-01-01', '2024-01-02');
+    const imported = { schema_version: 1, records: [{ id: 'imported', kind: 'unknown', status: 'completed', start_date: '2024-03-01', end_date: '2024-03-02', note: '' }] };
+    const file = new File([JSON.stringify(imported)], 'backup.json', { type: 'application/json' });
+    Object.defineProperty(file, 'text', { value: async () => JSON.stringify(imported) });
+    fireEvent.change(screen.getByLabelText('Choose travel-history backup'), { target: { files: [file] } });
+    await screen.findByRole('heading', { name: 'Review import: 1 records' });
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toHaveLength(1);
+    expect((screen.getByRole('button', { name: 'Replace history with backup' }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Merge imported records' }));
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records).toHaveLength(2);
+  });
+  it('does not crash or emit hook-order warnings across empty, successful and invalid states', () => {
+    const error = vi.spyOn(console, 'error');
+    open(); add('foreign', '2024-01-01', '2024-12-31');
+    fireEvent.click(screen.getByRole('button', { name: 'Delete Full foreign days 2024-01-01' }));
+    expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
+    expect(error).not.toHaveBeenCalled();
   });
 });
+
+it('establishes ongoing presence, returns to visits, edits and deliberately ends the same baseline', () => {
+  open(); fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Establish default foreign presence' }));
+  expect(screen.queryByLabelText('Travel status')).toBeNull();
+  fireEvent.change(screen.getByLabelText('First full foreign day'), { target: { value: '2024-01-01' } });
+  fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  fireEvent.click(screen.getByRole('button', { name: 'Save default foreign presence' }));
+  expect(screen.getByText('Default foreign presence since 2024-01-01 · Ongoing')).toBeTruthy();
+  expect((screen.getByLabelText('Record type') as HTMLSelectElement).value).toBe('us');
+  add('us', '2024-02-01', '2024-02-05'); add('us', '2024-06-01', '2024-06-05');
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+  expect(saved.records).toHaveLength(3);
+  expect(saved.records[0].ongoing).toBe(true);
+  fireEvent.click(screen.getByRole('button', { name: 'Edit default presence' }));
+  fireEvent.change(screen.getByLabelText('First full foreign day'), { target: { value: '2023-12-31' } });
+  fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  fireEvent.click(screen.getByRole('button', { name: 'Save default foreign presence' }));
+  fireEvent.click(screen.getByRole('button', { name: 'End default presence' }));
+  const confirm = screen.getByRole('button', { name: 'Confirm end of foreign presence' }) as HTMLButtonElement;
+  expect(confirm.disabled).toBe(true);
+  fireEvent.change(screen.getByLabelText('Final covered full foreign day'), { target: { value: '2024-12-31' } });
+  fireEvent.click(screen.getByLabelText(/I explicitly assume/));
+  expect(confirm.disabled).toBe(true);
+  fireEvent.click(screen.getByLabelText(/End default foreign presence after/));
+  fireEvent.click(confirm);
+  const ended = JSON.parse(localStorage.getItem(STORAGE_KEY)!);
+  expect(ended.records).toHaveLength(3);
+  expect(ended.records[0]).toMatchObject({ id: saved.records[0].id, start_date: '2023-12-31', end_date: '2024-12-31' });
+  expect(ended.records[0].ongoing).toBeUndefined();
+  expect(screen.queryByText(/Default foreign presence since/)).toBeNull();
+}, 15000);
+
+it('C02: never mixes saved 2024 coverage with the 2025 example', () => {
+  open(); add('foreign', '2024-01-01', '2024-12-31');
+  fireEvent.click(screen.getByRole('button', { name: 'Preview an example' }));
+  const text = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
+  expect(text).toContain('Foreign Earned Income Exclusion | Tax Year 2025');
+  expect(text).not.toContain('Completed and projected comparison');
+  expect(screen.queryByText(/Completed-record coverage:/)).toBeNull();
+});
+
+it('shows an actionable empty state without an arbitrary candidate or deficit', () => {
+  open();
+  expect(screen.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeTruthy();
+  expect(screen.queryByText('Strongest supported period')).toBeNull();
+  expect(screen.queryByText(/more would be needed/)).toBeNull();
+});
+
+it('adjusts the cutoff without changing history and isolates all saved settings from the demonstration', () => {
+  open(); add('foreign', '2024-01-01', '2024-12-31');
+  const saved = localStorage.getItem(STORAGE_KEY);
+  fireEvent.change(screen.getByLabelText('Last completed calendar day'), { target: { value: '2024-01-01' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Apply completed-day cutoff', hidden: true }));
+  expect(screen.getByText('Completed through 2024-01-01 · Manual')).toBeTruthy();
+  fireEvent.click(screen.getByLabelText('Compare proposed and future travel'));
+  fireEvent.click(screen.getByRole('button', { name: 'Preview an example' }));
+  expect((screen.getByLabelText('Saved calendar tax year') as HTMLInputElement).disabled).toBe(true);
+  expect((screen.getByLabelText('Saved calendar tax year') as HTMLInputElement).value).toBe('2024');
+  expect(screen.getByText(/Your saved calculation for 2024 is paused/)).toBeTruthy();
+  const demo = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
+  expect(demo).toContain('334 full foreign days');
+  expect(demo).toContain('Demonstration data; this report does not describe your saved travel history.');
+  expect(demo).toContain('Completed through: 2025-12-31');
+  expect(demo).not.toContain('Completed and projected comparison');
+  fireEvent.click(screen.getByRole('button', { name: 'Close example' }));
+  expect((screen.getByLabelText('Compare proposed and future travel') as HTMLInputElement).checked).toBe(true);
+  expect(screen.getByText('Completed through 2024-01-01 · Manual')).toBeTruthy();
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
+  fireEvent.click(screen.getByRole('button', { name: 'Use device default', hidden: true }));
+  expect(screen.getByText(`Completed through ${deviceCutoff().lastCompletedDay} · Device calendar`)).toBeTruthy();
+  fireEvent.change(screen.getByLabelText('Last completed calendar day'), { target: { value: '2023-01-01' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Use device default', hidden: true }));
+  expect((screen.getByLabelText('Last completed calendar day') as HTMLInputElement).value).toBe(deviceCutoff().lastCompletedDay);
+  expect(localStorage.getItem(STORAGE_KEY)).toBe(saved);
+}, 15000);

@@ -1,13 +1,19 @@
 {
   "name": "feie-tool",
-  "version": "0.1.0",
+  "version": "0.2.0-rc.3",
   "private": true,
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "typecheck": "tsc --noEmit",
+    "test:e2e": "playwright test",
+    "check": "npm run typecheck && npm test -- --run && npm run build"
   },
   "dependencies": {
     "jspdf": "^4.2.1",
@@ -15,10 +21,13 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.64.0",
     "@testing-library/react": "^15.0.0",
+    "@types/node": "^20.19.43",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.3",
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "baseline-browser-mapping": "^2.11.28",
     "jsdom": "^27.0.0",
     "typescript": "^5.4.5",

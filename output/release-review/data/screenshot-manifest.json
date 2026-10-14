@@ -1,0 +1,376 @@
+[
+  {
+    "file": "screenshots/01-first-use-desktop.png",
+    "title": "First use, desktop",
+    "description": "Empty saved history, scope, direct entry and initial incomplete result.",
+    "workflow": "First use, desktop",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2105
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/02-first-use-mobile.png",
+    "title": "First use, mobile",
+    "description": "Same empty state at 390px; full page exposes the vertical task sequence.",
+    "workflow": "First use, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 390,
+      "height": 4005
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/03-ordinary-foreign-desktop.png",
+    "title": "Foreign stay, ordinary year",
+    "description": "Recorded 2025 full year, 365/365 coverage and direct entry; ordinary-recorded.pdf.",
+    "workflow": "Foreign stay, ordinary year",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2144
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/04-threshold-329-desktop.png",
+    "title": "Correction near threshold",
+    "description": "Endpoint edited to Nov 25: 329 recorded days, no supported coverage.",
+    "workflow": "Correction near threshold",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2231
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/05-threshold-330-mobile.png",
+    "title": "Exact 330, mobile",
+    "description": "Endpoint corrected to Nov 26: 330 foreign days, 365/365 coverage; threshold-330.pdf.",
+    "workflow": "Exact 330, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 390,
+      "height": 4029
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/06-partial-year-desktop.png",
+    "title": "Partial qualifying year",
+    "description": "July 2025 through May 2026 stay supports 219/365; partial-year.pdf.",
+    "workflow": "Partial qualifying year",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2207
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/07-nonqualifying-desktop.png",
+    "title": "329 days with withheld future evidence",
+    "description": "2025 result remains incomplete despite upper-bound failure; nonqualifying.pdf. This is not the definitive not-met sample.",
+    "workflow": "329 days with withheld future evidence",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2409
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/08-incomplete-evidence-mobile.png",
+    "title": "Incomplete history, mobile",
+    "description": "300 foreign days plus unknown dates; incomplete.pdf.",
+    "workflow": "Incomplete history, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 390,
+      "height": 4292
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/09-future-scenario-desktop.png",
+    "title": "Future travel comparison",
+    "description": "2026 completed coverage 0 versus scenario 365; 285 completed plus 80 proposed foreign days; projected-scenario.pdf.",
+    "workflow": "Future travel comparison",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2365
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/10-multiple-periods-desktop.png",
+    "title": "Multiple supporting periods",
+    "description": "2024 union 366/366 with two twelve-month supports; multiple-periods.pdf.",
+    "workflow": "Multiple supporting periods",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2558
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/11-example-context-mismatch-desktop.png",
+    "title": "Example context defect",
+    "description": "2025 demo incorrectly subtracts saved 2024 coverage of 366 from 365 demo days (C02).",
+    "workflow": "Example context defect",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2439
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/12-bounded-declaration-desktop.png",
+    "title": "Abroad resident with U.S. visits",
+    "description": "Multi-year bounded declaration plus visit and transit exceptions; 347 assumed foreign days; declared-with-us-visits.pdf.",
+    "workflow": "Abroad resident with U.S. visits",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2427
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/13-overlap-error-desktop.png",
+    "title": "Overlap correction error",
+    "description": "Extending the July U.S. visit overlaps the transit record; existing history remains intact and correction is retained.",
+    "workflow": "Overlap correction error",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2427
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/14-backup-import-review-mobile.png",
+    "title": "Backup import review, mobile",
+    "description": "Actual downloaded four-record JSON selected; count-only review before merge.",
+    "workflow": "Backup import review, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 390,
+      "height": 4603
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/15-restored-history-mobile.png",
+    "title": "Returning user, mobile",
+    "description": "Imported four records retained after reload and change to 2024; table requires local horizontal scrolling.",
+    "workflow": "Returning user, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 390,
+      "height": 4387
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/16-mobile-history-actions.png",
+    "title": "Mobile history actions detail",
+    "description": "Actual history region scrolled right to Edit/Delete; identifying date column is off to the left.",
+    "workflow": "Mobile history actions detail",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 324,
+      "height": 531
+    },
+    "capture": "region"
+  },
+  {
+    "file": "screenshots/17-confirmed-nonqualifying-desktop.png",
+    "title": "Definitive nonqualifying result",
+    "description": "2024 329-day foreign stay with the entire evaluation horizon classified; nonqualifying-confirmed.pdf.",
+    "workflow": "Definitive nonqualifying result",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2270
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/18-one-unknown-day-status-desktop.png",
+    "title": "One unknown day, false inconclusive explanation",
+    "description": "Two U.S. ranges leave one unknown date; threshold is impossible, but app says missing evidence prevents a conclusion (C01).",
+    "workflow": "One unknown day, false inconclusive explanation",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "image_dimensions": {
+      "width": 1440,
+      "height": 2335
+    },
+    "capture": "full page"
+  },
+  {
+    "file": "screenshots/19-long-note-table-mobile.png",
+    "title": "Long note resilience, mobile",
+    "description": "Allowed 500-character unbroken note wraps; actions remain available in the horizontally scrolled table. No overflow defect asserted.",
+    "workflow": "Long note resilience, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 324,
+      "height": 934
+    },
+    "capture": "region"
+  },
+  {
+    "file": "screenshots/20-declaration-entry-mobile.png",
+    "title": "Bounded declaration form, mobile",
+    "description": "Unsaved synthetic declaration, direct dates and explicit exception acknowledgment; detail capture of actual form.",
+    "workflow": "Bounded declaration form, mobile",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 362,
+      "height": 1041
+    },
+    "capture": "region"
+  },
+  {
+    "file": "screenshots/21-first-viewport-mobile.png",
+    "title": "Mobile first viewport",
+    "description": "Top 844px of the later synthetic review session; scope/year/settings precede the date fields. Not an empty first-use capture.",
+    "workflow": "Mobile first viewport",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 390,
+      "height": 844
+    },
+    "capture": "viewport"
+  },
+  {
+    "file": "screenshots/22-result-detail-mobile.png",
+    "title": "Mobile result detail",
+    "description": "Later one-unknown-day status in a readable result-region capture; count and interpretation remain distinct.",
+    "workflow": "Mobile result detail",
+    "persona": "Synthetic traveler / preparer review",
+    "route": "http://127.0.0.1:4175/",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "image_dimensions": {
+      "width": 362,
+      "height": 1362
+    },
+    "capture": "region"
+  }
+]

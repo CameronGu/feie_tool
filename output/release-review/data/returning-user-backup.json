@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "id": "048cb7ae-ff30-47b9-8b96-853ee9933fd3",
+      "start_date": "2023-01-01",
+      "end_date": "2026-10-12",
+      "kind": "foreign_assumption",
+      "status": "completed",
+      "note": "Synthetic review"
+    },
+    {
+      "id": "73eb2f01-d560-4923-bd58-0fcb4075671e",
+      "start_date": "2024-12-20",
+      "end_date": "2025-01-03",
+      "kind": "us",
+      "status": "completed",
+      "note": "Synthetic review"
+    },
+    {
+      "id": "23e2e7b0-c6ab-437b-91f3-5fc113c54cd9",
+      "start_date": "2025-07-01",
+      "end_date": "2025-07-14",
+      "kind": "us",
+      "status": "completed",
+      "note": "Synthetic review"
+    },
+    {
+      "id": "e736f576-daab-4ea9-b8ea-f59e0d18d144",
+      "start_date": "2025-07-15",
+      "end_date": "2025-07-15",
+      "kind": "nonqualifying",
+      "status": "completed",
+      "note": "Synthetic review"
+    }
+  ]
+}

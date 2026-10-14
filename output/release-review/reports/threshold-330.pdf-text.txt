@@ -1,0 +1,64 @@
+FEIE Window Optimizer
+Tax year 2025 | Completed travel | by Cameron Guthrie
+
+
+Calendar tax year: 2025
+Assessment: Physical-presence threshold met
+Input: Completed travel only
+As of: 2026-10-13 (UTC date); generated: 2026-10-13T07:02:36.798Z
+Application 0.2.0-rc.1; calculation physical-presence-2
+
+PHYSICAL-PRESENCE COVERAGE
+365 / 365 = 1.000000 (display rounded; exact fraction shown).
+Passing ordinary-date periods: 36. Supporting periods: 1.
+Covered: 2025-01-01 to 2025-12-31 (365 days).
+
+SUPPORTING TWELVE-MONTH PERIODS
+2025-01-01 to 2025-12-31 (365 calendar days)
+Full foreign days: 330 / 330 required; recorded completed: 330; assumed: 0; projected foreign: 0; unknown: 35. Assumed and
+projected counts can overlap.
+Tax-year intersection: 365 days.
+
+SOURCE RECORDS RELEVANT TO THE EVALUATION HORIZON
+189cc5be-12be-4e60-a9b8-007fa5239fde | 2025-01-01 to 2025-11-26 | Full foreign days | completed | Synthetic review
+
+NORMALIZED DAYS ACTUALLY EVALUATED: 2024-01-02 to 2026-12-30
+2024-01-02 to 2024-12-31 | unknown | unrecorded | completed/unknown | source unrecorded
+2025-01-01 to 2025-11-26 | foreign | recorded | completed/unknown | source 189cc5be-12be-4e60-a9b8-007fa5239fde
+2025-11-27 to 2026-12-30 | unknown | unrecorded | completed/unknown | source unrecorded
+
+ASSUMPTIONS AND PREPARER NOTES
+1. This report evaluates the ordinary physical-presence day test, not complete FEIE eligibility, actual foreign earned income or
+tax savings. Foreign tax home, citizenship/residency, elections and other eligibility rules require independent review.
+2. Foreign ranges use first and last FULL foreign days, inclusive. Arrival/departure, U.S. territories, extended
+international-water travel and uncertain days do not automatically count. Short transit between foreign countries requires
+checking IRS rules.
+3. Unrecorded dates remain unknown and count as zero foreign days. U.S. visits do not imply foreign presence on other
+dates. Declared foreign ranges are assumptions, overridden by explicit exceptions.
+4. Tax-year coverage is the union of all supported qualifying periods intersecting this calendar year. Overlapping days count
+once. Coverage may include U.S. days; it is different from days physically abroad and from eligible foreign income.
+5. Coverage is based on supplied evidence and can increase when missing records are supplied. The displayed fraction is
+conditional physical-presence coverage divided by calendar-year days, not a dollar exclusion.
+6. Completed calculation excludes proposed records and dates on or after 2026-10-13 (UTC reference date). Scenario
+calculations include those dates as projected; neither scenario records nor changing years replace completed history.
+7. Supporting periods are chosen deterministically: cover the first uncovered day with the passing period ending latest, then
+repeat. This compact set covers the same union as every passing ordinary-date period.
+8. February 29 starts have an unresolved endpoint convention. Ordinary-date periods supply the baseline. A separate
+longer-convention sensitivity result is shown whenever it adds coverage.
+9. Form 2555 line 16 requests a single twelve-month period. Multiple supporting periods in this working report require preparer
+review of filing/attachment treatment. Do not enter the combined span as one twelve-month period.
+10. Sources: 26 CFR 1.911-2(d) and 1.911-3(d)(3); IRM 21.8.1.3.2(9)(d); IRS physical-presence guidance; 2025 Form 2555
+instructions. Waivers, bona fide residence, special relief and monetary calculations are outside this tool.
+11. https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test
+12. https://www.irs.gov/irm/part21/irm_21-008-001r
+13. https://www.irs.gov/instructions/i2555
+14. https://www.ecfr.gov/current/title-26/section-1.911-3
+
+For informational use only. Not legal or tax advice.
+
+
+
+
+Application 0.2.0-rc.1 | calculation physical-presence-2 | Generated 2026-10-13T07:02:36.798Z
+Page 1 of 1 | Working report; not a completed Form 2555
+

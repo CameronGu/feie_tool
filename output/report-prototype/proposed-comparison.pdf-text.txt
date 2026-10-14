@@ -1,0 +1,61 @@
+Synthetic example • proposed-travel comparison                                             Generated October 13, 2026
+
+
+
+Physical Presence Test
+Foreign Earned Income Exclusion | Tax Year 2025
+
+
+
+Projected coverage increases by 14 days
+Reference date: January 14, 2026; completed through January 13. Later days are proposed.
+
+
+Tax-year coverage comparison
+
+ Completed basis                               Projected scenario                 Difference
+
+
+ 351 / 365                                     365 / 365                          +14 days
+ 96.16%                                        100.00%                            +3.84 percentage points
+
+
+Completed: 351/365 = 0.961644. Projected: 365/365 = 1.000000. The difference is 14/365 = 0.038356.
+
+Completed supporting period
+December 18, 2024 to December 17, 2025
+330 assumed full foreign days + 35 recorded U.S. days = 365 calendar days. Tax-year intersection:
+January 1 to December 17, 2025 (351 days).
+
+Projected supporting periods
+December 18, 2024 to December 17, 2025
+330 full foreign days (0 proposed); 35 recorded U.S. days.
+
+July 3, 2025 to July 2, 2026
+330 full foreign days (167 proposed); 32 recorded U.S. days; 3 unresolved days, counted as zero foreign.
+
+Relevant travel and proposed continuation
+
+ Original source dates / classification                                                 Completed     Projected¹
+
+
+ May 31 to June 29, 2025 / U.S.                                                                  30             30
+
+ December 13, 2025 to January 13, 2026 / U.S.                                                     5             32
+
+ January 14 to June 29, 2026 / proposed foreign                                                   0            167
+
+¹ Distinct days within the union of scenario supporting periods; overlapping days count once. Completed counts
+use the completed supporting period.
+The additional December 18–31 coverage depends on the proposed continuation occurring as
+modeled; proposed days are not completed evidence.
+Completed counts use the stated 2015–2025 assumption and exceptions. Tax home and eligibility are
+unverified; eligible income and exclusion amounts are not calculated.
+IRS physical-presence guidance        IRS exclusion computation
+
+
+
+FEIE Window Optimizer | by Cameron Guthrie                                                                       1/1
+
+Generated October 13, 2026 | App 0.2.0-rc.2 | Calculation physical-presence-2.2
+

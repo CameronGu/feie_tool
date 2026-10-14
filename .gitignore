@@ -20,3 +20,9 @@ logs/
 
 #Cursor
 .cursor/
+
+# Local browser evidence and test output
+.playwright-cli/
+output/playwright/
+test-results/
+playwright-report/

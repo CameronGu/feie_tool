@@ -1,0 +1,47 @@
+[
+  {
+    "file": "declared-with-us-visits.pdf",
+    "pages": 2,
+    "bytes": 7219
+  },
+  {
+    "file": "incomplete.pdf",
+    "pages": 1,
+    "bytes": 6226
+  },
+  {
+    "file": "multiple-periods.pdf",
+    "pages": 2,
+    "bytes": 7017
+  },
+  {
+    "file": "nonqualifying-confirmed.pdf",
+    "pages": 1,
+    "bytes": 6180
+  },
+  {
+    "file": "nonqualifying.pdf",
+    "pages": 1,
+    "bytes": 6280
+  },
+  {
+    "file": "ordinary-recorded.pdf",
+    "pages": 1,
+    "bytes": 6163
+  },
+  {
+    "file": "partial-year.pdf",
+    "pages": 1,
+    "bytes": 6180
+  },
+  {
+    "file": "projected-scenario.pdf",
+    "pages": 1,
+    "bytes": 6260
+  },
+  {
+    "file": "threshold-330.pdf",
+    "pages": 1,
+    "bytes": 6166
+  }
+]

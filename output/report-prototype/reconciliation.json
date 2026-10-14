@@ -1,0 +1,146 @@
+{
+  "synthetic": true,
+  "baseline_commit": "f4e8d9d",
+  "calculation": "physical-presence-2.2",
+  "standard": {
+    "status": "conditional",
+    "coverage": 351,
+    "denominator": 365,
+    "fraction": 0.9616438356164384,
+    "supporting_periods": [
+      {
+        "window_start": "2024-12-18",
+        "window_end": "2025-12-17",
+        "foreign_days": 330,
+        "overlap_days": 351,
+        "pro_rata_fraction": 0.9616438356164384
+      }
+    ],
+    "strongest_candidate": {
+      "window_start": "2024-02-28",
+      "window_end": "2025-02-27",
+      "foreign_days": 366,
+      "overlap_days": 58,
+      "pro_rata_fraction": 0.1589041095890411
+    },
+    "us_counts": [
+      30,
+      5
+    ],
+    "foreign": 330,
+    "nonforeign": 35,
+    "period_days": 365
+  },
+  "multiple": {
+    "status": "met",
+    "coverage": 366,
+    "denominator": 366,
+    "fraction": 1,
+    "supporting_periods": [
+      {
+        "window_start": "2023-07-07",
+        "window_end": "2024-07-06",
+        "foreign_days": 330,
+        "overlap_days": 188,
+        "pro_rata_fraction": 0.5136612021857924
+      },
+      {
+        "window_start": "2024-07-07",
+        "window_end": "2025-07-06",
+        "foreign_days": 340,
+        "overlap_days": 178,
+        "pro_rata_fraction": 0.48633879781420764
+      }
+    ],
+    "strongest_candidate": {
+      "window_start": "2023-06-01",
+      "window_end": "2024-05-31",
+      "foreign_days": 366,
+      "overlap_days": 152,
+      "pro_rata_fraction": 0.41530054644808745
+    }
+  },
+  "incomplete": {
+    "status": "incomplete",
+    "coverage": 0,
+    "denominator": 365,
+    "fraction": 0,
+    "supporting_periods": [],
+    "strongest_candidate": {
+      "window_start": "2025-01-01",
+      "window_end": "2025-12-31",
+      "foreign_days": 329,
+      "overlap_days": 365,
+      "pro_rata_fraction": 1
+    }
+  },
+  "unsuccessful": {
+    "status": "not-met",
+    "coverage": 0,
+    "denominator": 365,
+    "fraction": 0,
+    "supporting_periods": [],
+    "strongest_candidate": {
+      "window_start": "2025-01-01",
+      "window_end": "2025-12-31",
+      "foreign_days": 329,
+      "overlap_days": 365,
+      "pro_rata_fraction": 1
+    }
+  },
+  "comparison": {
+    "completed": {
+      "status": "conditional",
+      "coverage": 351,
+      "denominator": 365,
+      "fraction": 0.9616438356164384,
+      "supporting_periods": [
+        {
+          "window_start": "2024-12-18",
+          "window_end": "2025-12-17",
+          "foreign_days": 330,
+          "overlap_days": 351,
+          "pro_rata_fraction": 0.9616438356164384
+        }
+      ],
+      "strongest_candidate": {
+        "window_start": "2024-02-28",
+        "window_end": "2025-02-27",
+        "foreign_days": 366,
+        "overlap_days": 58,
+        "pro_rata_fraction": 0.1589041095890411
+      }
+    },
+    "projected": {
+      "status": "projected",
+      "coverage": 365,
+      "denominator": 365,
+      "fraction": 1,
+      "supporting_periods": [
+        {
+          "window_start": "2024-12-18",
+          "window_end": "2025-12-17",
+          "foreign_days": 330,
+          "overlap_days": 351,
+          "pro_rata_fraction": 0.9616438356164384
+        },
+        {
+          "window_start": "2025-07-03",
+          "window_end": "2026-07-02",
+          "foreign_days": 330,
+          "overlap_days": 182,
+          "pro_rata_fraction": 0.4986301369863014
+        }
+      ],
+      "strongest_candidate": {
+        "window_start": "2024-02-28",
+        "window_end": "2025-02-27",
+        "foreign_days": 366,
+        "overlap_days": 58,
+        "pro_rata_fraction": 0.1589041095890411
+      }
+    },
+    "delta_days": 14,
+    "proposed_foreign_days": 167
+  }
+}

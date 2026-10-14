@@ -1,33 +1,13 @@
 # Contributing
 
-Thanks for your interest in improving the FEIE Window Optimizer! This guide covers the workflow and quality expectations for new contributions.
+Use a focused branch and preserve existing user changes. Install with `npm ci` using a supported Node version (see `package.json`).
 
-## Getting set up
-1. Fork the repository or create a branch from `main`.
-2. Install dependencies with `npm install`.
-3. Run `npm test -- --run` to verify the baseline passes.
+Before changing counting or evidence rules, read [the calculation specification](docs/CALCULATION-SPEC.md). Use primary tax authorities and keep unresolved interpretation explicit. Add targeted regression cases rather than changing expectations to match incorrect behavior.
 
-## Development workflow
-- Keep the TypeScript domain utilities pure so they can be reused across environments.
-- When adjusting date logic, add Vitest coverage in `src/domain/__tests__` or `src/services/__tests__`.
-- Prefer small, focused commits using the conventional prefix style (`feat`, `fix`, `docs`, `test`, `chore`, `refactor`).
-- Update documentation (README, docs/architecture.md) whenever you add new modes, validation rules, or deployment steps.
-- Validate the UI with `npm run dev`; ensure interval validation errors surface immediately and read well.
+Keep one versioned travel-history source. Year/view changes must preserve recorded facts; proposals must remain separate from completed evidence. Results and exports must derive from the normalized engine input. Keep the application static, with no external travel-data submission.
 
-## Pull requests
-- Summarize the change, list test commands executed, and mention any remaining limitations.
-- Screenshots or short screen recordings are helpful when altering the planner or results presentation.
-- Tag relevant issues/feature requests or create one if none exists.
+Run `npm run check` before review. For interaction or layout changes, install browsers with `npx playwright install chromium firefox`, run `npm run test:e2e`, and inspect representative desktop/mobile output. CI runs the same production-bundle browser checks. Do not claim accessibility or tax-law certification from automated checks alone.
 
-## Coding standards
-- TypeScript strict mode is enabled; pass `npm run build` before requesting review.
-- Default to ASCII in source files unless existing content requires Unicode.
-- Use descriptive inline comments only when logic is non-obvious (avoid restating what the code already expresses).
+Maintain [the release plan](docs/RELEASE-PLAN.md), [progress log](docs/PROGRESS.md), and [readiness evidence](docs/RELEASE-READINESS.md). Use small coherent commits and describe behavior, verification, and meaningful limitations. Browser artifacts belong under ignored `output/playwright/`, `test-results/`, or `playwright-report/`.
 
-## Bug reports & feature requests
-- Include sample travel intervals and tax year(s) that reproduce the issue.
-- Note whether the bug appears in U.S. or foreign mode and whether the quick-add planner was involved.
-- If the issue touches FEIE policy interpretation, share links or references that justify the update.
-
-Thanks again for helping make the FEIE Window Optimizer more reliable and useful!
-
+Bug reports should include reproducible full-day date ranges, record types/statuses, selected calendar year and explicit assumptions. Avoid committing real personal travel details or credentials. Push, publish and deployment require user authorization. Licensing must be settled before redistributing source.

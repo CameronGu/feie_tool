@@ -1,0 +1,78 @@
+# Physical-presence calculation contract
+
+Status: corrective implementation, 2026-10-13. Calculation/assessment version: `physical-presence-2.2`; application candidate: `0.2.0-rc.3` (report presentation redesign; calculation unchanged). Ordinary counting arithmetic is unchanged; assessment upper bounds and report interpretation are versioned. This is a calendar-year physical-presence planning utility, not a completed Form 2555, eligibility certificate, income calculation or tax-savings optimizer.
+
+## Primary authorities
+
+Reviewed live on 2026-10-12:
+
+1. [26 CFR §1.911-2(a), (d), (g), (h)](https://www.ecfr.gov/current/title-26/section-1.911-2): citizenship/residency and foreign tax home are separate prerequisites. Presence requires 330 full days in twelve consecutive calendar months. Short travel between foreign locations has specific exceptions; U.S. territories are not foreign countries.
+2. [26 CFR §1.911-3(d)(3)](https://www.ecfr.gov/current/title-26/section-1.911-3): qualifying-period coverage differs from days physically abroad. A period can include days outside a foreign country or without a foreign tax home. The application's coverage is conditional on independently satisfying tax-home and other requirements.
+3. [IRS physical-presence guidance](https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test): periods must intersect the year at issue; ordinary endpoints are the day before the corresponding date twelve months later. Partial arrival/departure days generally do not count. Short travel between foreign countries may preserve full days; extended international transit does not.
+4. [IRM 21.8.1.3.2(9)(d), effective 2026-10-01](https://www.irs.gov/irm/part21/irm_21-008-001r): defines a qualifying day as a day within one or more qualifying periods. The live manual's section number and paragraph, rather than its generated HTML anchor, are the reference. The IRM is IRS administrative guidance, not a replacement for statute/regulations.
+5. [IRS exclusion computation guidance](https://www.irs.gov/individuals/international-taxpayers/figuring-the-foreign-earned-income-exclusion): the calendar-year fraction uses qualifying days divided by 365 or 366. Income and housing provisions determine the actual exclusion, outside this application.
+6. [2025 Form 2555 instructions, Part III/line 16](https://www.irs.gov/instructions/i2555): the period includes 365/366 days and intersects 2025; both endpoints are required. [2025 Form 2555, lines 16, 18, 38–39](https://www.irs.gov/pub/irs-pdf/f2555.pdf) requests a single period and supporting travel; its fraction is rounded for entry. A supporting report listing multiple periods is not an official form entry.
+7. [Publication 54 (12/2025), physical presence and foreign income FAQs](https://www.irs.gov/publications/p54): distinguishes presence days, qualifying-period coverage, foreign tax home and eligible income; actual income exclusion is not necessarily the statutory maximum.
+
+## Product interpretation and boundaries
+
+- Store date-only ISO calendar days; arithmetic uses UTC solely to avoid machine timezone drift. A recorded foreign range means its **first and last full foreign days**, inclusive, not unchecked flight dates. Users classify travel/transit, territory, international-water and unknown dates explicitly. No geographic inference from a country name.
+- Count a foreign day only once. Unrecorded dates are unknown. U.S. entry requires an explicit bounded declaration of foreign days except recorded nonqualifying/unknown exceptions; no implicit all-history foreign complement.
+- Evaluate complete calendar tax years only. Reject arbitrary partial-year API bounds instead of using a misleading denominator. Stored history is independent of the evaluation horizon.
+- Enumerate every relevant ordinary daily start from January 2 of the prior year through December 31 of the selected year. Keep only periods whose inclusive end is on/after January 1 of the selected year. Horizon extends far enough to contain every such period. Exactly 330 counts; 329 does not.
+- Compute the union of **all** qualifying-period intersections with the selected year. Merge overlaps and adjacency and count each covered day once. Do not sum period overlaps. This follows the IRM's explicit union definition and the regulation's any-period definition; it replaces single-best-window ranking. The result is modeled physical-presence coverage, conditional on separately verified tax-home and eligibility facts.
+- Retain a deterministic compact set of actual supporting twelve-month periods whose intersections cover that union. For each uncovered earliest covered day, choose a qualifying period covering it with the farthest end; ties use earliest start. Repeat until all union segments are covered. This is an interval-cover algorithm, not a financial optimization.
+- Preserve integer numerator/denominator and unrounded ratio in outputs. Round only display values; always show the exact fraction alongside the decimal.
+- Completed records, explicit assumptions, unknown dates and future/proposed records must remain distinguishable. A projected calculation cannot establish completed presence. For each ordinary candidate, compute a possible upper bound from foreign plus unresolved dates. In completed mode exclude dates after the effective last completed calendar day from both bounds. A failed lower bound is conclusive ordinary threshold failure if every candidate upper bound is below 330; otherwise it is incomplete. The upper-bound maximizing period can differ from the strongest supported period. Unknown dates never become counted evidence.
+
+Formally, for each ordinary candidate start `s`, let `E(s)` be the inclusive twelve-calendar-month endpoint and `F(s)` the count of normalized full foreign days in `[s, E(s)]`. Passing periods have `F(s) >= 330` and intersect the selected year `Y`. The modeled covered day set is `Q = Y ∩ union([s, E(s)] for passing s)`. The numerator is `n = |Q|`; denominator `d = |Y|` is 365 or 366; the conditional coverage fraction is `n / d`. This set operation counts each date once, including dates outside foreign stays that fall within supported periods. The leap-start alternative is evaluated separately and never silently added to `Q`.
+
+## Questions requiring explicit treatment
+
+1. **February 29 starts:** the corresponding date does not exist the following year. Reviewed IRS/regulatory text does not explicitly choose between February 27 and February 28 as the inclusive endpoint (365 versus 366 days). Do not silently apply generic year-clamping. Implement a sensitivity calculation and report when this ambiguity changes coverage; use independently supported ordinary-date periods for the defensible baseline. A February 29 start ending February 27 is dominated by the ordinary February 28 start one day earlier; the longer alternative may add coverage and requires preparer review. No general 365-day shortcut.
+2. **Multiple periods on Form 2555:** the IRS form has a single line-16 range while administrative guidance defines coverage across periods. Report all supporting ranges and the union with an explicit preparer note; do not invent a single >12-month range or auto-fill a tax form. Filing attachment/election treatment remains a preparer question.
+3. **Travel exceptions:** a date-only utility cannot independently establish sub-24-hour transit treatment or time-zone flight facts. Users may mark full foreign days only after checking the referenced rule; otherwise record nonqualifying/unknown. Waivers, combat-zone rules, unlawful presence and bona fide residence are outside the implemented ordinary physical-presence test.
+4. **Year scope:** research is anchored to the 2025 form and currently published rules, including the 2026 IRM. No monetary limits are hard-coded. Historical/future special relief and rule changes are not certified by a successful day count.
+
+## Permanent regression examples
+
+| Example | Expected behavior |
+| --- | --- |
+| 2023-01-02–2023-11-27 full foreign days, tax year 2024 | 330; supporting 2023-01-02–2024-01-01; one day of 2024 covered |
+| 2024-01-02–2024-11-26 full foreign days, tax year 2025 | 330; 366-day supporting period; exact fraction 1/365 for 2025 |
+| 2025-02-05–2025-12-31 full foreign days, tax year 2024 | No intersecting qualifying period; no positive result from a 2025-only period |
+| 329 versus 330 foreign days | Threshold exact, inclusive |
+| 2023-03-01 start | Ends 2024-02-29, 366 days |
+| February 29 start | Sensitivity exposed when coverage differs; not silently clamped |
+| Two qualifying periods covering more of a year than either alone | Union coverage exceeds best single overlap, without double counting |
+| Foreign days separated by U.S./nonqualifying/unknown days | Only modeled full foreign days count toward 330 |
+| Partial-year bounds | Explicit unsupported-input error |
+
+Initial core checkpoint: 27 domain/service tests passed, including both reproduced audit regressions, 329/330 threshold, a union of two supporting periods covering all 366 days where every single period covers less, disjoint coverage, exhaustive start boundaries, exact fractions, and an independent daily enumeration oracle over four sparse/dense histories. The February 29 sensitivity fixture has 329 ordinary-period days but 330 under the longer leap-start convention; zero established coverage is retained, with 307 alternative days in 2024 and 59 in 2025 exposed for review. The completed 79-test suite adds evidence/status, 2025 denominator, persistence, import/restore, interface and reporting coverage; production browser evidence is in [RELEASE-READINESS.md](RELEASE-READINESS.md).
+
+## Implemented travel evidence model
+
+Version-1 JSON stores records with an id, inclusive dates, kind, completed/proposed status, and note. Kinds are full foreign days, bounded foreign-presence assumption, U.S. visit, other nonqualifying days, and unknown days. Explicit records override foreign assumptions. Proposed records form a separate overlay used only in the scenario calculation; completed records are retained. Conflicting overlaps in each explicit/declaration and completed/proposed layer are rejected, not silently resolved. Stored dates support 1900–2100; evaluated calendar years support 1901–2099 so their adjacent horizons remain representable. This technical date range is not certification of every year's tax law.
+
+The completed calculation excludes the exclusive as-of date and all later days, even if a record was mistakenly marked completed. By default the as-of date is today in the device local calendar, so the last completed day is yesterday. UTC midnight alone never completes a local day. Scenario calculations retain them with projected provenance. All normalization is limited to the derived approximately three-year horizon; stored source records are never clipped or erased. Unrecorded dates remain unknown, never implied U.S. or foreign facts.
+
+Assessment states distinguish recorded threshold success, success conditional on declared assumptions, projection, incomplete evidence, conclusive ordinary failure using candidate upper bounds, and leap-convention review. A supported period ending on/after the reference date is projected. Unknown days count zero toward 330; positive coverage is a lower bound from supplied evidence and may grow when missing records are supplied. Tax-home and broader eligibility are always outside the assessment.
+
+
+## Corrective release extensions (2026-10-13)
+
+Version-1 history now accepts optional `ongoing: true` only on completed `foreign_assumption` records whose stored `end_date` is the supported ceiling, `2100-12-31`. This explicit flag distinguishes an ongoing condition from a long trip while retaining the existing interval model and old bounded backups. No separate baseline store is introduced. Backup validation retains the flag and rejects inconsistent kind/status/endpoints. Normalization derives only the selected horizon, clips completed evidence strictly before the effective date-only as-of boundary, and marks included future continuation projected. Ending a declaration removes the flag and replaces the open endpoint with the confirmed final covered day; all exception records and the original declaration id remain.
+
+The result is raw physical-presence coverage. Under 26 CFR 1.911-2(a), foreign tax home must also hold throughout the 330 supporting presence days. Location data alone cannot establish that premise or an exclusion-limit numerator. Rechecked the live regulation on 2026-10-13. Example: Jan 1–Nov 26, 2025 contains 330 physical days, but a tax home established Apr 1 coincides with only 240 of them. The software does not clip raw coverage to a tax-home date range. Qualified review of the example's tax application and multiple-period filing remains outstanding.
+
+Shared scenario reports accept a completed baseline only from the same history, year and as-of date. Comparison numerator, denominator and signed change are report fields used by the page, clipboard and PDF. Example previews have their own completed assessment and no saved-history comparison. Report sections present summary and case-specific limitations before source/normalized evidence, provenance and linked primary references. PDF uses those same sections without another calculation.
+
+## rc.2 completed-day refinement
+
+Assessment/provenance version `physical-presence-2.2` retains the ordinary counting engine. `completedDayCutoff.ts` selects the device calendar date using `Intl.DateTimeFormat` and derives yesterday with existing UTC date-only arithmetic. This avoids extracting the date from `toISOString()`, whose UTC midnight can precede local midnight. The displayed inclusive **last completed day** and exclusive `as_of` are two representations of the same boundary. Completed evidence requires `day < as_of`; scenario continuation at/after that boundary remains projected.
+
+Users may manually adjust the final completed day for a travel calendar different from the device calendar. They must choose a day that has actually ended at the relevant location. Validation rejects invalid dates and dates still unfinished even in UTC+14; that ceiling permits an eastern travel calendar while preventing arbitrary future completion. It does not infer location, flights or time zones. Default and manual settings are session controls, outside the sole persistent travel history. The displayed default is a session snapshot; reopening the app or choosing **Use device default** refreshes it. Reports preserve inclusive/exclusive cutoff, device time zone and default/manual provenance.
+
+A fixed isolated 2025 example uses completed days through 2025-12-31 and demonstration provenance. Saved year, cutoff and proposal settings are paused during preview and restored on close. PDF emphasis is presentation metadata on the shared sections; no export-specific calculation is introduced. Readable ordinary/two-support reports may use two pages.
+
+Regression: at 2026-11-27T01:30Z in America/Managua, Jan 1–Nov 26 supplies only **329 completed** full foreign days; Nov 26 remains projected. At local midnight (06:00Z), it supplies **330 completed** days. Positive-offset, year-end, leap-day, daylight-saving, adjustment and export fixtures supplement this boundary.
