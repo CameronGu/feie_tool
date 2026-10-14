@@ -1,8 +1,23 @@
 # Release readiness
 
-## Homepage refinement — verification pending
+## Homepage refinement — locally verified
 
-Accepted UX milestone remains the foundation at `f9e18e9`. Presentation-only refinement is in progress: aligned introduction, visible financial comparison, compact mobile disclosure and relocated optional guidance. Complete checks, browser verification and visual review are required before marking this refinement ready. No push, deployment or publication.
+The accepted foundation `f9e18e9` is preserved. Implementation `ca5a638` and test correction `9124e4c` are local checkpoints on `feat/ux-guidance-editorial`; rc.3 / physical-presence-2.2 remain unchanged.
+
+| Gate | Evidence |
+| --- | --- |
+| Homepage and direct access | Shared desktop column widths/gutters; visible hypothetical 2026 difference and proportional bars. Compact mobile summary; one salary state through disclosure and resizing. Tax year/date entry need no help interaction. |
+| Optional guidance | Native fragment link opens and focuses guidance after history. Keyboard Enter/Space pass; calculator position stays constant to subpixel precision. Contextual input/results help preserved. |
+| Mobile/tablet/desktop | Actual production inspection at 390×844, 768×1024 and 1440×1000. First date at approximately 641/678/788 px; mobile under-650-px guard retained. No horizontal overflow; touch, pointer and keyboard adjustment pass. |
+| Complete software gates | `npm run check`: **146/146 tests in 13 files**, TypeScript and build pass. Fresh production build and TypeScript also pass after final spacing/capture changes. Complete final browser invocation: **85 passes / ten intentional skips**, zero failures/retries, exit 0. |
+| Accessibility | Automated WCAG A/AA checks on empty/populated and expanded income-method states. Separate three-viewport check with FEIE, tax-home, cross-year and income-method disclosures all expanded passes, including reduced-motion preference. Native labels/focus/disclosure states verified. |
+| Calculation and data preservation | No source differences in domain/services/constants or package manifests. Isolated suite copy matches all 59 current tracked source/test/config files. Existing income stacking, exact entry and reference cases retained; salary stays out of history/reports. |
+| Approved outputs | **27 native PDFs / 66 pages** retain matching layout text and 72-dpi rasters apart from ISO generated timestamp rows; **15 clipboard samples byte-identical**. Standard/appendix controls and downloads pass across all projects. |
+| Review evidence | [Ten-page visual PDF](../output/playwright/homepage-refinement-review-ca5a638/visual-review.pdf), [26-image gallery](../output/playwright/homepage-refinement-review-ca5a638/index.html), [external AI review brief](../output/playwright/homepage-refinement-review-ca5a638/REVIEW-PROMPT.md), [verification](../output/playwright/homepage-refinement-review-ca5a638/context/verification.json). Four detail crops/five sheets preserve legibility; two separate native workflow recordings are available. |
+
+Final browser run uses `/tmp/feie-home-layout-20qj76fi` and leaves accepted screenshots unchanged. The first full invocation found a 0.000214-px Firefox scroll measurement difference; the assertion now allows only 0.005 px and the complete repeat passes. Ten skips cover four duplicate native-sample collections, four duplicate touch collections and two Firefox clipboard permission cases. An earlier unit attempt discovered frozen review source under ignored output; excluding that artifact directory resolved discovery without excluding application tests.
+
+Ready for local review. No unresolved product decisions. Viewport emulation is not native phone/Safari certification; automated/keyboard checks are not dedicated screen-reader certification or a human usability study. Existing qualified tax-application and publication conditions remain in force. No new dependencies, push, deployment or publication.
 
 ## UX, guidance and editorial milestone — complete locally
 

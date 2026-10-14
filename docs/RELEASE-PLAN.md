@@ -1,10 +1,16 @@
 # First release plan
 
-## Homepage layout refinement — in progress
+## Homepage layout refinement — complete locally
 
-Preserve accepted UX checkpoint `f9e18e9` on `feat/ux-guidance-editorial`. Align the introduction and visible income example with the calculator; use one responsive disclosure and one income state; move optional FEIE guidance below calculation/history. Keep all calculation, persistence and report systems unchanged.
+Accepted UX foundation `f9e18e9` remains preserved on `feat/ux-guidance-editorial`. Plan checkpoint `1665e44`; implementation `ca5a638`; subpixel-test correction `9124e4c`. Application/report version remains rc.3 and calculation remains physical-presence-2.2.
 
-Sequence: presentation changes and targeted regressions; full checks and five-project browser suite; inspect 1440/768/390 layouts and keyboard/touch flows; curate before/after evidence from immutable accepted screenshots; record local implementation and verification checkpoints. No new dependencies, push, publication or deployment.
+The desktop introduction and visible 2026 income example share the calculator’s columns and gutters. The financial difference leads; bars use the larger current tax estimate as their reference width. One unsaved salary state and one set of controls span desktop, tablet and mobile. Mobile starts with a compact disclosure. The introduction’s How FEIE works link opens and focuses optional guidance after history, leaving calculator geometry unchanged.
+
+`npm run check`: **146 unit/integration tests**, TypeScript and production build pass. Final complete browser repeat: **85 passed / ten intentional skips**, five projects, exit 0. Real 1440/768/390 screenshots and keyboard/touch flows inspected; expanded-help accessibility/overflow checks also pass with reduced-motion preference. First date positions: approximately 788 / 678 / 641 px respectively. The existing mobile under-650-px guard is retained; desktop/tablet deliberately allow the visible illustration within an 850-px guard.
+
+**27 PDFs / 66 pages** match accepted text and rasters after masking only generated timestamp rows; **15 clipboard samples are identical**. No counting, history, cutoff, scenario, report, annual tax data or dependency changes. Test discovery excludes ignored review outputs so frozen source packages cannot run as live tests.
+
+[Visual review PDF](../output/playwright/homepage-refinement-review-ca5a638/visual-review.pdf), [gallery](../output/playwright/homepage-refinement-review-ca5a638/index.html), [external review prompt](../output/playwright/homepage-refinement-review-ca5a638/REVIEW-PROMPT.md), [verification](../output/playwright/homepage-refinement-review-ca5a638/context/verification.json). Package includes 26 original-resolution screenshots, four detail crops, five comparison sheets, frozen source/diff and two separate synthetic lifecycle recordings. No unresolved product question remains. Existing native-device, assistive certification and tax-application review limits remain documented. No push, deployment or publication.
 
 ## UX, guidance and editorial milestone — complete locally
 
