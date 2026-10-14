@@ -1,6 +1,6 @@
 # First release plan
 
-## UX, guidance and editorial milestone — in progress
+## UX, guidance and editorial milestone — complete locally
 
 Branch: `feat/ux-guidance-editorial`, from clean merged rc.3 checkpoint `90375d1`. Report/appendix/footer corrections are safely committed. Application remains rc.3; calculation remains physical-presence-2.2 during this local refinement.
 
@@ -12,9 +12,15 @@ Branch: `feat/ux-guidance-editorial`, from clean merged rc.3 checkpoint `90375d1
 
 Acceptance includes the approved 330-foreign-day / 351-of-365 coverage explanation, bona fide residence distinction, native accessible disclosures, backup/report preservation and three 2026 salary reference cases. Verify annual values before adding a year; no complete 2027 dataset was found in the 2026-10-13 IRS search.
 
-Current candidate: **0.2.0-rc.3**, assessment **physical-presence-2.2**. Approved production report redesign is locally verified and ready for final user acceptance; ordinary counting engine is unchanged. Initial rc.1/rc.2 milestones below are historical; current acceptance is in the rc.3 section and RELEASE-READINESS.md.
+Implementation checkpoint: `6e61c6b`; plan checkpoint: `bf0a70c`. **145 unit/integration tests**, TypeScript/build, and **75 browser passes / 10 intentional skips** across all five projects pass. The final repeat exits cleanly; an earlier complete assertion run received SIGTERM at cleanup. Direct experienced-user entry/export, first-time education, keyboard/pointer/mobile touch, expanded-help accessibility, year/scenario/backup preservation and desktop/mobile visual inspection are complete. Initial first-input placement regressions were corrected without relaxing the existing under-650-px browser guard.
 
-Branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
+**27 native PDFs / 66 pages** retain matching text and page rasters after masking only generated UTC timestamp rows; **15 clipboard samples are byte-identical** to accepted rc.3 footer artifacts. No physical-presence, storage, cutoff, normalization, report-generation or dependency changes. [Review and representative screenshots](../output/playwright/ux-editorial/REVIEW.md). Remaining native-device/assistive certification and qualified tax application review conditions are preserved; no new blocking product questions. No push, publication or deployment.
+
+## Preserved report-release baseline
+
+Report candidate: **0.2.0-rc.3**, assessment **physical-presence-2.2**. Approved production report redesign is locally verified; ordinary counting engine is unchanged. Initial rc.1/rc.2 milestones below are historical; current acceptance is in RELEASE-READINESS.md.
+
+Report milestone branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
 No push, deployment, publication, backend, accounts, or external travel-data submission is authorized.
 
 ## Release criteria and milestones

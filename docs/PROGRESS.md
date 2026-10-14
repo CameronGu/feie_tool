@@ -1,5 +1,16 @@
 # Development progress
 
+## 2026-10-13 — UX, guidance and editorial milestone complete
+
+- Completed implementation at `6e61c6b`, following plan checkpoint `bf0a70c` and merged rc.3 baseline `90375d1`. Retained rc.3/physical-presence-2.2, the validated engine and canonical history. No report generator, storage, cutoff/normalization or dependency changes.
+- Added optional native FEIE guidance, concise entry copy, physical-presence/bona fide-residence distinction, foreign-tax-home limits, contextual travel-day explanations, data-driven supporting-period/upper-bound help and the validated 330 versus 351/365 example. Main workflow stays direct, with no wizard or experience modes. Tightened settings/type rows and moved the optional travel preview below results to retain the existing under-650-px first-input guard.
+- Added the independent 2026 single-worker salary illustration, typed source-documented annual data, correct tax-rate stacking, synchronized exact numeric entry and $5,000 slider movement. Salary is component state only, absent from history, scenarios, backups and reports. All three reference cases match. No complete official 2027 dataset was verified; latest-supported-year fallback is labeled.
+- Reviewed current Publication 54, Form 2555 and Form 1040 worksheet instructions, IRS presence/residence/proration guidance, Rev. Proc. 2025-32 and 26 CFR 1.911-2/3. Linked the explicitly dated 2023 Publication 54 page-27 worked proration example alongside current guidance; current Publication 54 omits that older example. No historical annual values enter the 2026 illustration.
+- `npm run check`: **145/145 tests**, TypeScript and production build pass, including 33 added calculation/UI regressions. Full five-project production browser suite: **75 passes / 10 intentional platform/duplicate skips**, final terminal repeat **exit 0**. Initial layout-only failures were fixed; an earlier full 75-pass run received SIGTERM at teardown and was repeated unchanged to verify clean completion.
+- Actual desktop/mobile personas calculate/export without education and learn the underlying concepts through optional disclosures. Keyboard focus/Enter/Space, slider keys, pointer, emulated mobile touch, no overflow and expanded-help WCAG A/AA scans pass. Inspected screenshots for first use, results, explanations and income comparisons, plus ordinary/appendix PDF pages.
+- **27 native PDFs / 66 pages** match accepted rc.3 full-page rasters and text after masking only generated UTC timestamp rows; **15 clipboard samples byte-identical**. New synthetic evidence is isolated under `output/playwright/ux-editorial/`; previous artifacts are unchanged. [Review and screenshots](../output/playwright/ux-editorial/REVIEW.md).
+- No new blocking product questions. Existing qualified tax application review and native-device/manual assistive certification limits remain in readiness. No push, publication, deployment or external upload.
+
 ## 2026-10-13 — UX, guidance and editorial refinement started
 
 - Implementation now includes optional FEIE education, direct entry preference explanations, native contextual disclosures, actual supporting-period selection/unknown-date explanations and the independent 2026 salary example. No engine, storage, normalization, report-generation or dependency changes.

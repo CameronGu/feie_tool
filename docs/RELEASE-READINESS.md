@@ -1,8 +1,27 @@
 # Release readiness
 
-## UX/editorial milestone — verification pending
+## UX, guidance and editorial milestone — complete locally
 
-In progress on `feat/ux-guidance-editorial`, from merged rc.3 `90375d1`. Prior report acceptance remains preserved below. New website guidance and isolated financial illustration require full checks, browser/accessibility review and screenshot evidence before local completion. No push, publication or deployment.
+Branch **`feat/ux-guidance-editorial`**, from clean merged rc.3 **`90375d1`**. Local plan **`bf0a70c`**; implementation **`6e61c6b`**. Application remains **0.2.0-rc.3**, physical-presence assessment remains **physical-presence-2.2**. Website refinement is complete and locally verified. Prior report acceptance remains preserved below. No push, publication or deployment.
+
+| Requirement | Evidence |
+| --- | --- |
+| Self-service calculation | No mandatory onboarding or separate experience modes. Year and entry controls remain direct; skip link bypasses education. Existing under-650-px first-date-input guard passes in all five layouts. |
+| First-time understanding | Optional native FEIE overview, physical presence/residence comparison, foreign tax home, cross-year periods and contextual full-day help; new-worker browser persona passes. |
+| Useful results | Explicit recorded/assumed/projected/incomplete/failure/review explanations; actual single/multiple supporting-period basis; lower/upper bounds and clipped unresolved dates; separate 330 foreign-day and 351/365 coverage explanation. |
+| Financial illustration | Independent unsaved 2026 salary example, correct worksheet stacking, typed sourced annual data, all three reference cases, boundary tests, exact entry and validation, keyboard/pointer/mobile touch. Complete 2027 data was not verified, so it is omitted. |
+| Preserve validated systems | No changes to domain engine, canonical history, normalization, ongoing/cutoff/scenario logic, storage schema, reports or dependencies. Complete existing regression workflows still pass. |
+| Verification | `npm run check`: **145/145 tests**, TypeScript and production build pass. Complete `npm run test:e2e`: **75 passes / 10 intentional skips**, clean terminal exit, across Chromium desktop/mobile/tablet and Firefox desktop/mobile. |
+| Accessibility and visual review | Native disclosures opened/closed with Enter/Space; labeled inputs, focus and skip link, range keys and mobile touch checked. Automated WCAG A/AA scans pass on empty/populated and expanded-guidance states. Running app and representative desktop/mobile screenshots inspected. |
+| Approved outputs | **27 native PDFs / 66 full pages** match accepted report text/rasters after masking only generated UTC timestamp rows. **15 clipboard samples byte-identical**. Ordinary report remains one page; optional ordinary appendix two pages. |
+
+The full browser run used an exact isolated source/build copy at `/tmp/feie-ux-verified-i16u_0ol`, preserving earlier rc.3 artifacts. Initial review caught added copy pushing inputs below the fold; compact settings/type rows and relocating the preview resolved it without weakening the guard. An earlier complete 75-pass assertion run received SIGTERM during teardown; an identical-source terminal repeat passed with exit 0. There are no unresolved software failures.
+
+[Review, source verification and screenshot index](../output/playwright/ux-editorial/REVIEW.md), [desktop result](../output/playwright/ux-editorial/chromium-desktop/02-experienced-result-viewport.png), [mobile first use](../output/playwright/ux-editorial/chromium-mobile/01-first-use-viewport.png), [income example](../output/playwright/ux-editorial/chromium-desktop/05-income-default.png), [report parity](../output/playwright/ux-editorial/report-parity.json).
+
+No new blocking product questions. Remaining limits are native Safari/iOS/Android and manual assistive-technology certification; future annual data verification; and the previously documented qualified tax review of tax-home application, multiple-period filing and affected leap endpoints. Website education is not a residence/tax-home engine. The hypothetical regular-income-tax comparison does not establish personalized liability or alternative-relief outcomes. These local checks do not authorize release or publication.
+
+## Preserved rc.3 report acceptance
 
 Primary candidate: **0.2.0-rc.3**, calculation/assessment **physical-presence-2.2**. Branch: `refactor/project-update`. **Locally verified and ready for final user acceptance of the production report redesign.** Final-refinement foundation `f4e8d9d`, approved prototype `3ecac30`, implementation `6a126fb` and comparison refinement `be90c92` are recoverable local checkpoints. No push, deployment or publication is authorized.
 
