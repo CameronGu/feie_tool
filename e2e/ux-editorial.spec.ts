@@ -101,7 +101,7 @@ test('income example supports exact entry, pointer and keyboard controls without
   const example = page.locator('.income-example');
   const salary = page.getByRole('spinbutton', { name: /Annual salary/ });
   const slider = page.getByRole('slider', { name: 'Adjust annual salary' });
-  await expect(example).toContainText('2026 example');
+  await expect(example).toContainText('2026 tax example');
   await expect(example).toContainText('Approximately $17,570');
   await expect(example).toContainText('~$17,500');
   await capture(page, info, '05-income-default', '.income-example');

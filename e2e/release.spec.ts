@@ -46,7 +46,7 @@ test('direct entry, year/view changes, correction, reload and keyboard labels', 
   await page.keyboard.press('Control+Home');
   await page.getByRole('link', { name: 'Skip to calculator' }).focus();
   await page.keyboard.press('Enter');
-  await expect(page.locator('main')).toBeFocused();
+  await expect(page.locator('main #calculator-settings')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByLabel('Calendar tax year')).toBeFocused();
   const unnamed = await page.locator('input,select,textarea').evaluateAll(inputs => inputs.filter(element => {

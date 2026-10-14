@@ -1,5 +1,13 @@
 # First release plan
 
+## Final homepage spacing — complete locally
+
+Narrow follow-up to accepted `237b76a` on `feat/ux-guidance-editorial`. Desktop introduction/settings share the left column, opposite the existing financial example. Tablet keeps full-width settings; mobile keeps the accepted introduction/example/settings order. One copy of every control remains inside main; the skip link focuses settings and its next Tab reaches the tax year. No new state, panel, dependency, engine/report/tax-data or detailed-guidance change.
+
+First date positions at 1440/1024/768/390 px: **663/663/678/641 px**, versus **788/788/678/641 px** before. Desktop is 125 px higher; mobile/tablet are unchanged. Introduction-to-settings gaps are 12 px on desktop; the gap beneath the illustration is 20 px. Checks include 600/601 and 900/901 boundaries.
+
+`npm run check`: **146 tests**, TypeScript/build pass; final CSS build and TypeScript pass. Complete five-project browser invocation: **85 passes / ten intentional skips**, exit 0. Expanded-control WCAG/overflow checks pass at all four widths, with keyboard, touch, comparison, cutoff, example isolation, exports and restore verified. **27 PDFs / 66 pages** match apart from generated timestamp rows; **15 clipboard samples identical**. [Before/after gallery](../output/playwright/homepage-spacing/index.html), [measurements](../output/playwright/homepage-spacing/measurements.json), [verification](../output/playwright/homepage-spacing/verification.json). No push, deployment or publication.
+
 ## Homepage layout refinement — complete locally
 
 Accepted UX foundation `f9e18e9` remains preserved on `feat/ux-guidance-editorial`. Plan checkpoint `1665e44`; implementation `ca5a638`; subpixel-test correction `9124e4c`. Application/report version remains rc.3 and calculation remains physical-presence-2.2.

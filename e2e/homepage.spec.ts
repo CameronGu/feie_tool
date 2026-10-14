@@ -3,7 +3,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const output = 'output/playwright/homepage-refinement';
+const output = 'output/playwright/homepage-spacing-tests';
 async function capture(page: Page, info: TestInfo, name: string) {
   if (!info.project.name.startsWith('chromium-')) return;
   const directory = join(output, info.project.name);
@@ -24,13 +24,51 @@ async function start(page: Page) {
   await page.goto('/');
 }
 
+async function checkSettingsLayout(page: Page) {
+  const geometry = await page.evaluate(() => {
+    const rect = (selector: string) => {
+      const box = document.querySelector(selector)!.getBoundingClientRect();
+      return { top: box.top + scrollY, bottom: box.bottom + scrollY, left: box.left, right: box.right };
+    };
+    return { width: innerWidth, introduction: rect('.introduction'), settings: rect('#calculator-settings'),
+      income: rect('.income-example'), calculator: rect('.calculator-grid'),
+      firstDateTop: rect('#travel-entry input[type="date"]').top,
+      overflow: document.documentElement.scrollWidth > innerWidth };
+  });
+  await expect(page.locator('main #tax-year')).toHaveCount(1);
+  await expect(page.locator('main .cutoff-settings')).toHaveCount(1);
+  expect(geometry.overflow).toBe(false);
+  if (geometry.width > 900) {
+    expect(geometry.settings.left).toBeCloseTo(geometry.introduction.left, 1);
+    expect(geometry.settings.right).toBeCloseTo(geometry.introduction.right, 1);
+    expect(geometry.settings.top - geometry.introduction.bottom).toBeCloseTo(12);
+    expect(geometry.calculator.top - Math.max(geometry.income.bottom, geometry.settings.bottom)).toBeCloseTo(20);
+  } else {
+    expect(geometry.settings.top).toBeGreaterThanOrEqual(Math.max(geometry.introduction.bottom, geometry.income.bottom));
+    expect(geometry.settings.left).toBeCloseTo(geometry.calculator.left, 1);
+    expect(geometry.settings.right).toBeCloseTo(geometry.calculator.right, 1);
+  }
+  // Accepted first-use positions: mobile 641.44px and tablet 677.97px.
+  if (geometry.width === 390) expect(geometry.firstDateTop).toBeLessThan(642);
+  if (geometry.width === 768) expect(geometry.firstDateTop).toBeLessThan(678.5);
+  if ([1024, 1440].includes(geometry.width)) expect(geometry.firstDateTop).toBeLessThan(670);
+}
+
 test('first use keeps travel entry accessible and links directly to optional guidance below history', async ({ page }, info) => {
   await start(page);
   const width = page.viewportSize()!.width;
   const example = page.getByRole('region', { name: 'Why track your days abroad?' });
   await expect(example).toContainText('~$17,500 less in federal income tax');
   await expect(example).toContainText('Assumes $120,000 earned abroad, full-year FEIE eligibility');
-  await expect(example).toContainText('2026 example');
+  await expect(example).toContainText('2026 tax example');
+  await expect(example).toContainText('Separate from your travel year.');
+  await checkSettingsLayout(page);
+  await page.getByRole('link', { name: 'Skip to calculator' }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('main #calculator-settings')).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByLabel('Calendar tax year')).toBeFocused();
+  await page.evaluate(() => scrollTo(0, 0));
   await expect(page.locator('.feie-guidance')).not.toHaveAttribute('open');
   const dateTop = await page.getByLabel('First full foreign day').evaluate(input => input.getBoundingClientRect().top);
   expect(dateTop).toBeLessThan(width <= 600 ? 650 : 850);
@@ -68,6 +106,14 @@ test('first use keeps travel entry accessible and links directly to optional gui
   await page.keyboard.press('Space');
   await expect(page.locator('.feie-guidance')).not.toHaveAttribute('open');
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  if (width === 1440) {
+    for (const [nextWidth, height] of [[1024, 900], [901, 900], [900, 900], [768, 1024], [601, 900], [600, 900], [390, 844]]) {
+      await page.setViewportSize({ width: nextWidth, height });
+      await page.evaluate(() => scrollTo(0, 0));
+      await checkSettingsLayout(page);
+      if (nextWidth === 1024) await capture(page, info, '06-first-use-1024');
+    }
+  }
 });
 
 test('one financial state survives responsive disclosure, keyboard adjustment and resizing', async ({ page }, info) => {
@@ -111,7 +157,7 @@ test('one financial state survives responsive disclosure, keyboard adjustment an
   await expect(salary).toHaveValue('120000');
   await expect(page.locator('#example-salary')).toHaveCount(1);
   await page.getByLabel('Calendar tax year').fill('2024');
-  await expect(page.locator('.income-example')).toContainText('2026 example');
+  await expect(page.locator('.income-example')).toContainText('2026 tax example');
   expect(await page.evaluate(() => localStorage.getItem('feie.travel-history.v1'))).toBe(history);
   await page.getByLabel('Calendar tax year').fill('2025');
   expect(await page.getByLabel('Preparer report text').inputValue()).toBe(report);

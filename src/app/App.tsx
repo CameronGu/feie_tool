@@ -39,32 +39,34 @@ export function App() {
   }
   return (
     <div className="app-shell">
-      <a className="skip-link" href="#main-content">Skip to calculator</a>
-      <div className="home-intro">
-        <header className="introduction">
-          <h1>{APP_NAME}</h1>
-          <p className="intro-subtitle">Check your time abroad against the IRS physical presence test.</p>
-          <p className="intro-detail">Enter your U.S. visits or the dates you spent abroad. Find qualifying 12-month periods and see how they apply to the tax year you’re checking.</p>
-          <div className="intro-links"><a href="#feie-guidance" onClick={() => setGuidanceOpen(true)}>How FEIE works</a>
-            <span>Travel history stays in this browser.</span></div>
-        </header>
-        <IncomeIllustration />
-      </div>
-      <main id="main-content" tabIndex={-1}>
+      <a className="skip-link" href="#calculator-settings">Skip to calculator</a>
+      <main id="main-content">
         {travel.storageMessage && <p className="notice" role="alert">{travel.storageMessage}</p>}
-        <section className="year-bar" aria-label="Calculation settings">
-          <div><label htmlFor="tax-year">{example ? 'Saved calendar tax year' : 'Calendar tax year'}</label><input id="tax-year" inputMode="numeric" type="number" min={1901} max={2099} value={yearDraft} disabled={example}
-            aria-describedby="year-help year-error" aria-invalid={Boolean(yearError)} onChange={event => {
-              const value = event.target.value; setYearDraft(value);
-              const year = Number(value);
-              if (/^\d{4}$/.test(value) && year >= 1901 && year <= 2099) { travel.setYear(year); setYearError(''); setExample(false); }
-              else setYearError('Choose a complete calendar year between 1901 and 2099.');
-            }} /></div>
-          <span id="year-help" className="sr-only">Changing years keeps your travel history.</span>
-          <label className="check-row"><input type="checkbox" checked={travel.includeProposals} disabled={example} onChange={event => { travel.setIncludeProposals(event.target.checked); setExample(false); }} />Compare proposed and future travel</label>
-          <p id="year-error" className="error" role={yearError ? 'alert' : undefined}>{yearError}</p>
-        </section>
-        <CompletedDaySettings key={travel.cutoff.asOf + travel.cutoff.basis} cutoff={travel.cutoff} onApply={travel.setLastCompletedDay} onReset={travel.resetCutoff} disabled={example} />
+        <div className="home-intro">
+          <header className="introduction">
+            <h1>{APP_NAME}</h1>
+            <p className="intro-subtitle">Check your time abroad against the IRS physical presence test.</p>
+            <p className="intro-detail">Enter your U.S. visits or the dates you spent abroad. Find qualifying 12-month periods and see how they apply to the tax year you’re checking.</p>
+            <div className="intro-links"><a href="#feie-guidance" onClick={() => setGuidanceOpen(true)}>How FEIE works</a>
+              <span>Travel history stays in this browser.</span></div>
+          </header>
+          <IncomeIllustration />
+          <div id="calculator-settings" tabIndex={-1}>
+            <section className="year-bar" aria-label="Calculation settings">
+              <div><label htmlFor="tax-year">{example ? 'Saved calendar tax year' : 'Calendar tax year'}</label><input id="tax-year" inputMode="numeric" type="number" min={1901} max={2099} value={yearDraft} disabled={example}
+                aria-describedby="year-help year-error" aria-invalid={Boolean(yearError)} onChange={event => {
+                  const value = event.target.value; setYearDraft(value);
+                  const year = Number(value);
+                  if (/^\d{4}$/.test(value) && year >= 1901 && year <= 2099) { travel.setYear(year); setYearError(''); setExample(false); }
+                  else setYearError('Choose a complete calendar year between 1901 and 2099.');
+                }} /></div>
+              <span id="year-help" className="sr-only">Changing years keeps your travel history.</span>
+              <label className="check-row"><input type="checkbox" checked={travel.includeProposals} disabled={example} onChange={event => { travel.setIncludeProposals(event.target.checked); setExample(false); }} />Compare proposed and future travel</label>
+              <p id="year-error" className="error" role={yearError ? 'alert' : undefined}>{yearError}</p>
+            </section>
+            <CompletedDaySettings key={travel.cutoff.asOf + travel.cutoff.basis} cutoff={travel.cutoff} onApply={travel.setLastCompletedDay} onReset={travel.resetCutoff} disabled={example} />
+          </div>
+        </div>
         {example && <div className="notice" role="status"><strong>Demonstration · tax year 2025</strong>. Your saved calculation for {travel.year} is paused. Your saved travel records are unchanged; saved settings resume on close. The example uses completed days through 2025-12-31.
           <div className="actions"><button className="secondary" onClick={() => setExample(false)}>Close example</button></div></div>}
         <div className="calculator-grid">

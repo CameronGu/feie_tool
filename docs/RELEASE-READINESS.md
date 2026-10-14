@@ -1,5 +1,22 @@
 # Release readiness
 
+## Final homepage spacing — locally verified
+
+Accepted foundation `237b76a` is preserved. Desktop settings now sit below the introduction in the left column; the financial example spans the right. Tablet settings stay full width, and mobile retains its compact order and collapsed income controls. All settings remain inside main; the skip link directly focuses their single group and Tab reaches the tax year.
+
+| Viewport | First date before | First date after |
+| --- | ---: | ---: |
+| 1440×1000 | 788.14 px | 663.03 px |
+| 1024×900 | 788.14 px | 663.03 px |
+| 768×1024 | 677.97 px | 677.97 px |
+| 390×844 | 641.44 px | 641.44 px |
+
+At desktop widths, the introduction-to-settings gaps fall from 193.78/153.45 px to 12 px. Both layouts reduce the area beneath the illustration from 145.11 to the normal 20 px section gap. Controls retain natural sizes and no left-column panel was added. “2026 tax example” and “Separate from your travel year” make the independent example year clear; neutral/teal bars retain readable numerical labels and unchanged proportions.
+
+Gates: **146 unit/integration tests**, TypeScript and build pass. Complete production browser invocation: **85 passes / ten intentional skips**, exit 0, no retries. The expanded settings/FEIE/income-method WCAG and overflow review passes at all four widths with reduced motion. Keyboard focus/skip link, year/proposal settings, completed cutoff, example isolation, salary synchronization, reports and JSON restore pass. Tests also cover the 600/601 and 900/901 boundaries; mobile first-date guard is under 642 px. All 59 source/test/config files in `/tmp/feie-spacing-tcgxpt10` match current source. **27 native PDFs / 66 pages** match accepted text/rasters after masking only generated timestamp rows; **15 clipboard samples byte-identical**.
+
+No domain/services/constants, hooks, detailed FEIE guidance or package changes. [Actual before/after gallery](../output/playwright/homepage-spacing/index.html), [review and provenance](../output/playwright/homepage-spacing/REVIEW.md), [exact geometry](../output/playwright/homepage-spacing/measurements.json), [verification](../output/playwright/homepage-spacing/verification.json). Accepted packet images are copied unchanged at 1440/768/390; 1024 before is captured from the source-verified accepted build. All screenshots/contact sheets and the running app were inspected; gallery links/images verified. No unresolved product decisions. Existing native-device/assistive certification and qualified tax-application limits remain. No push, deployment or publication.
+
 ## Homepage refinement — locally verified
 
 The accepted foundation `f9e18e9` is preserved. Implementation `ca5a638` and test correction `9124e4c` are local checkpoints on `feat/ux-guidance-editorial`; rc.3 / physical-presence-2.2 remain unchanged.

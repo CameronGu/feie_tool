@@ -19,9 +19,9 @@ export function IncomeIllustration() {
   function changeSalary(value: number) { setSalary(value); setDraft(String(value)); }
   return <section id="income-example" className="panel income-example" aria-labelledby="income-heading">
     <div className="income-heading"><h2 id="income-heading">Why track your days abroad?</h2>
-      <span>{data.year} example{data.year !== new Date().getFullYear() ? ' · latest supported figures' : ''}</span></div>
+      <span>{data.year} tax example{data.year !== new Date().getFullYear() ? ' · latest supported figures' : ''}</span></div>
     <p className="income-difference"><strong>~{money(Math.round(result.difference / 500) * 500)}</strong> less in federal income tax</p>
-    <p className="income-premise">Assumes {money(salary)} earned abroad, full-year FEIE eligibility and single filing status. Illustration only.</p>
+    <p className="income-premise">Assumes {money(salary)} earned abroad, full-year FEIE eligibility and single filing status. Separate from your travel year.</p>
     <button type="button" className="secondary income-disclosure" aria-expanded={expanded} aria-controls="income-example-controls"
       onClick={() => setExpanded(value => !value)}>{expanded ? 'Hide income controls and calculation' : 'Adjust income and see the calculation'}</button>
     <div id="income-example-controls" data-expanded={expanded}>
