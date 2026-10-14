@@ -298,6 +298,16 @@ function exceptionTable(report: TravelReport, exceptions: RelevantException[]): 
   ]).concat([['Total distinct exception days', String(exceptions.reduce((sum, item) => sum + item.days, 0))]]) };
 }
 
+/** Reader-facing evidence status, independent of the source entry's completed/proposed flag. */
+function appendixEvidenceLabel(segment: PresenceSegment): string {
+  if (segment.kind === 'unknown') {
+    return `${segment.projected ? 'Projected unresolved' : segment.basis === 'recorded' ? 'Recorded unresolved' : 'Unrecorded unknown'} dates (zero foreign days)`;
+  }
+  const presence = segment.kind === 'foreign' ? 'full foreign days' : segment.kind === 'us' ? 'U.S. days' : 'other nonforeign days';
+  if (segment.projected) return `Projected ${presence} (${segment.basis === 'assumed' ? 'assumed' : 'user-entered'})`;
+  return segment.basis === 'assumed' ? `Assumed ${presence} (elapsed)` : `Recorded ${presence} (completed)`;
+}
+
 /** Only relevant evidence, including the same-history completed baseline when comparing scenarios. */
 export function appendixSections(report: TravelReport): ReportSection[] {
   const relevant = (context: TravelReport) => {
@@ -309,11 +319,20 @@ export function appendixSections(report: TravelReport): ReportSection[] {
   const records = new Map(contexts.flatMap(context => context.records).filter(record => ids.has(record.id)).map(record => [record.id, record]));
   return [
     section('Relevant full source history', [...records.values()].map(record =>
-      `${record.id}: ${record.start_date} to ${record.ongoing ? 'ongoing' : record.end_date}; ${KIND_LABELS[record.kind]}; ${record.status}${record.note ? `. ${record.note}` : '.'}`)),
-    ...contexts.map((context, index) => section(`${index ? 'Completed baseline' : report.scenario ? 'Scenario' : 'Completed'} normalized evidence`, [
-      'Inclusive derived ranges supplied to the calculation engine; ranges may extend beyond the selected period. Original source endpoints are above.',
-      ...relevant(context).map(segment => `${segment.start_date} to ${segment.end_date}: ${segment.kind}; ${segment.basis}; ${segment.projected ? 'projected' : 'completed / unresolved'}; sources: ${segment.record_ids.join(', ') || 'unrecorded'}.`)
-    ])),
+      `${record.id}: ${record.start_date} to ${record.ongoing ? 'ongoing' : record.end_date}; ${KIND_LABELS[record.kind]}; ${record.status === 'proposed' ? 'proposed record' : record.kind === 'foreign_assumption' ? 'assumption (cutoff applies)' : 'recorded history'}${record.note ? `. ${record.note}` : '.'}`)),
+    ...contexts.map((context, index) => {
+      const selected = relevant(context);
+      const selectedSet = new Set(selected);
+      const omitted = mergeIntervals(context.segments.filter(segment => !selectedSet.has(segment))
+        .map(({ start_date, end_date }) => ({ start_date, end_date })));
+      const selection = context.supporting_periods.length ? 'supporting periods' : context.has_evidence ? 'strongest supported and possible upper-bound periods' : 'selected periods (none established)';
+      return section(`${index ? 'Completed baseline' : report.scenario ? 'Scenario' : 'Completed'} normalized evidence — relevant selection`, [
+        `Whole normalized ranges intersecting the ${selection} are shown; endpoints may extend beyond those periods.`,
+        omitted.length ? `Omitted dates: ${omitted.map(range => `${range.start_date} to ${range.end_date}`).join('; ')}. Other dates, including unknown dates in these omitted ranges, are excluded; this is not the full engine input.`
+          : 'No dates omitted: this selection covers the full evaluation horizon for this context.',
+        ...selected.map(segment => `${segment.start_date} to ${segment.end_date}: ${appendixEvidenceLabel(segment)}; sources: ${segment.record_ids.join(', ') || 'unrecorded'}.`)
+      ]);
+    }),
     section('Evidence classifications', [
       'Recorded = user-supplied facts, not independent verification. Assumed = an explicit declaration, overridden by exceptions. Projected = proposed or unfinished dates, excluded from completed evidence. Unknown = unresolved dates, counted as zero full foreign days.',
       'Period foreign-day totals separate recorded completed, assumed completed and projected foreign days. A projected day can derive from an ongoing assumption; it remains projected.'

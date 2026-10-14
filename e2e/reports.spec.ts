@@ -92,7 +92,7 @@ test('native report samples reconcile every assessment fixture with the unchange
     expect(text).toContain(`${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)}`);
     await writeFile(join(directory, fixture.name + '.clipboard.txt'), text);
     await download(page, directory, fixture.name);
-    if (fixture.name === 'long-history' || fixture.name === 'unicode' || fixture.scenario) await download(page, directory, fixture.name + '-appendix', true);
+    if (fixture.name === 'long-history' || fixture.name === 'unicode' || fixture.name === 'multiple-periods' || fixture.name === 'ongoing-cross-year' || fixture.scenario) await download(page, directory, fixture.name + '-appendix', true);
     manifest.push({ name: fixture.name, year: fixture.year, status: report.status, numerator: report.qualifying_days, denominator: report.tax_year_days, periods: report.supporting_periods, delta: report.comparison?.delta_days, exceptions: relevantExceptions(report).map(item => ({ start: item.record.start_date, end: item.record.end_date, days: item.days })) });
   }
   await writeFile(join(directory, 'engine-reconciliation.json'), JSON.stringify(manifest, null, 2));

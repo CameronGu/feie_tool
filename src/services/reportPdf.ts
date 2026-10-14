@@ -94,7 +94,34 @@ export async function createReportPdf(report: TravelReport, options: PdfOptions 
     }
     y += 3;
   };
-  const renderSection = (section: ReportSection) => {
+  // A short reference list uses two readable columns instead of forcing a new page.
+  const referenceLayout = (section: ReportSection) => {
+    const columnWidth = (width - 6) / 2, leading = 8.5 * .352778 * 1.36;
+    const rows = [];
+    for (let index = 0; index < section.lines.length; index += 2) {
+      const cells = section.lines.slice(index, index + 2).map(line => ({ ...line, wrapped: wrapped(line.text, 8.5, columnWidth) }));
+      rows.push({ cells, height: Math.max(...cells.map(cell => cell.wrapped.length)) * leading + 1.5 });
+    }
+    return { rows, leading, columnWidth, height: 2 + 11.5 * .352778 * 1.36 + 1.6 + rows.reduce((sum, row) => sum + row.height, 0) };
+  };
+  const renderAppendixReferences = (section: ReportSection) => {
+    const layout = referenceLayout(section);
+    ensure(layout.height);
+    y += 2; paragraph(section.title, 11.5, true, COLORS.navy, 1.6);
+    for (const row of layout.rows) {
+      ensure(row.height);
+      row.cells.forEach((cell, index) => cell.wrapped.forEach((line, n) => {
+        const x = left + index * (layout.columnWidth + 6), top = y + n * layout.leading;
+        text(line, x, top, 8.5, false, COLORS.teal);
+        if (cell.url) doc.link(x, top, doc.getTextWidth(line), layout.leading, { url: cell.url });
+      }));
+      y += row.height;
+    }
+  };
+  const renderSection = (section: ReportSection, followingReferencesHeight = 0) => {
+    if (appendix && section.title === 'Primary technical and legal references') {
+      renderAppendixReferences(section); return;
+    }
     if (!appendix && section.title === 'References') {
       ensure(12); y += 3;
       let x = left;
@@ -110,19 +137,22 @@ export async function createReportPdf(report: TravelReport, options: PdfOptions 
     const first = section.lines[0];
     const firstSize = first?.emphasis === 'period' ? 11.5 : 10;
     const firstHeight = first ? Math.max(first.emphasis === 'period' ? 24 : 0, Math.min(3, wrapped(first.text, firstSize).length) * firstSize * .352778 * 1.36) : section.table ? 48 : 0;
-    if (appendix && section.title === 'Primary technical and legal references') {
-      ensure(9 + section.lines.reduce((total, line) => total + wrapped(line.text, 8.5).length * 8.5 * .352778 * 1.36 + 1.5, 0));
-    }
     if (section.title === 'Basis and limitations') {
       const basisHeight = section.lines.reduce((total, line) => total + wrapped(line.text, 10).length * 10 * .352778 * 1.36 + 1.5, 0);
       if (basisHeight < 130) ensure(9 + basisHeight + 12);
     }
+    const tailStart = Math.max(0, section.lines.length - 2);
+    const tailHeight = followingReferencesHeight + section.lines.slice(tailStart).reduce((sum, line) =>
+      sum + wrapped(line.text, 9.5).length * 9.5 * .352778 * 1.36 + 1.5, 0);
+    if (appendix && followingReferencesHeight && tailStart === 0) ensure(9 + tailHeight);
     ensure(9 + firstHeight);
     // Clipped-count notes follow the schedule without another visual heading.
     if (section.title !== 'Counted portions') {
       y += 2; paragraph(section.title, 11.5, true, COLORS.navy, 1.6);
     }
-    for (const line of section.lines) {
+    for (const [index, line] of section.lines.entries()) {
+      // When references cannot stay on this page, bring meaningful preceding text with them.
+      if (appendix && followingReferencesHeight && index === tailStart && tailHeight <= bottom - 41) ensure(tailHeight);
       if (line.emphasis === 'period') ensure(24); // Keep dates with their evidence.
       paragraph(line.text, line.url ? 8.5 : line.emphasis === 'period' ? 11.5 : section.title === 'Counted portions' || appendix ? 9.5 : 10,
         Boolean(line.emphasis), line.emphasis ? COLORS.navy : COLORS.ink, 1.5, line.url);
@@ -155,7 +185,7 @@ export async function createReportPdf(report: TravelReport, options: PdfOptions 
     text(`${(report.fraction * 100).toFixed(2)}% qualifying-period coverage`, left, y, 9.5, false, COLORS.muted);
     y += 8; rule(y); y += 2;
   }
-  reportSections(report).forEach(renderSection);
+  reportSections(report).forEach(section => renderSection(section));
   if (options.includeAppendix) {
     appendix = true; newPage();
     const sections = appendixSections(report);
@@ -163,7 +193,10 @@ export async function createReportPdf(report: TravelReport, options: PdfOptions 
     if (pdfSafeText(originalText) !== originalText) sections.push({ title: 'PDF character preservation', lines: [
       { text: 'Characters outside the bundled Noto Sans coverage appear as [U+codepoint]. Clipboard and JSON backup retain original Unicode.' }
     ] });
-    sections.forEach(renderSection);
+    sections.forEach((section, index) => {
+      const next = sections[index + 1];
+      renderSection(section, next?.title === 'Primary technical and legal references' ? referenceLayout(next).height : 0);
+    });
   }
   const count = doc.getNumberOfPages();
   for (let page = 1; page <= count; page++) {

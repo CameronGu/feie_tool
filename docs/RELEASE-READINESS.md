@@ -2,6 +2,16 @@
 
 Primary candidate: **0.2.0-rc.3**, calculation/assessment **physical-presence-2.2**. Branch: `refactor/project-update`. **Locally verified and ready for final user acceptance of the production report redesign.** Final-refinement foundation `f4e8d9d`, approved prototype `3ecac30`, implementation `6a126fb` and comparison refinement `be90c92` are recoverable local checkpoints. No push, deployment or publication is authorized.
 
+## Final appendix corrections — locally verified
+
+The user accepted the standard PDF and clipboard. The optional ordinary combined report now has **two A4 pages**, with seven clickable references on page two. Existing body/reference fonts and margins are preserved; longer reports have no arbitrary page limit. Short reference blocks use two columns and stay with preceding provenance where practical.
+
+Appendix source/evidence labels now distinguish recorded history, elapsed assumptions, unresolved/unknown dates and projected dates. The normalized section explicitly identifies its relevant whole-segment selection, lists exact omitted date ranges and retains selected unknown ranges; it no longer misrepresents filtered excerpts as full engine input. Scenario and completed-baseline selections remain separate and use the same calculation context.
+
+Current finishing-pass gates: **111/111 tests**, TypeScript/build, **six relevant browser passes / four intentional duplicate-sample skips** across all five projects. **27 actual PDFs / 66 rendered pages** pass bounds, collision, footer, hyperlink and content checks; ordinary, multiple-period, projected and long appendices visually inspected. All **11 accepted standard PDFs / 20 page rasters are pixel-identical**, with unchanged extracted text and byte-identical clipboard examples. The 65-case release-wide verification below remains the accepted rc.3 foundation; this finishing pass reruns the relevant report workflows.
+
+[Corrected ordinary PDF](../output/playwright/appendix-corrections/chromium-desktop/standard-2025-appendix.pdf), [page-two preview](../output/playwright/appendix-corrections/chromium-desktop/standard-2025-appendix-2.png), [review and scenarios](../output/playwright/appendix-corrections/REVIEW.md), [standard preservation evidence](../output/playwright/appendix-corrections/accepted-standard-comparison.json). Foundation `972f7f3` is recoverable; earlier accepted artifacts are unchanged. Application/calculation versions remain rc.3 / physical-presence-2.2. No engine change, push, deployment or publication.
+
 ## rc.3 production report redesign — verification complete
 
 The default PDF and clipboard now use the approved concise workpaper presentation: Physical Presence Test, tax year, precise coverage/foreign-day labels, exact fraction and decimal, necessary supporting periods and nonduplicated contributions, relevant original travel dates/clipped counts, concise explanation, actual declarations and case limitations. Two or three case-relevant primary references remain in the standard report. The optional **Include detailed supporting records** PDF appendix is off by default and shares the exact history, year, cutoff and scenario, including matched completed support. JSON backup remains separate.

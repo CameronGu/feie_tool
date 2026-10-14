@@ -3,13 +3,14 @@ Run after e2e/reports.spec.ts: python3 scripts/inspect-preparer-pdfs.py
 """
 from pathlib import Path
 import json
+import sys
 from datetime import date
 import calendar
 import subprocess
 import xml.etree.ElementTree as ET
 from PIL import Image, ImageOps, ImageDraw
 
-OUT = Path('output/playwright/report-redesign')
+OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path('output/playwright/report-redesign')
 NATIVE = OUT / 'chromium-desktop'
 NS = {'p': 'http://www.w3.org/1999/xhtml'}
 
@@ -60,7 +61,19 @@ for pdf in sorted(OUT.glob('*/*.pdf')):
         pdf_bytes = pdf.read_bytes()
         assert b'https://www.irs.gov/individuals/international-taxpayers/foreign-earned-income-exclusion-physical-presence-test' in pdf_bytes
         assert b'/FontFile2' in pdf_bytes and b'/ToUnicode' in pdf_bytes
+    if '-appendix' in stem:
+        assert 'completed / unresolved' not in text
+        assert 'normalized evidence — relevant selection' in text
+        reference_pages = [p for p in text.split('\f') if 'Primary technical and legal references' in p]
+        assert len(reference_pages) == 1
+        assert 'Ordinary rules are anchored' in reference_pages[0]
+        assert 'not a restorable JSON' in reference_pages[0]
     if stem == 'standard-2025-appendix':
+        assert len(pages) == 2
+        assert 'Assumed full foreign days (elapsed)' in text
+        assert 'Recorded U.S. days (completed)' in text
+        assert 'Omitted dates: 2024-01-02 to 2024-01-04; 2026-01-14 to 2026-12-30.' in text
+        assert 'this is not the full engine input' in text
         assert 'sample-december: 2025-12-13 to 2026-01-13' in text
         assert 'UNRELATED SOURCE' not in text
         assert 'Cutoff basis: device-local; device time zone: America/Managua' in text

@@ -148,6 +148,9 @@ describe('real embedded-font PDFs', () => {
     const pages = pdfPageText(doc);
     expect(pages.length).toBeGreaterThan(3);
     expect(pages.join(' ')).toContain('Record 23:');
+    const referencePage = pages.find(page => page.includes('Primary technical and legal references'))!;
+    expect(referencePage).toContain('Ordinary rules are anchored');
+    expect(referencePage).toContain('not a restorable JSON');
     expect(pages.filter(p => p.includes('U.S. visit (original dates)')).length).toBeGreaterThan(1);
     for (let i = 0; i < pages.length; i++) {
       expect(pages[i]).toContain('Tax Year 2024');
@@ -181,3 +184,62 @@ describe('real embedded-font PDFs', () => {
   });
 });
 function fractionLabelForTest(days: number, denominator: number) { return `${days} / ${denominator} = ${(days / denominator).toFixed(6)}`; }
+
+describe('appendix finishing regressions', () => {
+  it('keeps ordinary references on page two without changing the accepted standard page', async () => {
+    const report = reportFor();
+    const standard = pdfPageText(await createReportPdf(report));
+    const combined = await createReportPdf(report, { includeAppendix: true });
+    const pages = pdfPageText(combined);
+    expect(pages).toHaveLength(2);
+    expect(pages[0]).toBe(standard[0].replace('1 / 1', '1 / 2'));
+    expect(pages[1]).toContain('Primary technical and legal references');
+    expect(pages[1]).toContain('Relevant full source history');
+    for (const reference of report.references) {
+      expect(pages[1]).toContain(reference.text);
+      expect(new TextDecoder().decode(combined.output('arraybuffer'))).toContain(reference.url);
+    }
+  });
+  it('labels the relevant selection, names omitted ranges and retains selected unknown evidence', () => {
+    const report = reportFor();
+    const text = appendixText(report);
+    expect(text).toContain('Completed normalized evidence — relevant selection');
+    expect(text).toContain('Omitted dates: 2024-01-02 to 2024-01-04; 2026-01-14 to 2026-12-30.');
+    expect(text).toContain('this is not the full engine input');
+    expect(text).toContain('Assumed full foreign days (elapsed)');
+    expect(text).toContain('Recorded U.S. days (completed)');
+    expect(text).not.toContain('completed / unresolved');
+    expect(text).not.toContain('foreign; assumed;');
+    const incomplete = reportFor(data(row('partial', 'foreign', '2025-01-01', '2025-11-25')));
+    const unknown = appendixText(incomplete);
+    expect(unknown).toContain('Unrecorded unknown dates (zero foreign days)');
+    expect(unknown).toContain('2025-11-26 to 2026-12-30');
+    expect(unknown).toContain('No dates omitted: this selection covers the full evaluation horizon');
+    expect(incomplete.segments).toEqual(assessTravel(data(row('partial', 'foreign', '2025-01-01', '2025-11-25')), 2025, '2026-10-13').normalized.segments);
+  });
+  it('distinguishes recorded, assumed, unresolved and projected dates in the same scenario', () => {
+    const report = reportFor(data(
+      row('assumption', 'foreign_assumption', '2025-01-01', '2100-12-31', { ongoing: true }),
+      row('visit', 'us', '2025-06-01', '2025-06-05'),
+      row('transit', 'nonqualifying', '2025-06-06', '2025-06-07'),
+      row('unknown', 'unknown', '2025-06-08', '2025-06-09'),
+      row('proposed-visit', 'us', '2025-11-01', '2025-11-02', { status: 'proposed' }),
+      row('proposed-unknown', 'unknown', '2025-11-03', '2025-11-04', { status: 'proposed' })
+    ), 2025, '2025-10-13', true);
+    const text = appendixText(report);
+    for (const label of ['Assumed full foreign days (elapsed)', 'Recorded U.S. days (completed)', 'Recorded other nonforeign days (completed)', 'Recorded unresolved dates (zero foreign days)', 'Projected full foreign days (assumed)', 'Projected U.S. days (user-entered)', 'Projected unresolved dates (zero foreign days)']) expect(text).toContain(label);
+    expect(text).not.toContain('completed / unresolved');
+  });
+  it.each(['multiple', 'projected'])('keeps references with preceding content for %s reports', async type => {
+    const history = type === 'multiple' ? multiple : data(approved.records[0], ...approved.records.slice(1), row('future', 'foreign', '2026-01-14', '2026-06-29', { status: 'proposed' }));
+    const year = type === 'multiple' ? 2024 : 2025;
+    const baseline = assessTravel(history, year, '2026-01-14');
+    const report = type === 'multiple' ? buildReport(baseline) : buildReport(assessTravel(history, year, '2026-01-14', true), undefined, baseline);
+    const pages = pdfPageText(await createReportPdf(report, { includeAppendix: true }));
+    const referencePage = pages.find(page => page.includes('Primary technical and legal references'))!;
+    expect(referencePage).toContain('Ordinary rules are anchored');
+    expect(referencePage).toContain('not a restorable JSON');
+    expect(pages.join(' ')).toContain('relevant selection');
+    expect(pages.join(' ')).not.toContain('completed / unresolved');
+  });
+});
