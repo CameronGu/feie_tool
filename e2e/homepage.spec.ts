@@ -56,7 +56,7 @@ test('first use keeps travel entry accessible and links directly to optional gui
   await page.keyboard.press('Enter');
   await expect(page.locator('.feie-guidance')).toHaveAttribute('open');
   await expect(page.locator('.feie-guidance')).toBeFocused();
-  expect(await page.locator('.calculator-grid').evaluate(el => el.getBoundingClientRect().top + scrollY)).toBe(calculatorTop);
+  expect(await page.locator('.calculator-grid').evaluate(el => el.getBoundingClientRect().top + scrollY)).toBeCloseTo(calculatorTop, 2);
   const historyBottom = await page.locator('.history-panel').evaluate(el => el.getBoundingClientRect().bottom + scrollY);
   expect(await page.locator('.feie-guidance').evaluate(el => el.getBoundingClientRect().top + scrollY)).toBeGreaterThan(historyBottom);
   await expect(page.getByText(/Temporary U.S. visits do not necessarily/)).toBeVisible();

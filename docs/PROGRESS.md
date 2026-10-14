@@ -6,6 +6,8 @@ Accepted foundation `f9e18e9` is clean; rc.3 reports and appendix corrections ar
 
 Implementation checkpoint: shared desktop columns/gutters, visible rounded financial difference, current-estimate bar proportions, one mobile disclosure/state and fragment-linked guidance after history. No engine, report, storage, annual tax data or dependency changes. Targeted UI regression and three-viewport persona checks pass (16 browser passes / two intentional duplicate touch skips). `npm run check` passes 146 tests, TypeScript and build; a final mobile spacing adjustment has a fresh passing build. Complete five-project browser verification is running against `/tmp/feie-home-layout-20qj76fi`, preserving accepted screenshots. Test discovery now excludes ignored `output/**` so frozen review source cannot execute as application tests. The first attempt exposed that artifact-discovery issue and was stopped; it is not acceptance evidence.
 
+Complete browser invocation finished with 84 passes, ten intentional skips and one new geometry assertion failure in Firefox mobile: the page position differed by 0.000214 px after fragment scrolling. Corrected the assertion to a 0.005 px tolerance; it still rejects actual layout displacement. No product change was needed. The entire suite will be repeated with the corrected assertion before acceptance.
+
 ## 2026-10-13 — UX, guidance and editorial milestone complete
 
 - Completed implementation at `6e61c6b`, following plan checkpoint `bf0a70c` and merged rc.3 baseline `90375d1`. Retained rc.3/physical-presence-2.2, the validated engine and canonical history. No report generator, storage, cutoff/normalization or dependency changes.
