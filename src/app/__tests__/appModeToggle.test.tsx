@@ -33,7 +33,7 @@ describe('primary travel workflows', { timeout: 15000 }, () => {
     open(); add('foreign', '2016-01-01', '2016-12-31');
     fireEvent.change(screen.getByLabelText('Calendar tax year'), { target: { value: '2027' } });
     fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Enter foreign stays' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Enter time abroad' }));
     expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).records[0].start_date).toBe('2016-01-01');
     fireEvent.click(screen.getByRole('button', { name: 'Edit Full foreign days 2016-01-01' }));
     fireEvent.change(screen.getByLabelText('Last full foreign day'), { target: { value: '2016-11-30' } });
@@ -45,7 +45,7 @@ describe('primary travel workflows', { timeout: 15000 }, () => {
     Object.defineProperty(navigator, 'clipboard', { value: { writeText: copy }, configurable: true });
     open(); add('foreign_assumption', '2024-01-01', '2024-12-31'); add('us', '2024-12-01', '2024-12-31');
     fireEvent.click(screen.getByRole('button', { name: 'Enter U.S. visits' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Enter foreign stays' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Enter time abroad' }));
     expect(screen.getByRole('heading', { name: 'Threshold met under declared assumptions' })).toBeTruthy();
     const report = (screen.getByLabelText('Preparer report text') as HTMLTextAreaElement).value;
     expect(report).toContain('335 full foreign days');

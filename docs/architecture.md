@@ -1,5 +1,11 @@
 # Architecture
 
+## Optional education and independent income example
+
+`FeieGuidance` uses native disclosures for the FEIE overview, residence comparison and tax-home explanation. `DayCountsHelp` sits beside the result fraction, with the validated 330-full-foreign-day / 351-of-365 example and primary sources. The website derives selection explanations and unresolved dates from the existing `TravelReport`; the report model, PDF/clipboard generators and physical-presence engine retain their approved behavior.
+
+`IncomeIllustration` owns an unsaved salary draft and last valid amount. Changes update its two tax bars without recalculating travel. The pure `incomeIllustration` service and typed annual configuration have no history, storage, report or physical-presence dependencies. Values are verified manually from IRS annual adjustments; year selection uses current-year data only if supported, otherwise the latest verified year with a visible label. The slider preserves exact typed values using a one-dollar native step, rounds pointer/touch movement to $5,000 increments, and handles arrow keys in $5,000 increments. Native Home/End and $25,000 PageUp/PageDown remain usable. Estimates are readable text without live-region announcements on each movement.
+
 A static React/TypeScript application built with Vite. No server, database, account, analytics or external travel-data submission. All evaluation and persistence happen in the browser. PDF code loads only when requested.
 
 ## Source of truth and data flow

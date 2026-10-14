@@ -2,6 +2,9 @@
 
 ## 2026-10-13 — UX, guidance and editorial refinement started
 
+- Implementation now includes optional FEIE education, direct entry preference explanations, native contextual disclosures, actual supporting-period selection/unknown-date explanations and the independent 2026 salary example. No engine, storage, normalization, report-generation or dependency changes.
+- Initial checks passed 144 tests; browser review caught the introduction pushing the first mobile input below the fold. Compact settings/type rows and moving the travel preview below results restored mobile first entry under 650 px. Desktop needed a further 8 px shell-spacing correction. Intermediate browser runs are retained in isolated `/tmp/feie-ux-*` copies; original rc.3 evidence is untouched. Final verification pending.
+
 - Clean master checkpoint `90375d1` includes rc.3 report/appendix/footer corrections. Created local branch `feat/ux-guidance-editorial`.
 - Plan: optional education, clearer entry/results, independent income illustration, targeted regressions, full verification and real desktop/mobile persona review. Preserve engine, canonical history, reports and backups; no dependencies or deployment.
 - Verified 2026 Rev. Proc. 2025-32 section 4.01 table 3, 4.14 and 4.39; Form 1040 Foreign Earned Income Tax Worksheet; Publication 54, Form 2555 instructions and 26 CFR 1.911-2/3. No complete official 2027 dataset found; use labeled 2026 data only.

@@ -28,8 +28,8 @@ export function ForeignBaseline({ editing, ending, onSave, onCancel }: {
     }
   }
   return <form onSubmit={submit} aria-label="Default foreign presence">
-    <h2>{ending ? 'End default foreign presence' : editing ? 'Edit default foreign presence' : 'Establish normal foreign presence'}</h2>
-    <p className="help">Assume full foreign days from the date below. U.S. visits, transit and unknown-day exceptions override this baseline.</p>
+    <h2>{ending ? 'End default foreign presence' : editing ? 'Edit default foreign presence' : 'Set default foreign presence'}</h2>
+    <p className="help">For dates in this period that you haven’t marked otherwise, we’ll assume you spent the full day in a foreign country. Record U.S. visits, nonqualifying travel and unknown dates as exceptions.</p>
     <label htmlFor="baseline-start">First full foreign day</label>
     <input ref={startRef} id="baseline-start" type="date" required min="1900-01-01" max={ONGOING_END} value={start}
       onChange={event => setStart(event.target.value)} aria-describedby="baseline-help baseline-error" />
@@ -40,7 +40,7 @@ export function ForeignBaseline({ editing, ending, onSave, onCancel }: {
     {!ongoing && <><label htmlFor="baseline-end">Final covered full foreign day</label>
       <input ref={endRef} id="baseline-end" type="date" required min={start || '1900-01-01'} max={ONGOING_END} value={end}
         onChange={event => { setEnd(event.target.value); setConfirmed(false); }} aria-describedby="baseline-error" /></>}
-    <p id="baseline-help" className="help">Exclude partial arrival/departure days and record transit separately. Continuation after the completed-day cutoff is projected when comparison is enabled.</p>
+    <p id="baseline-help" className="help">Start with your first full day, generally midnight to midnight. Record partial travel days separately. Ongoing presence after the last completed day is projected when comparison is on.</p>
     <label htmlFor="baseline-note">Supporting note (optional)</label>
     <input id="baseline-note" maxLength={500} value={note} onChange={event => setNote(event.target.value)} />
     <label className="check-row"><input type="checkbox" checked={acknowledged} onChange={event => setAcknowledged(event.target.checked)} />

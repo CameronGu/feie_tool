@@ -46,7 +46,7 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
   return (
     <section className="panel history-panel" aria-labelledby="history-heading">
       <div className="section-heading"><div><h2 id="history-heading">Your travel history</h2>
-        <p className="help">{history.records.length} {history.records.length === 1 ? 'record' : 'records'} across all years. Stored locally when browser storage is available; export a backup to move devices.</p></div>
+        <p className="help">{history.records.length} {history.records.length === 1 ? 'record' : 'records'} across all years. Saved in this browser when storage is available.</p></div>
         <button className="secondary" onClick={onUndo} disabled={!canUndo}>Undo last history change</button></div>
       {history.records.length ? <div className="table-scroll" tabIndex={0} role="region" aria-label="Travel history table">
         <table><caption className="sr-only">Recorded and proposed travel across all years</caption><thead><tr>
@@ -57,7 +57,11 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
           <td data-label="Note" className={record.note ? undefined : 'empty-note'}>{record.note || 'No note'}</td>
           <td data-label="Actions"><div className="actions"><button className="secondary" aria-label={`Edit ${KIND_LABELS[record.kind]} ${record.start_date}`} onClick={() => onEdit(record)}>Edit</button>
             <button className="secondary" aria-label={`Delete ${KIND_LABELS[record.kind]} ${record.start_date}`} onClick={() => { onDelete(record.id); setMessage('Record deleted. Use Undo last history change to restore it.'); }}>Delete</button></div></td>
-        </tr>)}</tbody></table></div> : <p>No travel saved yet. Add full foreign days, or declare a bounded foreign range and record its exceptions.</p>}
+        </tr>)}</tbody></table></div> : <p>No travel saved yet. Enter time abroad, or set default foreign presence and add U.S. visits.</p>}
+      <details><summary>What happens to saved travel records?</summary>
+        <p>Changing tax years or entry preferences keeps all your records. Proposed trips stay separate from completed history and only affect the comparison when you turn it on. Editing or deleting a record changes the saved history; Undo restores the last change during this session.</p>
+        <p>Your history stays on this browser and device. Clearing browser data can remove it. Download a JSON backup to keep a separate copy or move it to another device; a PDF report cannot restore your history.</p>
+      </details>
       <div className="actions backup-actions">
         <button className="secondary" onClick={() => downloadText(serializeHistory(history), 'feie-travel-history-v1.json')}>Export JSON backup</button>
         <button className="secondary" onClick={() => fileRef.current?.click()}>Import JSON backup</button>
@@ -69,7 +73,7 @@ export function HistoryPanel({ history, recoveryData, canUndo, onEdit, onDelete,
         <p>{pending.records.length ? `${pending.records[0].start_date} through ${pending.records.some(record => record.ongoing) ? 'ongoing presence' : [...pending.records].sort((a, b) => b.end_date.localeCompare(a.end_date))[0].end_date}.` : 'Empty backup.'}
           {' '}{pending.records.filter(record => record.status === 'proposed').length} proposed; {pending.records.filter(record => record.kind === 'foreign_assumption').length} foreign baselines.</p>
         <ul className="import-preview">{pending.records.map(record => <li key={record.id}>{record.start_date} to {record.ongoing ? 'ongoing' : record.end_date} · {KIND_LABELS[record.kind]} · {record.status}{record.note ? ` · ${record.note}` : ''}</li>)}</ul>
-        <p>Merge keeps existing records and rejects conflicts. Replacement discards the current history; export a backup first.</p>
+        <p>Merge adds records while keeping your current history; conflicting dates are rejected. Replace removes your current history and uses this backup instead. Export a backup first if you want to keep a copy.</p>
         <label className="check-row"><input type="checkbox" checked={replaceConfirmed} onChange={event => setReplaceConfirmed(event.target.checked)} />
           Replace all {history.records.length} existing records with this backup.</label>
         <div className="actions"><button onClick={() => importPending('merge')}>Merge imported records</button>
