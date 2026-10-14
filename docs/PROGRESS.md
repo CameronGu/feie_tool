@@ -1,5 +1,9 @@
 # Development progress
 
+## 2026-10-13 — homepage layout refinement started
+
+Accepted foundation `f9e18e9` is clean; rc.3 reports and appendix corrections are committed. Scope: shared-width desktop introduction and visible financial example, compact mobile disclosure, optional guidance after history. Existing income calculation/data and travel/report systems remain unchanged. Verification will include all checks, five browser projects, actual 1440/768/390 screenshots and a compact comparison packet using accepted UX captures.
+
 ## 2026-10-13 — UX, guidance and editorial milestone complete
 
 - Completed implementation at `6e61c6b`, following plan checkpoint `bf0a70c` and merged rc.3 baseline `90375d1`. Retained rc.3/physical-presence-2.2, the validated engine and canonical history. No report generator, storage, cutoff/normalization or dependency changes.

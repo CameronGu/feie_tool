@@ -1,5 +1,9 @@
 # Release readiness
 
+## Homepage refinement — verification pending
+
+Accepted UX milestone remains the foundation at `f9e18e9`. Presentation-only refinement is in progress: aligned introduction, visible financial comparison, compact mobile disclosure and relocated optional guidance. Complete checks, browser verification and visual review are required before marking this refinement ready. No push, deployment or publication.
+
 ## UX, guidance and editorial milestone — complete locally
 
 Branch **`feat/ux-guidance-editorial`**, from clean merged rc.3 **`90375d1`**. Local plan **`bf0a70c`**; implementation **`6e61c6b`**. Application remains **0.2.0-rc.3**, physical-presence assessment remains **physical-presence-2.2**. Website refinement is complete and locally verified. Prior report acceptance remains preserved below. No push, publication or deployment.

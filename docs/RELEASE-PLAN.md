@@ -1,5 +1,11 @@
 # First release plan
 
+## Homepage layout refinement — in progress
+
+Preserve accepted UX checkpoint `f9e18e9` on `feat/ux-guidance-editorial`. Align the introduction and visible income example with the calculator; use one responsive disclosure and one income state; move optional FEIE guidance below calculation/history. Keep all calculation, persistence and report systems unchanged.
+
+Sequence: presentation changes and targeted regressions; full checks and five-project browser suite; inspect 1440/768/390 layouts and keyboard/touch flows; curate before/after evidence from immutable accepted screenshots; record local implementation and verification checkpoints. No new dependencies, push, publication or deployment.
+
 ## UX, guidance and editorial milestone — complete locally
 
 Branch: `feat/ux-guidance-editorial`, from clean merged rc.3 checkpoint `90375d1`. Report/appendix/footer corrections are safely committed. Application remains rc.3; calculation remains physical-presence-2.2 during this local refinement.
