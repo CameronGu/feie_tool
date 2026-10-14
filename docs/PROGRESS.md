@@ -1,5 +1,11 @@
 # Development progress
 
+## 2026-10-13 — UX, guidance and editorial refinement started
+
+- Clean master checkpoint `90375d1` includes rc.3 report/appendix/footer corrections. Created local branch `feat/ux-guidance-editorial`.
+- Plan: optional education, clearer entry/results, independent income illustration, targeted regressions, full verification and real desktop/mobile persona review. Preserve engine, canonical history, reports and backups; no dependencies or deployment.
+- Verified 2026 Rev. Proc. 2025-32 section 4.01 table 3, 4.14 and 4.39; Form 1040 Foreign Earned Income Tax Worksheet; Publication 54, Form 2555 instructions and 26 CFR 1.911-2/3. No complete official 2027 dataset found; use labeled 2026 data only.
+
 ## 2026-10-13 — final report branding and footer
 
 - Started from clean, recoverable `64582df`. Found the established public calculator address in `src/constants/meta.ts`, matching the site's canonical metadata. PDF and clipboard now share that `APP_URL` through one footer label; a future domain change requires updating the canonical constant. Kept the attribution and added a muted 8 pt selectable/clickable PDF URL line, with metadata below it inside the existing footer area. Report body, calculation, versions, evidence and export controls are unchanged.

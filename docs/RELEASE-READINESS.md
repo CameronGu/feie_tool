@@ -1,5 +1,9 @@
 # Release readiness
 
+## UX/editorial milestone — verification pending
+
+In progress on `feat/ux-guidance-editorial`, from merged rc.3 `90375d1`. Prior report acceptance remains preserved below. New website guidance and isolated financial illustration require full checks, browser/accessibility review and screenshot evidence before local completion. No push, publication or deployment.
+
 Primary candidate: **0.2.0-rc.3**, calculation/assessment **physical-presence-2.2**. Branch: `refactor/project-update`. **Locally verified and ready for final user acceptance of the production report redesign.** Final-refinement foundation `f4e8d9d`, approved prototype `3ecac30`, implementation `6a126fb` and comparison refinement `be90c92` are recoverable local checkpoints. No push, deployment or publication is authorized.
 
 ## Final report footer — locally verified

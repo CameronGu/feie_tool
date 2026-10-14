@@ -1,5 +1,17 @@
 # First release plan
 
+## UX, guidance and editorial milestone — in progress
+
+Branch: `feat/ux-guidance-editorial`, from clean merged rc.3 checkpoint `90375d1`. Report/appendix/footer corrections are safely committed. Application remains rc.3; calculation remains physical-presence-2.2 during this local refinement.
+
+1. Verify primary IRS sources and review website copy, preserving direct calculator access.
+2. Add optional FEIE guidance and contextual day-count explanations; simplify results while retaining evidence, reports and history.
+3. Add an isolated, unsaved income illustration with typed annual data and tax-rate stacking.
+4. Add targeted regressions; run complete checks and five-project browser suite; inspect desktop/mobile personas and capture screenshots.
+5. Record evidence, remaining limits and coherent local commits. No push, deployment or publication.
+
+Acceptance includes the approved 330-foreign-day / 351-of-365 coverage explanation, bona fide residence distinction, native accessible disclosures, backup/report preservation and three 2026 salary reference cases. Verify annual values before adding a year; no complete 2027 dataset was found in the 2026-10-13 IRS search.
+
 Current candidate: **0.2.0-rc.3**, assessment **physical-presence-2.2**. Approved production report redesign is locally verified and ready for final user acceptance; ordinary counting engine is unchanged. Initial rc.1/rc.2 milestones below are historical; current acceptance is in the rc.3 section and RELEASE-READINESS.md.
 
 Branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
