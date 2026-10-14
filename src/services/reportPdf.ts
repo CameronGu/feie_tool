@@ -1,5 +1,6 @@
 import type { jsPDF } from 'jspdf';
 import coverage from '../assets/fonts/coverage.json';
+import { APP_URL, REPORT_CALCULATOR_LINK } from '../constants/meta';
 import { appendixSections, dateLabel, displayPeriods, fractionLabel, reportSections, type ReportSection, type ReportTable, type TravelReport } from './report';
 
 /** Preserve every unsupported code point visibly; clipboard/backup retain original Unicode. */
@@ -201,9 +202,11 @@ export async function createReportPdf(report: TravelReport, options: PdfOptions 
   const count = doc.getNumberOfPages();
   for (let page = 1; page <= count; page++) {
     doc.setPage(page); rule(275);
-    text('FEIE Window Optimizer | by Cameron Guthrie', left, 279, 8, false, COLORS.muted);
-    setFont(8); doc.text(`${pageKinds[page - 1] ? 'Appendix | ' : ''}${page} / ${count}`, right, 279, { baseline: 'top', align: 'right' });
-    text(`Generated ${dateLabel(report.generated_at.slice(0, 10))} | App ${report.app_version} | ${report.calculation_version}`, left, 285, 7.5, false, COLORS.muted);
+    text('FEIE Window Optimizer | by Cameron Guthrie', left, 278, 8, false, COLORS.muted);
+    setFont(8); doc.text(`${pageKinds[page - 1] ? 'Appendix | ' : ''}${page} / ${count}`, right, 278, { baseline: 'top', align: 'right' });
+    text(REPORT_CALCULATOR_LINK, left, 282, 8, false, COLORS.muted);
+    doc.link(left, 282, doc.getTextWidth(REPORT_CALCULATOR_LINK), 4, { url: APP_URL });
+    text(`Generated ${dateLabel(report.generated_at.slice(0, 10))} | App ${report.app_version} | ${report.calculation_version}`, left, 287, 7.5, false, COLORS.muted);
   }
   doc.setProperties({ title: `Physical Presence Test | Tax Year ${report.tax_year}`, author: 'Cameron Guthrie',
     subject: 'Physical-presence evidence and conditional qualifying-period coverage', creator: `FEIE Window Optimizer ${report.app_version}` });

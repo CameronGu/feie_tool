@@ -3,6 +3,7 @@ Run after e2e/reports.spec.ts: python3 scripts/inspect-preparer-pdfs.py
 """
 from pathlib import Path
 import json
+import re
 import sys
 from datetime import date
 import calendar
@@ -13,6 +14,8 @@ from PIL import Image, ImageOps, ImageDraw
 OUT = Path(sys.argv[1]) if len(sys.argv) > 1 else Path('output/playwright/report-redesign')
 NATIVE = OUT / 'chromium-desktop'
 NS = {'p': 'http://www.w3.org/1999/xhtml'}
+APP_URL = re.search(r"export const APP_URL = '([^']+)'", (Path(__file__).resolve().parents[1] / 'src/constants/meta.ts').read_text()).group(1)
+CALCULATOR_LINK = f'Run your own calculation: {APP_URL}'
 
 def run(*args):
     return subprocess.run(args, check=True, text=True, capture_output=True).stdout
@@ -32,6 +35,7 @@ for pdf in sorted(OUT.glob('*/*.pdf')):
         words = page.findall('.//p:word', NS)
         content = ' '.join(word.text or '' for word in words)
         assert 'FEIE Window Optimizer | by Cameron Guthrie' in content
+        assert CALCULATOR_LINK in content
         assert f'{index + 1} / {len(pages)}' in content
         assert 'physical-presence-2.2' in content
         for word in words:
@@ -91,14 +95,17 @@ for pdf in sorted(OUT.glob('*/*.pdf')):
         assert text.count('U.S. visit (original dates)') > 1
     links = run('pdfinfo', '-url', str(pdf))
     urls = {line.split()[-1] for line in links.splitlines() if 'Annotation' in line}
-    assert len(urls) == (7 if '-appendix' in stem else 2 if stem in {'failure', 'incomplete', 'negative-comparison'} else 3), (stem, urls)
-    assert all(url.startswith(('https://www.irs.gov/', 'https://www.ecfr.gov/')) for url in urls)
+    calculator_links = [line for line in links.splitlines() if 'Annotation' in line and line.split()[-1] == APP_URL]
+    assert [int(line.split()[0]) for line in calculator_links] == list(range(1, len(pages) + 1)), (stem, calculator_links)
+    assert len(urls) == (8 if '-appendix' in stem else 3 if stem in {'failure', 'incomplete', 'negative-comparison'} else 4), (stem, urls)
+    assert all(url == APP_URL or url.startswith(('https://www.irs.gov/', 'https://www.ecfr.gov/')) for url in urls)
     inspections.append({'hyperlinks': len(urls), 'file': str(pdf.relative_to(OUT)), 'pages': len(pages), 'a4': True, 'bounds_and_collisions': 'pass', 'every_footer': 'pass'})
 
 manifest = json.loads((NATIVE / 'engine-reconciliation.json').read_text())
 for case in manifest:
     text = (NATIVE / f'{case["name"]}.pdf-text.txt').read_text()
     clipboard = (NATIVE / f'{case["name"]}.clipboard.txt').read_text()
+    assert clipboard.count(CALCULATOR_LINK) == 1
     fraction = f'{case["numerator"]} / {case["denominator"]} = {case["numerator"]/case["denominator"]:.6f}'
     assert fraction in text and fraction in clipboard, (case['name'], fraction)
     def label(value):

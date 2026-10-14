@@ -6,6 +6,7 @@ import { createReportPdf, pdfSafeText } from '../reportPdf';
 import { EMPTY_HISTORY, type TravelHistory, type TravelRecord } from '../../domain/history';
 import { diffDaysInclusive } from '../../domain/dates';
 import { pdfPageText } from './pdfText';
+import { APP_URL, REPORT_CALCULATOR_LINK } from '../../constants/meta';
 
 const row = (id: string, kind: TravelRecord['kind'], start_date: string, end_date: string, extra: Partial<TravelRecord> = {}): TravelRecord => ({ id, kind, start_date, end_date, status: 'completed', note: '', ...extra });
 const data = (...records: TravelRecord[]): TravelHistory => ({ schema_version: 1, records });
@@ -114,6 +115,21 @@ describe('shared preparer evidence and concise presentation', () => {
 });
 
 describe('real embedded-font PDFs', () => {
+  it('uses the canonical public calculator link in clipboard and on every PDF page', async () => {
+    expect(APP_URL).toBe('https://cameronjguthrie.com/tools/feie-window-optimizer');
+    const report = reportFor();
+    const clipboard = reportText(report);
+    expect(clipboard.split('\n').filter(line => line === REPORT_CALCULATOR_LINK)).toHaveLength(1);
+    expect(clipboard).toContain(`FEIE Window Optimizer | by Cameron Guthrie\n${REPORT_CALCULATOR_LINK}\nGenerated`);
+    for (const includeAppendix of [false, true]) {
+      const doc = await createReportPdf(report, { includeAppendix });
+      const pages = pdfPageText(doc);
+      expect(pages).toHaveLength(includeAppendix ? 2 : 1);
+      for (const page of pages) expect(page.split(REPORT_CALCULATOR_LINK)).toHaveLength(2);
+      const bytes = new TextDecoder().decode(doc.output('arraybuffer'));
+      expect(bytes.split(`/URI (${APP_URL})`)).toHaveLength(pages.length + 1);
+    }
+  });
   it('generates the ordinary standard report on one A4 page, with precise counts and relevant hyperlinks', async () => {
     const report = reportFor();
     const doc = await createReportPdf(report);
@@ -156,6 +172,7 @@ describe('real embedded-font PDFs', () => {
       expect(pages[i]).toContain('Tax Year 2024');
       expect(pages[i]).toContain(`${i + 1} / ${pages.length}`);
       expect(pages[i]).toContain('physical-presence-2.2');
+      expect(pages[i]).toContain(REPORT_CALCULATOR_LINK);
     }
   });
   it('retains Unicode notes, escapes unsupported glyphs, and omits empty-note placeholders', async () => {

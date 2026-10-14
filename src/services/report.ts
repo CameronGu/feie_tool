@@ -5,6 +5,7 @@ import { segmentDaysWithin, type PresenceSegment, type TravelRecord } from '../d
 import type { Interval, QualifiedWindow } from '../domain/types';
 import type { TravelAssessment } from './travelCalculator';
 import { APP_VERSION, CALCULATION_VERSION } from '../version';
+import { REPORT_CALCULATOR_LINK } from '../constants/meta';
 
 export const STATUS_LABELS = {
   met: 'Physical-presence threshold met',
@@ -357,6 +358,7 @@ export function reportText(report: TravelReport): string {
     ...reportSections(report).flatMap(group => ['', group.title, ...group.lines.map(line => line.url ? `${line.text}: ${line.url}` : line.text),
       ...(group.table ? ['Days counted within supporting periods; original travel dates retained.', ...(group.table.headers[0].startsWith('U.S.') ? ['U.S. visits:'] : []), ...group.table.rows.map(row => row.map(cell => cell.replace(/\n/g, '; ')).join(': '))] : [])]), '',
     'FEIE Window Optimizer | by Cameron Guthrie',
+    REPORT_CALCULATOR_LINK,
     `Generated ${dateLabel(report.generated_at.slice(0, 10))} | App ${report.app_version} | Calculation ${report.calculation_version}`
   ].join('\n');
 }

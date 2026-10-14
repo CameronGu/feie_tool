@@ -2,6 +2,16 @@
 
 Primary candidate: **0.2.0-rc.3**, calculation/assessment **physical-presence-2.2**. Branch: `refactor/project-update`. **Locally verified and ready for final user acceptance of the production report redesign.** Final-refinement foundation `f4e8d9d`, approved prototype `3ecac30`, implementation `6a126fb` and comparison refinement `be90c92` are recoverable local checkpoints. No push, deployment or publication is authorized.
 
+## Final report footer — locally verified
+
+The accepted attribution is retained, followed by a discreet, selectable **Run your own calculation** URL with a clickable annotation on every PDF page and one plain-text line in clipboard exports. Both use the existing canonical `APP_URL` in `src/constants/meta.ts`; change that constant when the public report address moves. No runtime dependencies, calculation changes or report-body changes.
+
+`npm run check`: **112/112 tests**, TypeScript and production build pass. Relevant report browser workflows: **six passes / four intentional duplicate-sample skips**, across Chromium desktop/mobile/tablet and Firefox desktop/mobile. **27 native PDFs / 66 rendered A4 pages** pass text bounds, collision, URL targets on every page, footer, pagination and engine/clipboard parity checks. Visually inspected ordinary, multiple-period, projected and long-report pages. All **15 standard PDFs / 24 body rasters** are pixel-identical above the footer; all 27 PDFs retain their text/pagination apart from the new URL and actual provenance timestamps. All 15 clipboard examples differ only by the added URL line.
+
+Fresh ordinary exports are **one page standard / two pages with appendix**, with seven legal references on page two. The earlier `report-redesign` review contains a three-page ordinary appendix; the corrected `appendix-corrections` review and fresh generator produce two pages. The specifically named `feie-physical-presence-2025-appendix-2.pdf` was not available in the workspace, so its exact origin cannot be established. No further pagination change was needed; genuinely long reports retain natural pagination.
+
+[Fresh standard PDF](../output/playwright/report-footer/chromium-desktop/standard-2025.pdf), [two-page appendix PDF](../output/playwright/report-footer/chromium-desktop/standard-2025-appendix.pdf), [clipboard](../output/playwright/report-footer/chromium-desktop/standard-2025.clipboard.txt), [review and verification](../output/playwright/report-footer/REVIEW.md). Recoverable starting checkpoint: `64582df`. No push, deployment or publication.
+
 ## Final appendix corrections — locally verified
 
 The user accepted the standard PDF and clipboard. The optional ordinary combined report now has **two A4 pages**, with seven clickable references on page two. Existing body/reference fonts and margins are preserved; longer reports have no arbitrary page limit. Short reference blocks use two columns and stay with preceding provenance where practical.

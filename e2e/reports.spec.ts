@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { assessTravel } from '../src/services/travelCalculator';
 import { buildReport, relevantExceptions } from '../src/services/report';
 import type { TravelHistory, TravelRecord } from '../src/domain/history';
+import { REPORT_CALCULATOR_LINK } from '../src/constants/meta';
 
 test.use({ timezoneId: 'America/Managua' });
 const record = (id: string, kind: TravelRecord['kind'], start_date: string, end_date: string, extra: Partial<TravelRecord> = {}): TravelRecord => ({ id, kind, start_date, end_date, status: 'completed', note: '', ...extra });
@@ -36,6 +37,7 @@ test('standard and optional appendix export controls preserve the same history o
   await expect(option).not.toBeChecked();
   const text = await page.getByLabel('Preparer report text').inputValue();
   expect(text).toContain('351 / 365 = 0.961644');
+  expect(text).toContain(REPORT_CALCULATOR_LINK);
   expect(text).toContain('December 13, 2025 to January 13, 2026');
   expect(text).not.toContain('unrelated-source');
   expect(text).not.toContain('sample-december');
@@ -88,6 +90,7 @@ test('native report samples reconcile every assessment fixture with the unchange
     const report = buildReport(assessment, undefined, baseline);
     const text = await page.getByLabel('Preparer report text').inputValue();
     expect(text).toContain(report.status_label);
+    expect(text).toContain(REPORT_CALCULATOR_LINK);
     if (fixture.name === 'overridden-declaration') expect(text).toContain('This declaration supports the completed baseline only.');
     expect(text).toContain(`${report.qualifying_days} / ${report.tax_year_days} = ${report.fraction.toFixed(6)}`);
     await writeFile(join(directory, fixture.name + '.clipboard.txt'), text);

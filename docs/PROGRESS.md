@@ -1,5 +1,13 @@
 # Development progress
 
+## 2026-10-13 — final report branding and footer
+
+- Started from clean, recoverable `64582df`. Found the established public calculator address in `src/constants/meta.ts`, matching the site's canonical metadata. PDF and clipboard now share that `APP_URL` through one footer label; a future domain change requires updating the canonical constant. Kept the attribution and added a muted 8 pt selectable/clickable PDF URL line, with metadata below it inside the existing footer area. Report body, calculation, versions, evidence and export controls are unchanged.
+- Reproduced current pagination before and after the change: ordinary standard is one A4 page, matching appendix is two, with all seven linked references on page two. Earlier saved `report-redesign` artifacts have three pages; corrected `appendix-corrections` and fresh exports have two. The specifically named attachment is not available in the workspace, so its exact origin remains unverified. No unnecessary pagination change or rigid page cap was introduced.
+- Added a focused canonical URL/PDF annotation/clipboard regression, extended long-page footer coverage and native browser assertions, and updated the PDF inspector to verify visible URL text and a matching link annotation on every page. `npm run check`: **112/112 tests**, TypeScript/build pass. Relevant report workflows across five browser/viewport projects: **six passes / four intentional duplicate-sample skips**, zero failures/retries.
+- Generated from an exact isolated source/build copy at `/tmp/feie-report-footer-rxz_g7a7`, preserving previous accepted captures. **27 native PDFs / 66 rendered A4 pages** pass bounds, no text collisions, hyperlinks, footer and engine/clipboard parity checks. Visually inspected ordinary standard/appendix, multiple-period, projected and long closing pages. All **15 standard PDFs / 24 body rasters** are pixel-identical above the footer; all 27 PDF text/pagination comparisons match except added URL/actual provenance timestamps; all 15 clipboard examples differ only by the URL line.
+- Review, samples, full-page rasters, browser results and preservation evidence: `output/playwright/report-footer/REVIEW.md`. No calculation-engine change, pending UX redesign, push, deployment, publication or external upload.
+
 ## 2026-10-12 — baseline and execution contract
 
 - Working tree inspected: clean on `refactor/project-update`, starting from alpha tag `2025-alpha.1` (`9df6883`). Prior user dependency updates and assessments are preserved.
