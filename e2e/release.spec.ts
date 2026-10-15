@@ -34,7 +34,7 @@ test('direct entry, year/view changes, correction, reload and keyboard labels', 
   await noOverflow(page);
   await page.getByLabel('Calendar tax year').fill('2027');
   await page.getByRole('button', { name: 'Enter U.S. visits' }).click();
-  await page.getByRole('button', { name: 'Enter foreign stays' }).click();
+  await page.getByRole('button', { name: 'Enter time abroad' }).click();
   await page.reload();
   await expect(page.getByRole('button', { name: 'Edit Full foreign days 2024-01-01' })).toBeVisible();
   await page.getByRole('button', { name: 'Edit Full foreign days 2024-01-01' }).click();
@@ -46,7 +46,7 @@ test('direct entry, year/view changes, correction, reload and keyboard labels', 
   await page.keyboard.press('Control+Home');
   await page.getByRole('link', { name: 'Skip to calculator' }).focus();
   await page.keyboard.press('Enter');
-  await expect(page.locator('main')).toBeFocused();
+  await expect(page.locator('main #calculator-settings')).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByLabel('Calendar tax year')).toBeFocused();
   const unnamed = await page.locator('input,select,textarea').evaluateAll(inputs => inputs.filter(element => {

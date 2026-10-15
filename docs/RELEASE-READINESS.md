@@ -1,5 +1,64 @@
 # Release readiness
 
+## Final homepage spacing — locally verified
+
+Accepted foundation `237b76a` is preserved. Desktop settings now sit below the introduction in the left column; the financial example spans the right. Tablet settings stay full width, and mobile retains its compact order and collapsed income controls. All settings remain inside main; the skip link directly focuses their single group and Tab reaches the tax year.
+
+| Viewport | First date before | First date after |
+| --- | ---: | ---: |
+| 1440×1000 | 788.14 px | 663.03 px |
+| 1024×900 | 788.14 px | 663.03 px |
+| 768×1024 | 677.97 px | 677.97 px |
+| 390×844 | 641.44 px | 641.44 px |
+
+At desktop widths, the introduction-to-settings gaps fall from 193.78/153.45 px to 12 px. Both layouts reduce the area beneath the illustration from 145.11 to the normal 20 px section gap. Controls retain natural sizes and no left-column panel was added. “2026 tax example” and “Separate from your travel year” make the independent example year clear; neutral/teal bars retain readable numerical labels and unchanged proportions.
+
+Gates: **146 unit/integration tests**, TypeScript and build pass. Complete production browser invocation: **85 passes / ten intentional skips**, exit 0, no retries. The expanded settings/FEIE/income-method WCAG and overflow review passes at all four widths with reduced motion. Keyboard focus/skip link, year/proposal settings, completed cutoff, example isolation, salary synchronization, reports and JSON restore pass. Tests also cover the 600/601 and 900/901 boundaries; mobile first-date guard is under 642 px. All 59 source/test/config files in `/tmp/feie-spacing-tcgxpt10` match current source. **27 native PDFs / 66 pages** match accepted text/rasters after masking only generated timestamp rows; **15 clipboard samples byte-identical**.
+
+No domain/services/constants, hooks, detailed FEIE guidance or package changes. [Actual before/after gallery](../output/playwright/homepage-spacing/index.html), [review and provenance](../output/playwright/homepage-spacing/REVIEW.md), [exact geometry](../output/playwright/homepage-spacing/measurements.json), [verification](../output/playwright/homepage-spacing/verification.json). Accepted packet images are copied unchanged at 1440/768/390; 1024 before is captured from the source-verified accepted build. All screenshots/contact sheets and the running app were inspected; gallery links/images verified. No unresolved product decisions. Existing native-device/assistive certification and qualified tax-application limits remain. No push, deployment or publication.
+
+## Homepage refinement — locally verified
+
+The accepted foundation `f9e18e9` is preserved. Implementation `ca5a638` and test correction `9124e4c` are local checkpoints on `feat/ux-guidance-editorial`; rc.3 / physical-presence-2.2 remain unchanged.
+
+| Gate | Evidence |
+| --- | --- |
+| Homepage and direct access | Shared desktop column widths/gutters; visible hypothetical 2026 difference and proportional bars. Compact mobile summary; one salary state through disclosure and resizing. Tax year/date entry need no help interaction. |
+| Optional guidance | Native fragment link opens and focuses guidance after history. Keyboard Enter/Space pass; calculator position stays constant to subpixel precision. Contextual input/results help preserved. |
+| Mobile/tablet/desktop | Actual production inspection at 390×844, 768×1024 and 1440×1000. First date at approximately 641/678/788 px; mobile under-650-px guard retained. No horizontal overflow; touch, pointer and keyboard adjustment pass. |
+| Complete software gates | `npm run check`: **146/146 tests in 13 files**, TypeScript and build pass. Fresh production build and TypeScript also pass after final spacing/capture changes. Complete final browser invocation: **85 passes / ten intentional skips**, zero failures/retries, exit 0. |
+| Accessibility | Automated WCAG A/AA checks on empty/populated and expanded income-method states. Separate three-viewport check with FEIE, tax-home, cross-year and income-method disclosures all expanded passes, including reduced-motion preference. Native labels/focus/disclosure states verified. |
+| Calculation and data preservation | No source differences in domain/services/constants or package manifests. Isolated suite copy matches all 59 current tracked source/test/config files. Existing income stacking, exact entry and reference cases retained; salary stays out of history/reports. |
+| Approved outputs | **27 native PDFs / 66 pages** retain matching layout text and 72-dpi rasters apart from ISO generated timestamp rows; **15 clipboard samples byte-identical**. Standard/appendix controls and downloads pass across all projects. |
+| Review evidence | [Ten-page visual PDF](../output/playwright/homepage-refinement-review-ca5a638/visual-review.pdf), [26-image gallery](../output/playwright/homepage-refinement-review-ca5a638/index.html), [external AI review brief](../output/playwright/homepage-refinement-review-ca5a638/REVIEW-PROMPT.md), [verification](../output/playwright/homepage-refinement-review-ca5a638/context/verification.json). Four detail crops/five sheets preserve legibility; two separate native workflow recordings are available. |
+
+Final browser run uses `/tmp/feie-home-layout-20qj76fi` and leaves accepted screenshots unchanged. The first full invocation found a 0.000214-px Firefox scroll measurement difference; the assertion now allows only 0.005 px and the complete repeat passes. Ten skips cover four duplicate native-sample collections, four duplicate touch collections and two Firefox clipboard permission cases. An earlier unit attempt discovered frozen review source under ignored output; excluding that artifact directory resolved discovery without excluding application tests.
+
+Ready for local review. No unresolved product decisions. Viewport emulation is not native phone/Safari certification; automated/keyboard checks are not dedicated screen-reader certification or a human usability study. Existing qualified tax-application and publication conditions remain in force. No new dependencies, push, deployment or publication.
+
+## UX, guidance and editorial milestone — complete locally
+
+Branch **`feat/ux-guidance-editorial`**, from clean merged rc.3 **`90375d1`**. Local plan **`bf0a70c`**; implementation **`6e61c6b`**. Application remains **0.2.0-rc.3**, physical-presence assessment remains **physical-presence-2.2**. Website refinement is complete and locally verified. Prior report acceptance remains preserved below. No push, publication or deployment.
+
+| Requirement | Evidence |
+| --- | --- |
+| Self-service calculation | No mandatory onboarding or separate experience modes. Year and entry controls remain direct; skip link bypasses education. Existing under-650-px first-date-input guard passes in all five layouts. |
+| First-time understanding | Optional native FEIE overview, physical presence/residence comparison, foreign tax home, cross-year periods and contextual full-day help; new-worker browser persona passes. |
+| Useful results | Explicit recorded/assumed/projected/incomplete/failure/review explanations; actual single/multiple supporting-period basis; lower/upper bounds and clipped unresolved dates; separate 330 foreign-day and 351/365 coverage explanation. |
+| Financial illustration | Independent unsaved 2026 salary example, correct worksheet stacking, typed sourced annual data, all three reference cases, boundary tests, exact entry and validation, keyboard/pointer/mobile touch. Complete 2027 data was not verified, so it is omitted. |
+| Preserve validated systems | No changes to domain engine, canonical history, normalization, ongoing/cutoff/scenario logic, storage schema, reports or dependencies. Complete existing regression workflows still pass. |
+| Verification | `npm run check`: **145/145 tests**, TypeScript and production build pass. Complete `npm run test:e2e`: **75 passes / 10 intentional skips**, clean terminal exit, across Chromium desktop/mobile/tablet and Firefox desktop/mobile. |
+| Accessibility and visual review | Native disclosures opened/closed with Enter/Space; labeled inputs, focus and skip link, range keys and mobile touch checked. Automated WCAG A/AA scans pass on empty/populated and expanded-guidance states. Running app and representative desktop/mobile screenshots inspected. |
+| Approved outputs | **27 native PDFs / 66 full pages** match accepted report text/rasters after masking only generated UTC timestamp rows. **15 clipboard samples byte-identical**. Ordinary report remains one page; optional ordinary appendix two pages. |
+
+The full browser run used an exact isolated source/build copy at `/tmp/feie-ux-verified-i16u_0ol`, preserving earlier rc.3 artifacts. Initial review caught added copy pushing inputs below the fold; compact settings/type rows and relocating the preview resolved it without weakening the guard. An earlier complete 75-pass assertion run received SIGTERM during teardown; an identical-source terminal repeat passed with exit 0. There are no unresolved software failures.
+
+[Review, source verification and screenshot index](../output/playwright/ux-editorial/REVIEW.md), [desktop result](../output/playwright/ux-editorial/chromium-desktop/02-experienced-result-viewport.png), [mobile first use](../output/playwright/ux-editorial/chromium-mobile/01-first-use-viewport.png), [income example](../output/playwright/ux-editorial/chromium-desktop/05-income-default.png), [report parity](../output/playwright/ux-editorial/report-parity.json).
+
+No new blocking product questions. Remaining limits are native Safari/iOS/Android and manual assistive-technology certification; future annual data verification; and the previously documented qualified tax review of tax-home application, multiple-period filing and affected leap endpoints. Website education is not a residence/tax-home engine. The hypothetical regular-income-tax comparison does not establish personalized liability or alternative-relief outcomes. These local checks do not authorize release or publication.
+
+## Preserved rc.3 report acceptance
+
 Primary candidate: **0.2.0-rc.3**, calculation/assessment **physical-presence-2.2**. Branch: `refactor/project-update`. **Locally verified and ready for final user acceptance of the production report redesign.** Final-refinement foundation `f4e8d9d`, approved prototype `3ecac30`, implementation `6a126fb` and comparison refinement `be90c92` are recoverable local checkpoints. No push, deployment or publication is authorized.
 
 ## Final report footer — locally verified

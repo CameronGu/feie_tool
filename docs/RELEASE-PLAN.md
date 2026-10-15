@@ -1,8 +1,46 @@
 # First release plan
 
-Current candidate: **0.2.0-rc.3**, assessment **physical-presence-2.2**. Approved production report redesign is locally verified and ready for final user acceptance; ordinary counting engine is unchanged. Initial rc.1/rc.2 milestones below are historical; current acceptance is in the rc.3 section and RELEASE-READINESS.md.
+## Final homepage spacing — complete locally
 
-Branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
+Narrow follow-up to accepted `237b76a` on `feat/ux-guidance-editorial`. Desktop introduction/settings share the left column, opposite the existing financial example. Tablet keeps full-width settings; mobile keeps the accepted introduction/example/settings order. One copy of every control remains inside main; the skip link focuses settings and its next Tab reaches the tax year. No new state, panel, dependency, engine/report/tax-data or detailed-guidance change.
+
+First date positions at 1440/1024/768/390 px: **663/663/678/641 px**, versus **788/788/678/641 px** before. Desktop is 125 px higher; mobile/tablet are unchanged. Introduction-to-settings gaps are 12 px on desktop; the gap beneath the illustration is 20 px. Checks include 600/601 and 900/901 boundaries.
+
+`npm run check`: **146 tests**, TypeScript/build pass; final CSS build and TypeScript pass. Complete five-project browser invocation: **85 passes / ten intentional skips**, exit 0. Expanded-control WCAG/overflow checks pass at all four widths, with keyboard, touch, comparison, cutoff, example isolation, exports and restore verified. **27 PDFs / 66 pages** match apart from generated timestamp rows; **15 clipboard samples identical**. [Before/after gallery](../output/playwright/homepage-spacing/index.html), [measurements](../output/playwright/homepage-spacing/measurements.json), [verification](../output/playwright/homepage-spacing/verification.json). No push, deployment or publication.
+
+## Homepage layout refinement — complete locally
+
+Accepted UX foundation `f9e18e9` remains preserved on `feat/ux-guidance-editorial`. Plan checkpoint `1665e44`; implementation `ca5a638`; subpixel-test correction `9124e4c`. Application/report version remains rc.3 and calculation remains physical-presence-2.2.
+
+The desktop introduction and visible 2026 income example share the calculator’s columns and gutters. The financial difference leads; bars use the larger current tax estimate as their reference width. One unsaved salary state and one set of controls span desktop, tablet and mobile. Mobile starts with a compact disclosure. The introduction’s How FEIE works link opens and focuses optional guidance after history, leaving calculator geometry unchanged.
+
+`npm run check`: **146 unit/integration tests**, TypeScript and production build pass. Final complete browser repeat: **85 passed / ten intentional skips**, five projects, exit 0. Real 1440/768/390 screenshots and keyboard/touch flows inspected; expanded-help accessibility/overflow checks also pass with reduced-motion preference. First date positions: approximately 788 / 678 / 641 px respectively. The existing mobile under-650-px guard is retained; desktop/tablet deliberately allow the visible illustration within an 850-px guard.
+
+**27 PDFs / 66 pages** match accepted text and rasters after masking only generated timestamp rows; **15 clipboard samples are identical**. No counting, history, cutoff, scenario, report, annual tax data or dependency changes. Test discovery excludes ignored review outputs so frozen source packages cannot run as live tests.
+
+[Visual review PDF](../output/playwright/homepage-refinement-review-ca5a638/visual-review.pdf), [gallery](../output/playwright/homepage-refinement-review-ca5a638/index.html), [external review prompt](../output/playwright/homepage-refinement-review-ca5a638/REVIEW-PROMPT.md), [verification](../output/playwright/homepage-refinement-review-ca5a638/context/verification.json). Package includes 26 original-resolution screenshots, four detail crops, five comparison sheets, frozen source/diff and two separate synthetic lifecycle recordings. No unresolved product question remains. Existing native-device, assistive certification and tax-application review limits remain documented. No push, deployment or publication.
+
+## UX, guidance and editorial milestone — complete locally
+
+Branch: `feat/ux-guidance-editorial`, from clean merged rc.3 checkpoint `90375d1`. Report/appendix/footer corrections are safely committed. Application remains rc.3; calculation remains physical-presence-2.2 during this local refinement.
+
+1. Verify primary IRS sources and review website copy, preserving direct calculator access.
+2. Add optional FEIE guidance and contextual day-count explanations; simplify results while retaining evidence, reports and history.
+3. Add an isolated, unsaved income illustration with typed annual data and tax-rate stacking.
+4. Add targeted regressions; run complete checks and five-project browser suite; inspect desktop/mobile personas and capture screenshots.
+5. Record evidence, remaining limits and coherent local commits. No push, deployment or publication.
+
+Acceptance includes the approved 330-foreign-day / 351-of-365 coverage explanation, bona fide residence distinction, native accessible disclosures, backup/report preservation and three 2026 salary reference cases. Verify annual values before adding a year; no complete 2027 dataset was found in the 2026-10-13 IRS search.
+
+Implementation checkpoint: `6e61c6b`; plan checkpoint: `bf0a70c`. **145 unit/integration tests**, TypeScript/build, and **75 browser passes / 10 intentional skips** across all five projects pass. The final repeat exits cleanly; an earlier complete assertion run received SIGTERM at cleanup. Direct experienced-user entry/export, first-time education, keyboard/pointer/mobile touch, expanded-help accessibility, year/scenario/backup preservation and desktop/mobile visual inspection are complete. Initial first-input placement regressions were corrected without relaxing the existing under-650-px browser guard.
+
+**27 native PDFs / 66 pages** retain matching text and page rasters after masking only generated UTC timestamp rows; **15 clipboard samples are byte-identical** to accepted rc.3 footer artifacts. No physical-presence, storage, cutoff, normalization, report-generation or dependency changes. [Review and representative screenshots](../output/playwright/ux-editorial/REVIEW.md). Remaining native-device/assistive certification and qualified tax application review conditions are preserved; no new blocking product questions. No push, publication or deployment.
+
+## Preserved report-release baseline
+
+Report candidate: **0.2.0-rc.3**, assessment **physical-presence-2.2**. Approved production report redesign is locally verified; ordinary counting engine is unchanged. Initial rc.1/rc.2 milestones below are historical; current acceptance is in RELEASE-READINESS.md.
+
+Report milestone branch: `refactor/project-update`. Recoverable baseline: `2025-alpha.1` / `9df6883`.
 No push, deployment, publication, backend, accounts, or external travel-data submission is authorized.
 
 ## Release criteria and milestones

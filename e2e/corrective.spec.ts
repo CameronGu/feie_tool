@@ -27,7 +27,8 @@ test('ongoing foreign baseline, repeated visits, mobile correction and confirmed
   test.slow(); // Full lifecycle plus fourteen screenshots and a native PDF download.
   await start(page, info);
   const dateTop = await page.getByLabel('First full foreign day').evaluate(input => input.getBoundingClientRect().top + scrollY);
-  expect(dateTop).toBeLessThan(650);
+  // The visible desktop illustration shares the introduction; mobile stays compact.
+  expect(dateTop).toBeLessThan(page.viewportSize()!.width <= 600 ? 650 : 850);
   await expect(page.getByRole('heading', { name: 'Add travel evidence to begin' })).toBeVisible();
   await capture(page, info, '01-first-use');
   await page.getByRole('button', { name: 'Enter U.S. visits' }).click();

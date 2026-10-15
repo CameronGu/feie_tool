@@ -1,5 +1,11 @@
 # Architecture
 
+## Optional education and independent income example
+
+`FeieGuidance` uses native disclosures for the FEIE overview, residence comparison and tax-home explanation. `DayCountsHelp` sits beside the result fraction, with the validated 330-full-foreign-day / 351-of-365 example and primary sources. The website derives selection explanations and unresolved dates from the existing `TravelReport`; the report model, PDF/clipboard generators and physical-presence engine retain their approved behavior.
+
+`IncomeIllustration` owns an unsaved salary draft and last valid amount. Changes update its two tax bars without recalculating travel. The pure `incomeIllustration` service and typed annual configuration have no history, storage, report or physical-presence dependencies. Values are verified manually from IRS annual adjustments; year selection uses current-year data only if supported, otherwise the latest verified year with a visible label. The slider preserves exact typed values using a one-dollar native step, rounds pointer/touch movement to $5,000 increments, and handles arrow keys in $5,000 increments. Native Home/End and $25,000 PageUp/PageDown remain usable. Estimates are readable text without live-region announcements on each movement.
+
 A static React/TypeScript application built with Vite. No server, database, account, analytics or external travel-data submission. All evaluation and persistence happen in the browser. PDF code loads only when requested.
 
 ## Source of truth and data flow
@@ -23,6 +29,8 @@ The lower-level `calculateFeie` adapter remains for source reuse and legacy inte
 ## Presentation and reporting
 
 Direct interval entry precedes results, followed by the all-years history and backup controls. U.S./foreign entry choices are form conveniences, not history conversions. Native controls, explicit labels, focus styles, keyboard-accessible disclosures and stacked mobile records and a desktop history table replace the large calendar/modal flow. The example uses a separate in-memory dataset; proposed travel overlays completed history only during comparison.
+
+The introduction, settings and financial example sit inside main and share the calculator’s desktop columns and gutters. Grid areas put settings under the introduction above 900 px; tablet keeps full-width settings, and mobile keeps introduction/example/settings order. The skip link focuses the single settings group so the next Tab reaches the tax year. `IncomeIllustration` owns one unsaved income state and one calculation across breakpoints; CSS hides its controls behind an accessible button below 900 px. Slider updates do not update travel state or rerun the travel assessment. Its chart uses the larger current tax estimate as the reference width. The introduction’s native fragment link opens and focuses optional FEIE guidance after history, without moving the calculator. No viewport-specific tax logic or duplicate inputs.
 
 `buildReport` retains the exact engine result and normalized evidence, with disjoint recorded-completed/assumed-completed/projected foreign counts, U.S./other/unknown counts and distinct tax-year contributions per supporting period. A comparison embeds a completed report validated against the same history, year and cutoff. No reporting calculation re-enumerates windows or substitutes prototype assumptions.
 

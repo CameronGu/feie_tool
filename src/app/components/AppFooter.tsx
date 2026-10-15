@@ -1,4 +1,4 @@
-import { APP_NAME, APP_URL, AUTHOR_NAME, AUTHOR_URL, DISCLAIMER } from '@/constants/meta';
+import { APP_URL, AUTHOR_NAME, AUTHOR_URL, DISCLAIMER } from '@/constants/meta';
 import { APP_VERSION } from '@/version';
 
 const displayUrl = APP_URL.replace(/^https?:\/\//, '');
@@ -25,10 +25,10 @@ export function AppFooter() {
         <span className="footer-build">Build {APP_VERSION}</span>
       </div>
       <p className="footer-disclaimer">
-        {DISCLAIMER} Please consult a qualified tax professional before making financial decisions.
+        {DISCLAIMER}
       </p>
       <p className="footer-app-name">
-        {APP_NAME} keeps data in your browser only - no submissions or analytics are collected.
+        Travel stays in your browser. No accounts, travel-data submissions or analytics.
       </p>
     </footer>
   );
